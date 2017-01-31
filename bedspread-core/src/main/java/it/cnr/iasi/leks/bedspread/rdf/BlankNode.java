@@ -16,8 +16,8 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread;
+package it.cnr.iasi.leks.bedspread.rdf;
 
-public interface BlankNode {
+public interface BlankNode extends AnyURI{
 
 }

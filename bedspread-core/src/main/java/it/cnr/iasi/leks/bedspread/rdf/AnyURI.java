@@ -1,5 +1,5 @@
-package it.cnr.iasi.leks.bedspread;
+package it.cnr.iasi.leks.bedspread.rdf;
 
-public interface AnyURI extends URI, BlankNode {
+public interface AnyURI extends AnyResource {
 
 }

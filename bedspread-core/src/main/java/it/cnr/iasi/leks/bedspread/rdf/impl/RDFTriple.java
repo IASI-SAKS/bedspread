@@ -1,4 +1,8 @@
-package it.cnr.iasi.leks.bedspread;
+package it.cnr.iasi.leks.bedspread.rdf.impl;
+
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
 
 public class RDFTriple {
 
