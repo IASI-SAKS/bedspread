@@ -22,7 +22,7 @@ public class SimpleKnowledgeBase implements KnowledgeBase{
 		return 0;
 	}
 
-	public List<AnyResource> neighbor(AnyResource node) {
+	public List<AnyResource> getNeighborhood(AnyResource node) {
 		// TODO Auto-generated method stub
 		return null;
 	}
