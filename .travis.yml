@@ -1,6 +1,6 @@
 language: java
 ##script: bash build --debug
-script: mvn test -B -f ./bedspread-core/pom.xml
+script: mvn clean install -B -f ./bedspread-core/pom.xml
 # We need to avoid sudo for caching on Travis
 # http://docs.travis-ci.com/user/caching/
 sudo: false
