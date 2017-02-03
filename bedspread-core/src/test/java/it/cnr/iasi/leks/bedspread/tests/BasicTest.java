@@ -1,5 +1,7 @@
 package it.cnr.iasi.leks.bedspread.tests;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.Node;
@@ -81,23 +83,34 @@ public class BasicTest {
 	}	
 
 	@Test
-	public void testMultipleInsertionInSet(){
+	public void testMultipleInsertionInSet_HashSet(){
+		Set<Node> s1 = Collections.synchronizedSet(new HashSet<Node>());
+		Set<Node> s2 = Collections.synchronizedSet(new HashSet<Node>());
+		boolean result = this.implMultipleInsertionInSet(s1, s2);
+		Assert.assertTrue(result);
+	}
+	
+	@Test
+	public void testMultipleInsertionInSet_RevisedHashSet(){
+		Set<Node> s1 = new RevisedHashSet();
+		Set<Node> s2 = new RevisedHashSet();
+		boolean result = this.implMultipleInsertionInSet(s1, s2);
+		Assert.assertTrue(result);
+	}
+
+	private boolean implMultipleInsertionInSet (Set<Node> s1, Set<Node> s2){
 		URI u1 = factory.createURI();
 		
 		Node n1 = new Node(u1);
 		Node n2 = new Node(u1);
 	
-//		Set<Node> s1 = Collections.synchronizedSet(new HashSet<Node>());
-		Set<Node> s1 = new RevisedHashSet();
 		s1.add(n1);
 		s1.add(n2);
 		
-//		Set<Node> s2 = Collections.synchronizedSet(new HashSet<Node>());
-		Set<Node> s2 = new RevisedHashSet();
 		s2.add(n1);
 		s2.add(n1);
 
 		boolean result = (s1.size() == 1) && (s2.size() == 1);
-		Assert.assertTrue(result);
-	}	
+		return result;
+	}
 }
