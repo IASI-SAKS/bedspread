@@ -1,0 +1,30 @@
+language: java
+##script: bash build --debug
+script: mvn test -B -f ./bedspread-core/pom.xml
+# We need to avoid sudo for caching on Travis
+# http://docs.travis-ci.com/user/caching/
+sudo: false
+
+addons:
+    apt:
+        packages:
+            - curl
+            - gcc
+            - make
+            - maven
+            - openjdk-8-jdk
+            - openjdk-8-jre
+            - build-essential
+            - sed
+
+cache:
+    directories:
+        - $HOME/.m2
+
+before_script:
+    - export MAVEN_SKIP_RC=true
+    - export MAVEN_OPTS="-Xms1024m -Xmx2g -XX:MaxPermSize=512m"
+
+### Copied form LeanPAd, commented by Gulyx
+# after_success:
+#    - bash <(curl -s https://codecov.io/bash)
