@@ -1,5 +1,7 @@
 package it.cnr.iasi.leks.bedspread;
 
+import java.util.HashSet;
+
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 
 public class Node {
@@ -38,7 +40,13 @@ public class Node {
 			String nodeID = node.getResource().getResourceID();
 			String currentID = this.resource.getResourceID();
 			return currentID.equalsIgnoreCase(nodeID);
-		}		
+		}	
+		this.hashCode();
 		return false;		
+	}
+	
+	@Override
+	public int hashCode(){
+		return this.resource.hashCode();
 	}
 }
