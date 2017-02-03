@@ -1,7 +1,5 @@
 package it.cnr.iasi.leks.bedspread.tests;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.Node;
@@ -14,16 +12,17 @@ import it.cnr.iasi.leks.bedspread.util.RevisedHashSet;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class BasicTests {
+public class BasicTest {
 
 	private RDFFactory factory;
 
-	public BasicTests (){
+	public BasicTest (){
 		this.factory = RDFFactory.getInstance();		
 	}
 	
 	@Test
-	public void testIfNodeEquals_SameURI(){		
+//	public void areNodesEqual_SameURITest(){
+	public void testIfNodeEquals_SameURI(){				
 		URI u1 = factory.createURI();
 
 		Node n1 = new Node(u1);
@@ -34,7 +33,8 @@ public class BasicTests {
 	}
 
 	@Test
-	public void testIfNodeEquals_SameIdDifferentURI(){
+//	public void areNodesEqual_SameIdDifferentURITest(){
+	public void testIfNodesEqual_SameIdDifferentURI(){
 		URI u1 = factory.createURI();
 		String id = u1.getResourceID();
 		URI u2 = factory.createURI(id);
@@ -47,7 +47,8 @@ public class BasicTests {
 	}
 
 	@Test
-	public void testIfNodeDifferent(){
+//	public void areNodesDifferentTest(){
+	public void testIfNodesDifferent(){
 		URI u1 = factory.createURI();
 		URI u2 = factory.createURI();
 		
@@ -59,6 +60,7 @@ public class BasicTests {
 	}
 
 	@Test
+//	public void isContainedInSetTest(){
 	public void testContainedInSet(){
 		URI u1 = factory.createURI();
 		URI u2 = factory.createURI();
@@ -83,6 +85,7 @@ public class BasicTests {
 	}	
 
 	@Test
+//	public void multipleInsertionInSetTest(){
 	public void testMultipleInsertionInSet(){
 		URI u1 = factory.createURI();
 		
