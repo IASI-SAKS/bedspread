@@ -7,6 +7,7 @@ import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.util.RevisedHashSet;
+import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
 public abstract class AbstractSemanticSpread implements Runnable{
 	private Node origin;
@@ -18,6 +19,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	private Set<Node> forthcomingActiveNodes;
 	private Set<Node> tempActiveNodes;
 	
+	private SetOfNodesFactory setOfNodesFactory;
+	
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term){
 		this.origin = origin;
 		this.origin.updateScore(1);
@@ -26,14 +29,13 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.term = term;
 		this.status = ComputationStatus.NotStarted;
 		
-//		this.currentlyActiveNodes = Collections.synchronizedSet(new HashSet<Node>());
-		this.currentlyActiveNodes = new RevisedHashSet();
+		this.setOfNodesFactory = SetOfNodesFactory.getInstance();
+		
+		this.currentlyActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
 		this.currentlyActiveNodes.add(this.origin);
 		
-//		this.forthcomingActiveNodes = Collections.synchronizedSet(new HashSet<Node>());
-		this.forthcomingActiveNodes = new RevisedHashSet();
-//		this.tempActiveNodes = Collections.synchronizedSet(new HashSet<Node>());
-		this.tempActiveNodes = new RevisedHashSet();
+		this.forthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
+		this.tempActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
 	}
 		
 	public Node getOrigin(){
