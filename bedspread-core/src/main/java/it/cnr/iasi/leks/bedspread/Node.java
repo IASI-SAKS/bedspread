@@ -41,7 +41,6 @@ public class Node {
 			String currentID = this.resource.getResourceID();
 			return currentID.equalsIgnoreCase(nodeID);
 		}	
-		this.hashCode();
 		return false;		
 	}
 	
