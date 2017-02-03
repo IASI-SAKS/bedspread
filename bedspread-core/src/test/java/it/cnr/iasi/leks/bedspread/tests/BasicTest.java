@@ -21,7 +21,6 @@ public class BasicTest {
 	}
 	
 	@Test
-//	public void areNodesEqual_SameURITest(){
 	public void testIfNodeEquals_SameURI(){				
 		URI u1 = factory.createURI();
 
@@ -33,7 +32,6 @@ public class BasicTest {
 	}
 
 	@Test
-//	public void areNodesEqual_SameIdDifferentURITest(){
 	public void testIfNodesEqual_SameIdDifferentURI(){
 		URI u1 = factory.createURI();
 		String id = u1.getResourceID();
@@ -47,7 +45,6 @@ public class BasicTest {
 	}
 
 	@Test
-//	public void areNodesDifferentTest(){
 	public void testIfNodesDifferent(){
 		URI u1 = factory.createURI();
 		URI u2 = factory.createURI();
@@ -60,7 +57,6 @@ public class BasicTest {
 	}
 
 	@Test
-//	public void isContainedInSetTest(){
 	public void testContainedInSet(){
 		URI u1 = factory.createURI();
 		URI u2 = factory.createURI();
@@ -85,7 +81,6 @@ public class BasicTest {
 	}	
 
 	@Test
-//	public void multipleInsertionInSetTest(){
 	public void testMultipleInsertionInSet(){
 		URI u1 = factory.createURI();
 		
