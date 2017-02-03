@@ -1,7 +1,5 @@
 package it.cnr.iasi.leks.bedspread.tests;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.Node;
@@ -9,7 +7,7 @@ import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
 import it.cnr.iasi.leks.bedspread.rdf.Literal;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
-import it.cnr.iasi.leks.bedspread.util.RevisedHashSet;
+import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,7 +69,8 @@ public class BasicTest {
 		Node n4 = new Node(l);
 	
 //		Set<Node> s = Collections.synchronizedSet(new HashSet<Node>());
-		Set<Node> s = new RevisedHashSet();
+//		Set<Node> s = new RevisedHashSet();
+		Set<Node> s = SetOfNodesFactory.getInstance().getOtherSetOfNodesInstance();
 		s.add(n1);
 		s.add(n3);
 		s.add(n4);
@@ -84,16 +83,18 @@ public class BasicTest {
 
 	@Test
 	public void testMultipleInsertionInSet_HashSet(){
-		Set<Node> s1 = Collections.synchronizedSet(new HashSet<Node>());
-		Set<Node> s2 = Collections.synchronizedSet(new HashSet<Node>());
+		SetOfNodesFactory factory = SetOfNodesFactory.getInstance();
+		Set<Node> s1 = factory.getNaviteSetOfNodesInstance();
+		Set<Node> s2 = factory.getNaviteSetOfNodesInstance();
 		boolean result = this.implMultipleInsertionInSet(s1, s2);
 		Assert.assertTrue(result);
 	}
 	
 	@Test
 	public void testMultipleInsertionInSet_RevisedHashSet(){
-		Set<Node> s1 = new RevisedHashSet();
-		Set<Node> s2 = new RevisedHashSet();
+		SetOfNodesFactory factory = SetOfNodesFactory.getInstance();
+		Set<Node> s1 = factory.getOtherSetOfNodesInstance();
+		Set<Node> s2 = factory.getOtherSetOfNodesInstance();
 		boolean result = this.implMultipleInsertionInSet(s1, s2);
 		Assert.assertTrue(result);
 	}
