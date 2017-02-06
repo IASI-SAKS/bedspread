@@ -34,5 +34,15 @@ public class RDFTriple {
 		this.tripleObject = tripleObject;
 	}
 	
-	
+	public AnyURI getTripleSubject() {
+		return this.tripleSubject;
+	}
+
+	public URI getTriplePredicate() {
+		return this.triplePredicate;
+	}
+
+	public AnyResource getTripleObject() {
+		return this.tripleObject;
+	}	
 }
