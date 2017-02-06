@@ -18,6 +18,11 @@
  */
 package it.cnr.iasi.leks.bedspread.policies;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class SimpleTerminationPolicy extends TerminationPolicy {
 
 	private final int MAX_QUERIES_BEFORE_TRUE = 10;

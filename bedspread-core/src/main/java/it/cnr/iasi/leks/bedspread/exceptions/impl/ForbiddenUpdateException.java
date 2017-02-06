@@ -20,6 +20,11 @@ package it.cnr.iasi.leks.bedspread.exceptions.impl;
 
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class ForbiddenUpdateException extends AbstractBedspreadException {
 
 	/**

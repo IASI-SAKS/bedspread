@@ -22,6 +22,11 @@ import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class RDFTriple {
 
 	private AnyURI tripleSubject;

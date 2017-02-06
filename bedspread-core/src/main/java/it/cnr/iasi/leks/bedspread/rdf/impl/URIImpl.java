@@ -20,6 +20,11 @@ package it.cnr.iasi.leks.bedspread.rdf.impl;
 
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class URIImpl implements URI {
 
 	private String id;

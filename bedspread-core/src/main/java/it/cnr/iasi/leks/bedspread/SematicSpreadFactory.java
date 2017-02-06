@@ -22,6 +22,11 @@ import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class SematicSpreadFactory {
 
 	protected static SematicSpreadFactory FACTORY = null;

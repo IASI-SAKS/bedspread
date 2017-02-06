@@ -18,6 +18,11 @@
  */
 package it.cnr.iasi.leks.bedspread.exceptions;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public abstract class AbstractBedspreadException extends Exception {
 
 	/**

@@ -18,6 +18,11 @@
  */
 package it.cnr.iasi.leks.bedspread.rdf;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public interface URI extends AnyURI{
 
 }
