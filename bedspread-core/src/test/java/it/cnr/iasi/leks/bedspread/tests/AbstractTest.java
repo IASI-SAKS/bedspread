@@ -16,32 +16,26 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.rdf.impl;
+package it.cnr.iasi.leks.bedspread.tests;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
-
-public class BlankNodeImpl implements BlankNode {
-
-	private String id;
-	
-	public BlankNodeImpl (){
-		this.id = this.randomId();
-	}
-
-	public BlankNodeImpl (String id){
-		this.id = id;
-	}
-
-	public String getResourceID() {
-		return this.id;
-	}
-	
-    private String randomId() {
-    	SecureRandom random = new SecureRandom();
-    	return new BigInteger(130, random).toString(32);
+/*
+ * @author gulyx
+ */
+public abstract class AbstractTest {
+    private SecureRandom random;
+    
+    protected AbstractTest() {
+      this.random = new SecureRandom();
     }
-
+    
+    protected String randomId() {
+                return new BigInteger(130, random).toString(32);
+    }
+    
+    protected int randomInt() {
+        return new BigInteger(10, random).intValue();
+    }
 }

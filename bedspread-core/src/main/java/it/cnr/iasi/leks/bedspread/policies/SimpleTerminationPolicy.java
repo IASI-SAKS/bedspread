@@ -16,32 +16,28 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.rdf.impl;
+package it.cnr.iasi.leks.bedspread.policies;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
+public class SimpleTerminationPolicy extends TerminationPolicy {
 
-import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
-
-public class BlankNodeImpl implements BlankNode {
-
-	private String id;
+	private final int MAX_QUERIES_BEFORE_TRUE = 10;
+	private int nQueries;
 	
-	public BlankNodeImpl (){
-		this.id = this.randomId();
-	}
-
-	public BlankNodeImpl (String id){
-		this.id = id;
-	}
-
-	public String getResourceID() {
-		return this.id;
+	public SimpleTerminationPolicy(){
+		this.nQueries = MAX_QUERIES_BEFORE_TRUE;
 	}
 	
-    private String randomId() {
-    	SecureRandom random = new SecureRandom();
-    	return new BigInteger(130, random).toString(32);
-    }
+	public SimpleTerminationPolicy(int i){
+		this.nQueries = i;
+	}
+
+	@Override
+	public boolean wasMet() {
+		if (this.nQueries > 0){
+			this.nQueries --;
+			return true;
+		}	
+		return false;
+	}
 
 }

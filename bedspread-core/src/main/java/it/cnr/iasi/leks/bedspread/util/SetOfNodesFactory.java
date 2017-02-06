@@ -16,32 +16,41 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.rdf.impl;
+package it.cnr.iasi.leks.bedspread.util;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import it.cnr.iasi.leks.bedspread.Node;
 
-import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-public class BlankNodeImpl implements BlankNode {
+public class SetOfNodesFactory {
 
-	private String id;
+	protected static SetOfNodesFactory FACTORY = null;
 	
-	public BlankNodeImpl (){
-		this.id = this.randomId();
-	}
-
-	public BlankNodeImpl (String id){
-		this.id = id;
-	}
-
-	public String getResourceID() {
-		return this.id;
+	protected SetOfNodesFactory(){		
 	}
 	
-    private String randomId() {
-    	SecureRandom random = new SecureRandom();
-    	return new BigInteger(130, random).toString(32);
-    }
+	public static synchronized SetOfNodesFactory getInstance(){
+		if (FACTORY == null){
+			FACTORY = new SetOfNodesFactory();
+		}
+		return FACTORY;
+	}
+	
+	public Set<Node> getSetOfNodesInstance() {
+		Set<Node> s1 = this.getNaviteSetOfNodesInstance();
+//		Set<Node> s1 = this.getOtherSetOfNodesInstance();
+		return s1;
+	}
 
+	public Set<Node> getNaviteSetOfNodesInstance() {
+		Set<Node> s1 = Collections.synchronizedSet(new HashSet<Node>());
+		return s1;
+	}
+
+	public Set<Node> getOtherSetOfNodesInstance() {
+		Set<Node> s1 = new RevisedHashSet();
+		return s1;
+	}
 }

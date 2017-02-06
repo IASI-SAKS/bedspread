@@ -16,32 +16,29 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.rdf.impl;
+package it.cnr.iasi.leks.bedspread.impl;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
-import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
+public class SimpleSemanticSpread extends AbstractSemanticSpread {
 
-public class BlankNodeImpl implements BlankNode {
-
-	private String id;
-	
-	public BlankNodeImpl (){
-		this.id = this.randomId();
+	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {
+		super(origin, kb, term);
 	}
 
-	public BlankNodeImpl (String id){
-		this.id = id;
+	@Override
+	protected double computeScore(Node node) {
+		AnyResource resource = node.getResource();
+		int n = this.kb.getNeighborhood(resource).size();
+		double score = node.getScore();
+		if (n != 0){
+			score = score/n;
+		}
+		return score;
 	}
-
-	public String getResourceID() {
-		return this.id;
-	}
-	
-    private String randomId() {
-    	SecureRandom random = new SecureRandom();
-    	return new BigInteger(130, random).toString(32);
-    }
 
 }

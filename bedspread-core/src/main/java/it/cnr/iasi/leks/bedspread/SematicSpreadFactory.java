@@ -16,32 +16,29 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.rdf.impl;
+package it.cnr.iasi.leks.bedspread;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
+import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
-import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
+public class SematicSpreadFactory {
 
-public class BlankNodeImpl implements BlankNode {
-
-	private String id;
+	protected static SematicSpreadFactory FACTORY = null;
 	
-	public BlankNodeImpl (){
-		this.id = this.randomId();
-	}
-
-	public BlankNodeImpl (String id){
-		this.id = id;
-	}
-
-	public String getResourceID() {
-		return this.id;
+	protected SematicSpreadFactory(){		
 	}
 	
-    private String randomId() {
-    	SecureRandom random = new SecureRandom();
-    	return new BigInteger(130, random).toString(32);
-    }
+	public static synchronized SematicSpreadFactory getInstance(){
+		if (FACTORY == null){
+			FACTORY = new SematicSpreadFactory();
+		}
+		return FACTORY;
+	}
+
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term){
+		AbstractSemanticSpread semSpread = new SimpleSemanticSpread(origin, kb, term);
+		return semSpread;
+	}
 
 }

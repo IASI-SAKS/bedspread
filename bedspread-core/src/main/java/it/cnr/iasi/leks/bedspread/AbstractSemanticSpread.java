@@ -1,3 +1,21 @@
+/*
+ * 	 This file is part of Bedspread, originally promoted and
+ *	 developed at CNR-IASI. For more information visit:
+ *	 https://github.com/IASI-LEKS/bedspread
+ *	     
+ *	 This is free software: you can redistribute it and/or modify
+ *	 it under the terms of the GNU Lesser General Public License as 
+ *	 published by the Free Software Foundation, either version 3 of the 
+ *	 License, or (at your option) any later version.
+ *	 
+ *	 This software is distributed in the hope that it will be useful,
+ *	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	 GNU Lesser General Public License for more details.
+ * 
+ *	 You should have received a copy of the GNU Lesser General Public License
+ *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.cnr.iasi.leks.bedspread;
 
 import java.lang.Runnable;
@@ -6,11 +24,10 @@ import java.util.Set;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
-import it.cnr.iasi.leks.bedspread.util.RevisedHashSet;
+import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
 public abstract class AbstractSemanticSpread implements Runnable{
 	private Node origin;
-	private KnowledgeBase kb;
 	private TerminationPolicy term;
 	private ComputationStatus status;
 	
@@ -18,6 +35,10 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	private Set<Node> forthcomingActiveNodes;
 	private Set<Node> tempActiveNodes;
 	
+	private SetOfNodesFactory setOfNodesFactory;
+	
+	protected KnowledgeBase kb;
+
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term){
 		this.origin = origin;
 		this.origin.updateScore(1);
@@ -26,14 +47,13 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.term = term;
 		this.status = ComputationStatus.NotStarted;
 		
-//		this.currentlyActiveNodes = Collections.synchronizedSet(new HashSet<Node>());
-		this.currentlyActiveNodes = new RevisedHashSet();
+		this.setOfNodesFactory = SetOfNodesFactory.getInstance();
+		
+		this.currentlyActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
 		this.currentlyActiveNodes.add(this.origin);
 		
-//		this.forthcomingActiveNodes = Collections.synchronizedSet(new HashSet<Node>());
-		this.forthcomingActiveNodes = new RevisedHashSet();
-//		this.tempActiveNodes = Collections.synchronizedSet(new HashSet<Node>());
-		this.tempActiveNodes = new RevisedHashSet();
+		this.forthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
+		this.tempActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
 	}
 		
 	public Node getOrigin(){
@@ -76,5 +96,5 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		
 	}
 
-	protected abstract double computeScore(Node n); 
+	protected abstract double computeScore(Node node); 
 }
