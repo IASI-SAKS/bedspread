@@ -18,9 +18,72 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
+
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.ComputationStatus;
+import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.SematicSpreadFactory;
+import it.cnr.iasi.leks.bedspread.policies.SimpleTerminationPolicy;
+import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
+import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 /*
  * @author gulyx
  */
 public class SemanticSpreadTest extends AbstractTest{
 
+	private RDFGraph rdfGraph;
+	private static final String ORIGIN_LABEL = "origin";
+	
+	@Test
+	public void firstMinimalTest() throws IOException{
+		KnowledgeBase kb = this.loadMinimalKB();
+		Node resourceOrigin = this.extractTrivialOrigin();
+		TerminationPolicy term = new SimpleTerminationPolicy();
+		
+		AbstractSemanticSpread ss = SematicSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
+		ss.run();
+		
+		boolean condition = ss.getComputationStatus().equals(ComputationStatus.Completed);
+		Assert.assertTrue(condition);		
+	}
+	
+	private Node extractTrivialOrigin() {
+		Set<AnyResource> s = this.rdfGraph.listOfResources();
+		AnyResource resource = null;
+		boolean foundIt = false;
+		for (Iterator iterator = s.iterator(); iterator.hasNext() && !foundIt;) {
+			AnyResource anyResource = (AnyResource) iterator.next();
+			if (anyResource.getResourceID().equalsIgnoreCase(ORIGIN_LABEL)){
+				resource = anyResource;
+				foundIt = true;
+			}		
+		}
+//		Pick a random element in the set
+		if (resource == null){
+			resource = s.iterator().next();
+		}		
+		Node n = new Node(resource);
+		return n;
+	}
+
+	private KnowledgeBase loadMinimalKB() throws IOException{
+		FileReader kbReader = new FileReader("src/test/resources/simpleRDFGraph.csv");
+		this.rdfGraph = new RDFGraph(kbReader);
+		
+		return this.rdfGraph;
+	}
+	
+	
 }
