@@ -18,6 +18,11 @@
  */
 package it.cnr.iasi.leks.bedspread.policies;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public abstract class TerminationPolicy {
 
 	public abstract boolean wasMet();

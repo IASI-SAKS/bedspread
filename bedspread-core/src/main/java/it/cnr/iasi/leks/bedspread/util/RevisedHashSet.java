@@ -26,7 +26,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-/*
+/**
+ * 
+ * @author gulyx
+ *
  * Provided a revised implementation of the HashSet, since the one from Java8 was
  * not behaving in the expected way when dealing with Nodes. Specifically the official implementation
  * consider that 2 objs instances form Node with the referring the same AnyResource

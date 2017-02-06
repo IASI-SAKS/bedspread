@@ -18,7 +18,6 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
@@ -31,7 +30,6 @@ import it.cnr.iasi.leks.bedspread.SematicSpreadFactory;
 import it.cnr.iasi.leks.bedspread.policies.SimpleTerminationPolicy;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
 

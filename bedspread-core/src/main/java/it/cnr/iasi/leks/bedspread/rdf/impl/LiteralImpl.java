@@ -20,6 +20,11 @@ package it.cnr.iasi.leks.bedspread.rdf.impl;
 
 import it.cnr.iasi.leks.bedspread.rdf.Literal;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class LiteralImpl implements Literal {
 
 	private String id;

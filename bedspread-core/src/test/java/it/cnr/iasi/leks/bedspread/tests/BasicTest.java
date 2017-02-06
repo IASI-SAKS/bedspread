@@ -30,6 +30,11 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class BasicTest extends AbstractTest{
 
 	private RDFFactory factory;

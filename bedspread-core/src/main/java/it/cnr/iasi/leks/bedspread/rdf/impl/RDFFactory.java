@@ -25,6 +25,11 @@ import it.cnr.iasi.leks.bedspread.rdf.URI;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class RDFFactory {
 
 	private static SecureRandom RANDOM = new SecureRandom();

@@ -20,7 +20,6 @@ package it.cnr.iasi.leks.bedspread.rdf.impl;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
-import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 
@@ -33,6 +32,11 @@ import java.util.Set;
 
 import com.opencsv.CSVReader;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class RDFGraph implements KnowledgeBase {
 
 	private Set<RDFTriple> rdfTriples;

@@ -24,6 +24,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class SetOfNodesFactory {
 
 	protected static SetOfNodesFactory FACTORY = null;

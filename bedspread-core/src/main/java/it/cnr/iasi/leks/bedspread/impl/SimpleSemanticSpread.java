@@ -24,6 +24,11 @@ import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class SimpleSemanticSpread extends AbstractSemanticSpread {
 
 	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {

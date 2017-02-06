@@ -26,6 +26,11 @@ import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public abstract class AbstractSemanticSpread implements Runnable{
 	private Node origin;
 	private TerminationPolicy term;

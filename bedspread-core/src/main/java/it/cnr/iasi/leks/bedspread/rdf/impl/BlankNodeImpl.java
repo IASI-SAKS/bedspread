@@ -23,6 +23,11 @@ import java.security.SecureRandom;
 
 import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class BlankNodeImpl implements BlankNode {
 
 	private String id;

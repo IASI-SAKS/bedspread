@@ -18,6 +18,11 @@
  */
 package it.cnr.iasi.leks.bedspread;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public enum ComputationStatus {
 	Running, Completed, NotStarted, Paused
 }

@@ -20,6 +20,11 @@ package it.cnr.iasi.leks.bedspread.rdf;
 
 import java.util.List;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public interface KnowledgeBase {
 
 	public int degree(AnyResource node);
