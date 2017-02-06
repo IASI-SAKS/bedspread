@@ -24,12 +24,18 @@ public class SematicSpreadFactory {
 
 	public AbstractSemanticSpread getSemanticSpread(String uriIdentifier){
 		AnyResource resource = RDFFactory.getInstance().createURI(uriIdentifier);
+	
+		AbstractSemanticSpread s = this.getSemanticSpread(resource);
+		return s;
+	}
+	
+	public AbstractSemanticSpread getSemanticSpread(AnyResource resource){
 		Node origin = new Node(resource); 
 	
 		AbstractSemanticSpread s = this.getSimpleSemanticSpread(origin);
 		return s;
 	}
-	
+
 	private AbstractSemanticSpread getSimpleSemanticSpread(Node origin){
 		KnowledgeBase kb = new SimpleKnowledgeBase();
 		TerminationPolicy term = new SimpleTerminationPolicy();
