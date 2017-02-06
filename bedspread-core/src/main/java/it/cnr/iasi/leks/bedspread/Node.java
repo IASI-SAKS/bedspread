@@ -18,15 +18,16 @@
  */
 package it.cnr.iasi.leks.bedspread;
 
-import java.util.HashSet;
-
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 
+/**
+ * @author gulyx
+ */
 public class Node {
 	private AnyResource resource;
 	private double activationScore;
 	
-	private Object MUTEX;
+	private final Object MUTEX = new Object();
 	
 	public Node(AnyResource resource){
 		this.resource = resource;
