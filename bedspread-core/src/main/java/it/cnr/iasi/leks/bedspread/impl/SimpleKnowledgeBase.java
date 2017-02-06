@@ -27,4 +27,10 @@ public class SimpleKnowledgeBase implements KnowledgeBase{
 		return null;
 	}
 	
+	private void thisIsFoo(){
+		for (int i = 0; i < 10; i++) {
+			System.out.println("This is foo");
+		}
+	}
+	
 }

@@ -1,30 +1,32 @@
-<!--  
-	 This file is part of Bedspread, originally promoted and
-	 developed at CNR-IASI. For more information visit:
-	 https://github.com/IASI-LEKS/bedspread
-	     
-	 This is free software: you can redistribute it and/or modify
-	 it under the terms of the GNU Lesser General Public License as 
-	 published by the Free Software Foundation, either version 3 of the 
-	 License, or (at your option) any later version.
-	 
-	 This software is distributed in the hope that it will be useful,
-	 but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 GNU Lesser General Public License for more details.
- 
-	 You should have received a copy of the GNU Lesser General Public License
-	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
- -->
+<!-- This file is part of Bedspread, originally promoted and developed at 
+	CNR-IASI. For more information visit: https://github.com/IASI-LEKS/bedspread 
+	This is free software: you can redistribute it and/or modify it under the 
+	terms of the GNU Lesser General Public License as published by the Free Software 
+	Foundation, either version 3 of the License, or (at your option) any later 
+	version. This software is distributed in the hope that it will be useful, 
+	but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License 
+	for more details. You should have received a copy of the GNU Lesser General 
+	Public License along with this source. If not, see <http://www.gnu.org/licenses/>. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>it.cnr.iasi.leks.bedspread</groupId>
-	<artifactId>bedspread-core</artifactId>	
-	<packaging>pom</packaging>
+	<artifactId>bedspread-core</artifactId>
+	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>Bedspread - Core</name>
+	<properties>
+		<artifact.jar.mainclass>it.cnr.iasi.leks.bedspread.main.Main</artifact.jar.mainclass>
+		<junit.version>4.0</junit.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler>3.1</maven.compiler>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.jar.version>2.4</maven.jar.version>
+	</properties>
+
 	<developers>
 		<developer>
 			<id>ftaglino</id>
@@ -36,23 +38,55 @@
 		</developer>
 	</developers>
 	<scm>
- 		<url>https://github.com/IASI-LEKS/bedspread.git</url>
-        <tag>HEAD</tag>
+		<url>https://github.com/IASI-LEKS/bedspread.git</url>
+		<tag>HEAD</tag>
 	</scm>
-	
+
 	<licenses>
-	  <license>
-    	<name>GNU General Public License (GPL ver.3)</name>
-    	<url>http://www.gnu.org/licenses/gpl.txt</url>
-  	  </license>
+		<license>
+			<name>GNU General Public License (GPL ver.3)</name>
+			<url>http://www.gnu.org/licenses/gpl.txt</url>
+		</license>
 	</licenses>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.version}</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>${artifact.jar.mainclass}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
