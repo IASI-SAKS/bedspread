@@ -19,30 +19,60 @@
 package it.cnr.iasi.leks.bedspread.rdf.impl;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
+import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RDFGraph implements KnowledgeBase{
-	
-	private Set rdfTriples;
-	
-	public RDFGraph(){
+import com.opencsv.CSVReader;
+
+public class RDFGraph implements KnowledgeBase {
+
+	private Set<RDFTriple> rdfTriples;
+	private RDFFactory rdfFactory;
+
+	public RDFGraph() {
 		this((Set<RDFTriple>) null);
 	}
-	
-	public RDFGraph(RDFTriple triple){
+
+	public RDFGraph(RDFTriple triple) {
 		this(new HashSet<RDFTriple>());
 	}
-	
-	public RDFGraph(Set<RDFTriple> s){
-		if ( s == null ){
+
+	public RDFGraph(Set<RDFTriple> s) {
+		this.rdfFactory = RDFFactory.getInstance();
+
+		if (s == null) {
 			this.rdfTriples = Collections.synchronizedSet(new HashSet<RDFTriple>());
-		}else{
-			this.rdfTriples = Collections.synchronizedSet(s);			
+		} else {
+			this.rdfTriples = Collections.synchronizedSet(s);
+		}
+	}
+
+	public RDFGraph(Reader kbReader) throws IOException {
+		this();
+
+		CSVReader reader = new CSVReader(kbReader);
+		List<String[]> myEntries = reader.readAll();
+
+		AnyURI subject;
+		URI predicate;
+		AnyURI object;
+
+		for (String[] line : myEntries) {
+			subject = this.rdfFactory.createBlankNode(line[0]);
+			predicate = this.rdfFactory.createURI(line[1]);
+			object = this.rdfFactory.createBlankNode(line[2]);
+			
+			RDFTriple triple = new RDFTriple(subject, predicate, object);
+			this.rdfTriples.add(triple);
 		}
 	}
 
@@ -64,6 +94,20 @@ public class RDFGraph implements KnowledgeBase{
 	public List<AnyResource> getNeighborhood(AnyResource node) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public Set<AnyResource> listOfResources (){
+		Set<AnyResource> outputSet = Collections.synchronizedSet(new HashSet<AnyResource>());
+		
+		AnyResource item;
+		for (RDFTriple triple : this.rdfTriples) {
+			item = triple.getTripleSubject();
+			outputSet.add(item);
+
+			item = triple.getTripleObject();
+			outputSet.add(item);			
+		}
+		return outputSet;
 	}
 
 }
