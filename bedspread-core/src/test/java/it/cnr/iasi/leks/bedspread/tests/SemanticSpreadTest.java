@@ -63,8 +63,8 @@ public class SemanticSpreadTest extends AbstractTest{
 		Set<AnyResource> s = this.rdfGraph.listOfResources();
 		AnyResource resource = null;
 		boolean foundIt = false;
-		for (Iterator iterator = s.iterator(); iterator.hasNext() && !foundIt;) {
-			AnyResource anyResource = (AnyResource) iterator.next();
+		for (Iterator<AnyResource> iterator = s.iterator(); iterator.hasNext() && !foundIt;) {
+			AnyResource anyResource = iterator.next();
 			if (anyResource.getResourceID().equalsIgnoreCase(ORIGIN_LABEL)){
 				resource = anyResource;
 				foundIt = true;
