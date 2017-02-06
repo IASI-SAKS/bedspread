@@ -6,12 +6,10 @@ import java.util.Set;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
-import it.cnr.iasi.leks.bedspread.util.RevisedHashSet;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
 public abstract class AbstractSemanticSpread implements Runnable{
 	private Node origin;
-	private KnowledgeBase kb;
 	private TerminationPolicy term;
 	private ComputationStatus status;
 	
@@ -21,6 +19,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	
 	private SetOfNodesFactory setOfNodesFactory;
 	
+	protected KnowledgeBase kb;
+
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term){
 		this.origin = origin;
 		this.origin.updateScore(1);
@@ -78,5 +78,5 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		
 	}
 
-	protected abstract double computeScore(Node n); 
+	protected abstract double computeScore(Node node); 
 }
