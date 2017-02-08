@@ -40,9 +40,9 @@ public class SimpleTerminationPolicy extends TerminationPolicy {
 	public boolean wasMet() {
 		if (this.nQueries > 0){
 			this.nQueries --;
-			return true;
+			return false;
 		}	
-		return false;
+		return true;
 	}
 
 }

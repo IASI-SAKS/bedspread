@@ -18,13 +18,17 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
 import it.cnr.iasi.leks.bedspread.rdf.Literal;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
 import org.junit.Assert;
@@ -136,5 +140,27 @@ public class BasicTest extends AbstractTest{
 
 		boolean result = (s1.size() == 1) && (s2.size() == 1);
 		return result;
+	}
+	
+	@Test
+	public void testNullOrEmptyRDFGraphCreation(){
+		RDFGraph g = new RDFGraph();
+		this.queryGraph(g);
+		
+		g = new RDFGraph((RDFTriple)null);
+		this.queryGraph(g);
+		
+		g = new RDFGraph((Set<RDFTriple>)null);
+		this.queryGraph(g);
+		
+		g = new RDFGraph(new HashSet<RDFTriple>());
+		this.queryGraph(g);
+
+		Assert.assertTrue(true);
+	}
+
+	private void queryGraph(RDFGraph g) {
+		AnyResource resource = this.factory.createBlankNode("thisIsFoo");
+		g.isMemberof(resource);
 	}
 }

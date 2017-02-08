@@ -18,6 +18,11 @@
  */
 package it.cnr.iasi.leks.bedspread.impl;
 
+import java.io.IOException;
+import java.io.Writer;
+
+import com.opencsv.CSVWriter;
+
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
@@ -36,14 +41,34 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	@Override
-	protected double computeScore(Node node) {
-		AnyResource resource = node.getResource();
+	protected double computeScore(Node spreadingNode, Node targetNode) {
+		AnyResource resource = spreadingNode.getResource();
 		int n = this.kb.getNeighborhood(resource).size();
-		double score = node.getScore();
+		double score = spreadingNode.getScore();
 		if (n != 0){
 			score = score/n;
 		}
 		return score;
+	}
+
+	@Override
+	public void flushData(Writer out) throws IOException {		
+		CSVWriter writer = new CSVWriter(out);
+	     String[] csvEntry = new String[2];
+	     
+	     for (Node n : this.activatedNodes) {
+	    	 csvEntry[0] = n.getResource().getResourceID();
+	    	 csvEntry[1] = String.valueOf(n.getScore());
+		     writer.writeNext(csvEntry);
+	     }
+
+	     for (Node n : this.currentlyActiveNodes) {
+	    	 csvEntry[0] = n.getResource().getResourceID();
+	    	 csvEntry[1] = String.valueOf(n.getScore());
+		     writer.writeNext(csvEntry);
+	     }
+
+	     writer.close();		
 	}
 
 }

@@ -18,6 +18,8 @@
  */
 package it.cnr.iasi.leks.bedspread;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.Runnable;
 import java.util.Set;
 
@@ -36,8 +38,10 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	private TerminationPolicy term;
 	private ComputationStatus status;
 	
-	private Set<Node> currentlyActiveNodes;
-	private Set<Node> forthcomingActiveNodes;
+	protected Set<Node> activatedNodes;
+	protected Set<Node> currentlyActiveNodes;
+	protected Set<Node> forthcomingActiveNodes;
+	
 	private Set<Node> tempActiveNodes;
 	
 	private SetOfNodesFactory setOfNodesFactory;
@@ -52,13 +56,12 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.term = term;
 		this.status = ComputationStatus.NotStarted;
 		
-		this.setOfNodesFactory = SetOfNodesFactory.getInstance();
-		
-		this.currentlyActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
-		this.currentlyActiveNodes.add(this.origin);
-		
+		this.setOfNodesFactory = SetOfNodesFactory.getInstance();		
+
+		this.currentlyActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
+		this.activatedNodes = this.setOfNodesFactory.getNaviteSetOfNodesInstance();
 		this.forthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
-		this.tempActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
+		this.tempActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
 	}
 		
 	public Node getOrigin(){
@@ -69,21 +72,35 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return this.status;
 	}
 	
+	private void refreshInternalState(){
+		this.currentlyActiveNodes.clear();		
+		this.activatedNodes.clear();
+		this.forthcomingActiveNodes.clear();
+		this.tempActiveNodes.clear();
+
+		this.currentlyActiveNodes.add(this.origin);
+	}
+	
 	public void run (){
 		this.status = ComputationStatus.Running;
+		this.refreshInternalState();
 		while (!term.wasMet()){
 			this.tempActiveNodes.clear();
 			for (Node node : currentlyActiveNodes) {
 				this.extractForthcomingActiveNodes(node);
 				
 				for (Node newNode : this.forthcomingActiveNodes) {
-					Double newScore = this.computeScore(newNode);
+					Double newScore = this.computeScore(node, newNode);
 					newNode.updateScore(newScore);
 // Note that elements already present are not doubled in "tempActiveNodes" according to : java.util.Set				
 					this.tempActiveNodes.add(newNode);
 				}
 			}
 			
+			for (Node node : this.currentlyActiveNodes) {
+				this.activatedNodes.add(node);
+			}						
+			this.currentlyActiveNodes.clear();
 			for (Node tmpNode : this.tempActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
 			}						
@@ -95,11 +112,15 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.forthcomingActiveNodes.clear();
 		for (AnyResource neighbor : this.kb.getNeighborhood(node.getResource())) {
 			Node neighborNode = new Node(neighbor);
+			if ((! this.activatedNodes.contains(neighborNode)) && (! this.currentlyActiveNodes.contains(neighborNode))){
 // Note that elements already present are not doubled in "forthcomingActiveNodes" according to : java.util.Set				
-			this.forthcomingActiveNodes.add(neighborNode);
+				this.forthcomingActiveNodes.add(neighborNode);
+			}	
 		}
 		
 	}
 
-	protected abstract double computeScore(Node node); 
+	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
+	
+	public abstract void flushData (Writer out) throws IOException; 
 }

@@ -19,7 +19,9 @@
 package it.cnr.iasi.leks.bedspread.tests;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -31,6 +33,7 @@ import it.cnr.iasi.leks.bedspread.policies.SimpleTerminationPolicy;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
 
 import org.junit.Assert;
@@ -43,6 +46,10 @@ public class SemanticSpreadTest extends AbstractTest{
 
 	private RDFGraph rdfGraph;
 	private static final String ORIGIN_LABEL = "origin";
+//	private static final String INPUT_GRAPH_FILE = "src/test/resources/simpleRDFGraph.csv";
+//	private static final String INPUT_GRAPH_FILE = "src/test/resources/anotherSimpleRDFGraph.csv";
+	private static final String INPUT_GRAPH_FILE = "src/test/resources/yetAnotherSimpleRDFGraph.csv";
+	private static final String FLUSH_FILE = "/tmp/output.csv";
 	
 	@Test
 	public void firstMinimalTest() throws IOException{
@@ -54,30 +61,21 @@ public class SemanticSpreadTest extends AbstractTest{
 		ss.run();
 		
 		boolean condition = ss.getComputationStatus().equals(ComputationStatus.Completed);
+
+		Writer out = new FileWriter(FLUSH_FILE);
+		ss.flushData(out);
+		
 		Assert.assertTrue(condition);		
 	}
 	
 	private Node extractTrivialOrigin() {
-		Set<AnyResource> s = this.rdfGraph.listOfResources();
-		AnyResource resource = null;
-		boolean foundIt = false;
-		for (Iterator<AnyResource> iterator = s.iterator(); iterator.hasNext() && !foundIt;) {
-			AnyResource anyResource = iterator.next();
-			if (anyResource.getResourceID().equalsIgnoreCase(ORIGIN_LABEL)){
-				resource = anyResource;
-				foundIt = true;
-			}		
-		}
-//		Pick a random element in the set
-		if (resource == null){
-			resource = s.iterator().next();
-		}		
+		AnyResource resource = RDFFactory.getInstance().createBlankNode(ORIGIN_LABEL);
 		Node n = new Node(resource);
 		return n;
 	}
 
 	private KnowledgeBase loadMinimalKB() throws IOException{
-		FileReader kbReader = new FileReader("src/test/resources/simpleRDFGraph.csv");
+		FileReader kbReader = new FileReader(INPUT_GRAPH_FILE);
 		this.rdfGraph = new RDFGraph(kbReader);
 		
 		return this.rdfGraph;

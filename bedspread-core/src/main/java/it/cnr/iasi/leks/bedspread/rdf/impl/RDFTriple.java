@@ -49,5 +49,28 @@ public class RDFTriple {
 
 	public AnyResource getTripleObject() {
 		return this.tripleObject;
-	}	
+	}
+	
+	public boolean equals (RDFTriple t){
+		boolean sameSubject = (this.tripleSubject.getResourceID().equalsIgnoreCase(t.tripleSubject.getResourceID())); 
+		boolean sameObject = (this.tripleObject.getResourceID().equalsIgnoreCase(t.tripleObject.getResourceID())); 
+		boolean samePredicate = (this.triplePredicate.getResourceID().equalsIgnoreCase(t.triplePredicate.getResourceID())); 
+		return ( sameSubject && sameObject && samePredicate );
+	}
+	
+	@Override
+	public boolean equals (Object obj){
+		if (obj instanceof RDFTriple) {
+			RDFTriple triple = (RDFTriple) obj;
+			return this.equals(triple);
+		}	
+		return false;		
+	}
+	
+	@Override
+	public int hashCode(){
+		int newHash = this.tripleSubject.getResourceID().hashCode() + this.tripleObject.getResourceID().hashCode() + this.triplePredicate.getResourceID().hashCode(); 
+		return newHash;
+	}
+
 }

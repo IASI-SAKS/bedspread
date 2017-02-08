@@ -26,6 +26,7 @@ import it.cnr.iasi.leks.bedspread.rdf.URI;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,9 +40,13 @@ import com.opencsv.CSVReader;
  */
 public class RDFGraph implements KnowledgeBase {
 
-	private Set<RDFTriple> rdfTriples;
+	private HashMap<String, Set<RDFTriple>> subjectsMap;
+	private HashMap<String, Set<RDFTriple>> objectsMap;
+	private HashMap<String, Set<RDFTriple>> predicatesMap;
+	
 	private RDFFactory rdfFactory;
-
+	private static final String TYPE_PREDICATE = "rdf:type";
+	
 	public RDFGraph() {
 		this((Set<RDFTriple>) null);
 	}
@@ -52,12 +57,23 @@ public class RDFGraph implements KnowledgeBase {
 
 	public RDFGraph(Set<RDFTriple> s) {
 		this.rdfFactory = RDFFactory.getInstance();
+		
+		this.subjectsMap = new HashMap<String, Set<RDFTriple>>();
+		this.objectsMap = new HashMap<String, Set<RDFTriple>>();
+		this.predicatesMap = new HashMap<String, Set<RDFTriple>>();
 
-		if (s == null) {
-			this.rdfTriples = Collections.synchronizedSet(new HashSet<RDFTriple>());
-		} else {
-			this.rdfTriples = Collections.synchronizedSet(s);
-		}
+		if (s != null) {
+			for (RDFTriple rdfTriple : s) {
+				String subject = rdfTriple.getTripleSubject().getResourceID();
+				String object = rdfTriple.getTripleObject().getResourceID();
+				String predicate = rdfTriple.getTriplePredicate().getResourceID();
+				
+				this.populateMap(this.subjectsMap, rdfTriple, subject);
+				this.populateMap(this.objectsMap, rdfTriple, object);
+				this.populateMap(this.predicatesMap, rdfTriple, predicate);
+
+			}
+		}		
 	}
 
 	public RDFGraph(Reader kbReader) throws IOException {
@@ -76,42 +92,80 @@ public class RDFGraph implements KnowledgeBase {
 			object = this.rdfFactory.createBlankNode(line[2]);
 			
 			RDFTriple triple = new RDFTriple(subject, predicate, object);
-			this.rdfTriples.add(triple);
+			
+			this.populateMap(this.subjectsMap, triple, subject.getResourceID());
+			this.populateMap(this.objectsMap, triple, object.getResourceID());
+			this.populateMap(this.predicatesMap, triple, predicate.getResourceID());
 		}
+		reader.close();
 	}
 
-	public int degree(AnyResource node) {
+	private void populateMap(HashMap<String, Set<RDFTriple>> map, RDFTriple rdfTriple, String term) {
+		Set<RDFTriple> set = null;
+		if (! map.containsKey(term)){
+			set = Collections.synchronizedSet(new HashSet<RDFTriple>());
+			map.put(term, set);
+		}else{
+			set = map.get(term);
+		}
+		set.add(rdfTriple);
+	}
+
+	public int degree(AnyResource resource) {
+		int count = 0;
+		String id = resource.getResourceID();
+		Set<RDFTriple> s = this.subjectsMap.get(id);
+		if (s != null){
+			count = s.size();
+		}
+		s = this.objectsMap.get(id);
+		if (s != null){
+			count += s.size();
+		}
+		return count;
+	}
+
+	public int depth(AnyResource resource) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int depth(AnyResource node) {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean isMemberof(AnyResource resource) {
+		String id = resource.getResourceID();
+		if (this.subjectsMap.containsKey(id)){
+			return true;
+		}
+		if (this.objectsMap.containsKey(id)){
+			return true;
+		}
+		if (this.predicatesMap.containsKey(id)){
+			return true;
+		}
+			
+		return false;
 	}
 
-	public int isMemberof(AnyResource node) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public List<AnyResource> getNeighborhood(AnyResource node) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public Set<AnyResource> listOfResources (){
-		Set<AnyResource> outputSet = Collections.synchronizedSet(new HashSet<AnyResource>());
+	public Set<AnyResource> getNeighborhood(AnyResource resource) {
+		Set<AnyResource> outputSet = Collections.synchronizedSet(new HashSet<AnyResource>());		
+		String id = resource.getResourceID();
 		
-		AnyResource item;
-		for (RDFTriple triple : this.rdfTriples) {
-			item = triple.getTripleSubject();
-			outputSet.add(item);
-
-			item = triple.getTripleObject();
-			outputSet.add(item);			
+		if (this.subjectsMap.containsKey(id)){
+			for (RDFTriple triple : this.subjectsMap.get(id)) {
+				if (! triple.getTriplePredicate().getResourceID().equalsIgnoreCase(TYPE_PREDICATE)){
+					outputSet.add(triple.getTripleObject());
+				}
+			}
 		}
+		
+		if (this.objectsMap.containsKey(id)){
+			for (RDFTriple triple : this.objectsMap.get(id)) {
+				if (! triple.getTriplePredicate().getResourceID().equalsIgnoreCase(TYPE_PREDICATE)){
+					outputSet.add(triple.getTripleSubject());
+				}
+			}
+		}
+
 		return outputSet;
 	}
-
+	
 }

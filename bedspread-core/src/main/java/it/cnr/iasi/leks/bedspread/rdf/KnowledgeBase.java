@@ -18,7 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.rdf;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -27,8 +27,8 @@ import java.util.List;
  */
 public interface KnowledgeBase {
 
-	public int degree(AnyResource node);
-	public int depth(AnyResource node);
-	public int isMemberof(AnyResource node);
-	public List<AnyResource> getNeighborhood (AnyResource node);
+	public int degree(AnyResource resource);
+	public int depth(AnyResource resource);
+	public boolean isMemberof(AnyResource resource);
+	public Set<AnyResource> getNeighborhood (AnyResource resource);
 }
