@@ -71,4 +71,9 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 	     writer.close();		
 	}
 
+	@Override
+	protected void filterCurrenltyActiveNode() {
+		// DO NOTHING FOR THE MOMENT!!		
+	}
+
 }

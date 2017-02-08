@@ -100,10 +100,11 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			for (Node node : this.currentlyActiveNodes) {
 				this.activatedNodes.add(node);
 			}						
-			this.currentlyActiveNodes.clear();
+			this.currentlyActiveNodes.clear();			
 			for (Node tmpNode : this.tempActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
-			}						
+			}
+			this.filterCurrenltyActiveNode();
 		}
 		this.status = ComputationStatus.Completed;
 	}
@@ -121,6 +122,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	}
 
 	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
+	protected abstract void filterCurrenltyActiveNode();
+
 	
 	public abstract void flushData (Writer out) throws IOException; 
 }
