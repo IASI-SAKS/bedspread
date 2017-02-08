@@ -65,6 +65,7 @@ public class Node {
 	
 	@Override
 	public int hashCode(){
-		return this.resource.hashCode();
+		return this.resource.getResourceID().hashCode();
+//		return this.resource.hashCode();
 	}
 }
