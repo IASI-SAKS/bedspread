@@ -18,6 +18,10 @@
  */
 package it.cnr.iasi.leks.bedspread;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -41,9 +45,25 @@ public class SematicSpreadFactory {
 		return FACTORY;
 	}
 
-	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term){
-		AbstractSemanticSpread semSpread = new SimpleSemanticSpread(origin, kb, term);
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, term);
 		return semSpread;
 	}
 
+	private AbstractSemanticSpread configureSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		AbstractSemanticSpread semSpread = null; 
+		
+		String semSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
+		if (semSpreadClassName != null){
+			Class<?> semSpreadClass = Class.forName(semSpreadClassName);
+			Constructor<?> constructor = semSpreadClass.getConstructor(new Class[]{Node.class, KnowledgeBase.class, TerminationPolicy.class});
+			semSpread = (AbstractSemanticSpread) constructor.newInstance(origin, kb, term);
+
+		}else{
+			semSpread = new SimpleSemanticSpread(origin, kb, term);
+		}
+		return semSpread;
+	}
+	
+	
 }
