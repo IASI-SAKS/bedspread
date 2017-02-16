@@ -45,8 +45,10 @@ public class WeightingFunctionTest {
 		this.configurePropertyUtilInstance();
 		
 		WeightingFunctionFactory wf = WeightingFunctionFactory.getInstance();		
-
 		WeightingFunction w = wf.getWeightingFunction();
+
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+		
 		Assert.assertTrue( w instanceof DefaultWeightingFunction );		
 	}
 
@@ -58,6 +60,9 @@ public class WeightingFunctionTest {
 		
 		WeightingFunctionFactory wf = WeightingFunctionFactory.getInstance();
 		WeightingFunction w = wf.getWeightingFunction();
+
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+		
 		Assert.assertTrue( w instanceof SemanticWeightingFunction );
 	}
 

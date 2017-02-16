@@ -22,17 +22,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
-import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.SematicSpreadFactory;
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
 import it.cnr.iasi.leks.bedspread.policies.SimpleTerminationPolicy;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
+import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,22 +53,49 @@ public class SemanticSpreadTest extends AbstractTest{
 	private static final String FLUSH_FILE = "/tmp/output.csv";
 	
 	@Test
-	public void firstMinimalTest() throws IOException{
+	public void firstMinimalTestDefault() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
 		TerminationPolicy term = new SimpleTerminationPolicy();
 		
+		PropertyUtilNoSingleton.getInstance();
+ 
 		AbstractSemanticSpread ss = SematicSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
 		ss.run();
 		
-		boolean condition = ss.getComputationStatus().equals(ComputationStatus.Completed);
-
-		Writer out = new FileWriter(FLUSH_FILE);
+		String fileName = this.getFlushFileName("firstMinimalTestDefault");
+		Writer out = new FileWriter(fileName);
 		ss.flushData(out);
 		
-		Assert.assertTrue(condition);		
+		Assert.assertTrue(ss instanceof SimpleSemanticSpread);		
 	}
 	
+	@Test
+	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		KnowledgeBase kb = this.loadMinimalKB();
+		Node resourceOrigin = this.extractTrivialOrigin();
+		TerminationPolicy term = new SimpleTerminationPolicy();
+		
+		String testPropertyFile = "configTest.properties";
+		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
+		PropertyUtilNoSingleton.getInstance();
+		
+		AbstractSemanticSpread ss = SematicSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
+		ss.run();
+		
+		String fileName = this.getFlushFileName("firstMinimalTestConf");
+		Writer out = new FileWriter(fileName);
+		ss.flushData(out);
+		
+		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
+//		System.out.println(ss.getClass().getTypeName() + ", " + ss.getClass().getName() +", "+ss.getClass().getCanonicalName());
+		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
+		
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+
+		Assert.assertTrue(condition);		
+	}
+
 	private Node extractTrivialOrigin() {
 		AnyResource resource = RDFFactory.getInstance().createBlankNode(ORIGIN_LABEL);
 		Node n = new Node(resource);
@@ -79,5 +109,8 @@ public class SemanticSpreadTest extends AbstractTest{
 		return this.rdfGraph;
 	}
 	
+	private String getFlushFileName(String s){
+		return FLUSH_FILE.replaceFirst(".csv", "_"+s+".csv");
+	}
 	
 }

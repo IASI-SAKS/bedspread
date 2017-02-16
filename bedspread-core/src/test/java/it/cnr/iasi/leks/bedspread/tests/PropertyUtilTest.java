@@ -51,6 +51,9 @@ public class PropertyUtilTest {
 		
 		PropertyUtil prop = PropertyUtilNoSingleton.getInstance();
 		String testValue = prop.getProperty(testLabel);
+		
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+
 		Assert.assertTrue(testValue.equalsIgnoreCase(testExpectedValue));
 	}
 }

@@ -21,6 +21,9 @@ package it.cnr.iasi.leks.bedspread.tests;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
+
 /*
  * @author gulyx
  */
@@ -29,6 +32,8 @@ public abstract class AbstractTest {
     
     protected AbstractTest() {
       this.random = new SecureRandom();
+// it makes sure that PropertyUtil is reset      
+      PropertyUtilNoSingleton.getInstance();
     }
     
     protected String randomId() {
