@@ -30,12 +30,13 @@ public class PropertyUtilNoSingleton extends PropertyUtil {
 	protected PropertyUtilNoSingleton(){		
 	}
 	 
-	public synchronized static PropertyUtil getInstance(){
-		PropertyUtil.INSTANCE = new PropertyUtilNoSingleton();
-		return PropertyUtil.INSTANCE;
+	public static PropertyUtil getInstance(){
+		PropertyUtil p = null;
+		synchronized (MUTEX) {
+			PropertyUtil.INSTANCE = null;
+			p = PropertyUtil.getInstance();			
+		}
+		return p;
 	}
 	
-//	public synchronized static void refresh(){
-//		PropertyUtil.INSTANCE = null;
-//	}
 }

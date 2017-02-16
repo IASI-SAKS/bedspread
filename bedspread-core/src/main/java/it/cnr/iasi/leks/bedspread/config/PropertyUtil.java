@@ -30,7 +30,10 @@ import java.util.Properties;
  */
 public class PropertyUtil {
 
+	protected static final Object MUTEX = new Object();
+	
 	protected static PropertyUtil INSTANCE = null;
+	
 	private static final String DEFAULT_CONFIG_FILE = "config.properties";
 
 	public static final String CONFIG_FILE_LOCATION_LABEL = "bedspread.config.file.location";
@@ -56,9 +59,11 @@ public class PropertyUtil {
 		}
 	}
 	
-	public synchronized static PropertyUtil getInstance(){
-		if ( INSTANCE == null ){
-			INSTANCE = new PropertyUtil();
+	public static PropertyUtil getInstance(){
+		synchronized (MUTEX) {
+			if ( INSTANCE == null ){
+				INSTANCE = new PropertyUtil();
+			}			
 		}
 		return INSTANCE;
 	}
