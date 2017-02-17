@@ -50,7 +50,8 @@ public class SemanticSpreadTest extends AbstractTest{
 	private static final String ORIGIN_LABEL = "origin";
 //	private static final String INPUT_GRAPH_FILE = "src/test/resources/simpleRDFGraph.csv";
 //	private static final String INPUT_GRAPH_FILE = "src/test/resources/anotherSimpleRDFGraph.csv";
-	private static final String INPUT_GRAPH_FILE = "src/test/resources/yetAnotherSimpleRDFGraph.csv";
+//	private static final String INPUT_GRAPH_FILE = "src/test/resources/yetAnotherSimpleRDFGraph.csv";
+	private static final String INPUT_GRAPH_FILE = "src/test/resources/whiteboardRDFGraph.csv";
 	private static final String FLUSH_FILE = "/tmp/output.csv";
 	
 	@Test
