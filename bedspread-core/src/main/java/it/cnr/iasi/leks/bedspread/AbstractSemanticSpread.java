@@ -38,11 +38,10 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	private TerminationPolicy term;
 	private ComputationStatus status;
 	
-	protected Set<Node> activatedNodes;
-	protected Set<Node> currentlyActiveNodes;
-	protected Set<Node> forthcomingActiveNodes;
-	
-	private Set<Node> tempActiveNodes;
+	private Set<Node> activatedNodes;
+	private Set<Node> currentlyActiveNodes;
+	private Set<Node> forthcomingActiveNodes;	
+	private Set<Node> justProcessedForthcomingActiveNodes;
 	
 	private SetOfNodesFactory setOfNodesFactory;
 	
@@ -61,7 +60,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.currentlyActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
 		this.activatedNodes = this.setOfNodesFactory.getNaviteSetOfNodesInstance();
 		this.forthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
-		this.tempActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
+		this.justProcessedForthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
 	}
 		
 	public Node getOrigin(){
@@ -76,7 +75,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.currentlyActiveNodes.clear();		
 		this.activatedNodes.clear();
 		this.forthcomingActiveNodes.clear();
-		this.tempActiveNodes.clear();
+		this.justProcessedForthcomingActiveNodes.clear();
 
 		this.currentlyActiveNodes.add(this.origin);
 	}
@@ -85,7 +84,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.status = ComputationStatus.Running;
 		this.refreshInternalState();
 		while (!term.wasMet()){
-			this.tempActiveNodes.clear();
+			this.justProcessedForthcomingActiveNodes.clear();
 			for (Node node : currentlyActiveNodes) {
 				this.extractForthcomingActiveNodes(node);
 				
@@ -93,7 +92,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 					Double newScore = this.computeScore(node, newNode);
 					newNode.updateScore(newScore);
 // Note that elements already present are not doubled in "tempActiveNodes" according to : java.util.Set				
-					this.tempActiveNodes.add(newNode);
+					this.justProcessedForthcomingActiveNodes.add(newNode);
 				}
 			}
 			
@@ -101,7 +100,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 				this.activatedNodes.add(node);
 			}						
 			this.currentlyActiveNodes.clear();			
-			for (Node tmpNode : this.tempActiveNodes) {
+			for (Node tmpNode : this.justProcessedForthcomingActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
 			}
 			this.filterCurrenltyActiveNode();
@@ -121,6 +120,22 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		
 	}
 
+	protected Set<Node> getActiveNodes(){
+		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
+		n.addAll(this.activatedNodes);
+		n.addAll(this.currentlyActiveNodes);
+		
+		return n;
+	}
+
+	protected Set<Node> getAllActiveNodes(){
+		Set<Node> n = this.getActiveNodes();
+		
+		n.addAll(this.justProcessedForthcomingActiveNodes);
+		
+		return n;
+	}
+	
 	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
 	protected abstract void filterCurrenltyActiveNode();
 
