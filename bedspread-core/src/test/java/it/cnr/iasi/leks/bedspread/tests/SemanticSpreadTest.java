@@ -28,6 +28,7 @@ import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.SematicSpreadFactory;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread;
 import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
 import it.cnr.iasi.leks.bedspread.policies.SimpleTerminationPolicy;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
@@ -96,6 +97,29 @@ public class SemanticSpreadTest extends AbstractTest{
 		Assert.assertTrue(condition);		
 	}
 
+
+	@Test
+	public void testHT13ConfSemanticSpread() throws IOException{
+		KnowledgeBase kb = this.loadMinimalKB();
+		Node resourceOrigin = this.extractTrivialOrigin();
+		TerminationPolicy term = new SimpleTerminationPolicy();
+		
+		String testPropertyFile = "config.properties";
+		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
+		PropertyUtilNoSingleton.getInstance();
+		
+		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,term);
+		ss.run();
+		
+		String fileName = this.getFlushFileName("testHT13ConfSemanticSpread");
+		Writer out = new FileWriter(fileName);
+		ss.flushData(out);
+				
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+
+		Assert.assertTrue(true);		
+	}
+	
 	private Node extractTrivialOrigin() {
 		AnyResource resource = RDFFactory.getInstance().createBlankNode(ORIGIN_LABEL);
 		Node n = new Node(resource);
