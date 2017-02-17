@@ -73,7 +73,7 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 
 	@Override
 	protected void filterCurrenltyActiveNode() {
-		// DO NOTHING FOR THE MOMENT!!		
+		// TODO  IT DOES NOTHING FOR THE MOMENT!!		
 	}
 
 }
