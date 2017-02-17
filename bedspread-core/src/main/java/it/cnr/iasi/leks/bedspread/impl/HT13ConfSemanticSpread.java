@@ -20,11 +20,14 @@ package it.cnr.iasi.leks.bedspread.impl;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Set;
 
 import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.WeightingFunction;
+import it.cnr.iasi.leks.bedspread.WeightingFunctionFactory;
 import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -34,25 +37,41 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * @author gulyx
  *
  */
-public class SimpleSemanticSpread extends AbstractSemanticSpread {
+public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 
-	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {
+	private WeightingFunction weightingModule; 
+	
+	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {
 		super(origin, kb, term);
+
+		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);
 	}
 
 	@Override
 	protected double computeScore(Node spreadingNode, Node targetNode) {
-		AnyResource resource = spreadingNode.getResource();
-		int n = this.kb.getNeighborhood(resource).size();
-		double score = spreadingNode.getScore();
-		if (n != 0){
-			score = score/n;
+		
+//	Note that in this implementation the parameter {@code Node spreadingNode} is not used!!!
+		
+		Set<AnyResource> neighborhood = this.kb.getNeighborhood(targetNode.getResource());
+		double neighborhoodScore = 0;
+		for (AnyResource neighborResource : neighborhood) {
+			int degree = this.kb.degree(neighborResource);
+			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
+						
+			neighborhoodScore += (neighborNode.getScore()/degree);
 		}
+		
+		double score = this.stimulus(targetNode) + (this.weightingModule.weight(targetNode, this.getOrigin()) * neighborhoodScore);
 		return score;
 	}
 
 	@Override
-	public void flushData(Writer out) throws IOException {		
+	protected void filterCurrenltyActiveNode() {
+		// TODO  IT DOES NOTHING FOR THE MOMENT!!
+	}
+
+	@Override
+	public void flushData(Writer out) throws IOException {
 		CSVWriter writer = new CSVWriter(out);
 	     String[] csvEntry = new String[2];
 	     
@@ -62,12 +81,24 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 		     writer.writeNext(csvEntry);
 	     }
 	     
-	     writer.close();		
+	     writer.close();
 	}
 
-	@Override
-	protected void filterCurrenltyActiveNode() {
-		// TODO  IT DOES NOTHING FOR THE MOMENT!!		
-	}
+	private Node backtrackToNode(AnyResource neighborResource, AnyResource targetResource) {		
+		for (Node node : this.getAllActiveNodes()) {
+			if (node.getResource().getResourceID().equalsIgnoreCase(neighborResource.getResourceID())){
+				return node;
+			}	
+		}
 
+		Node node = new Node(neighborResource);
+		return node;
+	}
+	
+	private double stimulus(Node node) {
+		if (node.equals(this.getOrigin())){
+			return 1;
+		}	
+		return 0;
+	}
 }
