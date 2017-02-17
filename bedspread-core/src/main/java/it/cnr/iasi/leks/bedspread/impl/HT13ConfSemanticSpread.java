@@ -50,16 +50,18 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 	@Override
 	protected double computeScore(Node spreadingNode, Node targetNode) {
 		
+//	Note that in this implementation the parameter {@code Node spreadingNode} is not used!!!
+		
 		Set<AnyResource> neighborhood = this.kb.getNeighborhood(targetNode.getResource());
 		double neighborhoodScore = 0;
 		for (AnyResource neighborResource : neighborhood) {
 			int degree = this.kb.degree(neighborResource);
-			Node neighborNode = this.backtrackToNode(neighborResource);
+			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
 						
 			neighborhoodScore += (neighborNode.getScore()/degree);
 		}
 		
-		double score = this.stimulus(targetNode) + (this.weightingModule.weight(spreadingNode, this.getOrigin()) * neighborhoodScore);
+		double score = this.stimulus(targetNode) + (this.weightingModule.weight(targetNode, this.getOrigin()) * neighborhoodScore);
 		return score;
 	}
 
@@ -73,34 +75,22 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		CSVWriter writer = new CSVWriter(out);
 	     String[] csvEntry = new String[2];
 	     
-	     for (Node n : this.activatedNodes) {
+	     for (Node n : this.getActiveNodes()) {
 	    	 csvEntry[0] = n.getResource().getResourceID();
 	    	 csvEntry[1] = String.valueOf(n.getScore());
 		     writer.writeNext(csvEntry);
 	     }
-
-	     for (Node n : this.currentlyActiveNodes) {
-	    	 csvEntry[0] = n.getResource().getResourceID();
-	    	 csvEntry[1] = String.valueOf(n.getScore());
-		     writer.writeNext(csvEntry);
-	     }
-
+	     
 	     writer.close();
 	}
 
-	private Node backtrackToNode(AnyResource neighborResource) {
-		for (Node node : this.currentlyActiveNodes) {
+	private Node backtrackToNode(AnyResource neighborResource, AnyResource targetResource) {		
+		for (Node node : this.getAllActiveNodes()) {
 			if (node.getResource().getResourceID().equalsIgnoreCase(neighborResource.getResourceID())){
 				return node;
 			}	
 		}
-		
-		for (Node node : this.activatedNodes) {
-			if (node.getResource().getResourceID().equalsIgnoreCase(neighborResource.getResourceID())){
-				return node;
-			}	
-		}
-		
+
 		Node node = new Node(neighborResource);
 		return node;
 	}
