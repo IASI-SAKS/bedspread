@@ -56,18 +56,12 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 		CSVWriter writer = new CSVWriter(out);
 	     String[] csvEntry = new String[2];
 	     
-	     for (Node n : this.activatedNodes) {
+	     for (Node n : this.getActiveNodes()) {
 	    	 csvEntry[0] = n.getResource().getResourceID();
 	    	 csvEntry[1] = String.valueOf(n.getScore());
 		     writer.writeNext(csvEntry);
 	     }
-
-	     for (Node n : this.currentlyActiveNodes) {
-	    	 csvEntry[0] = n.getResource().getResourceID();
-	    	 csvEntry[1] = String.valueOf(n.getScore());
-		     writer.writeNext(csvEntry);
-	     }
-
+	     
 	     writer.close();		
 	}
 
