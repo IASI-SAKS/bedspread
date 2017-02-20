@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,7 +53,12 @@ public class SemanticSpreadTest extends AbstractTest{
 //	private static final String INPUT_GRAPH_FILE = "src/test/resources/anotherSimpleRDFGraph.csv";
 //	private static final String INPUT_GRAPH_FILE = "src/test/resources/yetAnotherSimpleRDFGraph.csv";
 	private static final String INPUT_GRAPH_FILE = "src/test/resources/whiteboardRDFGraph.csv";
-	private static final String FLUSH_FILE = "/tmp/output.csv";
+	
+	@Test
+	public void checkTmpDirExists(){
+		String sysTmpDir = System.getProperties().getProperty("java.io.tmpdir");
+		Assert.assertTrue(sysTmpDir != null);
+	}
 	
 	@Test
 	public void firstMinimalTestDefault() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
@@ -135,7 +141,13 @@ public class SemanticSpreadTest extends AbstractTest{
 	}
 	
 	private String getFlushFileName(String s){
-		return FLUSH_FILE.replaceFirst(".csv", "_"+s+".csv");
+		String sysTmpDir = System.getProperties().getProperty("java.io.tmpdir");
+		String prefix = "output";
+		String extension = ".csv";
+		
+		String flushFileName = sysTmpDir + File.separatorChar + prefix + "_" + s + extension;
+//		System.out.println(flushFileName);
+		return flushFileName;
 	}
 	
 }
