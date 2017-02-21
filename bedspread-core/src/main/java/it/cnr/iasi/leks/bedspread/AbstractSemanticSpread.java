@@ -23,7 +23,8 @@ import java.io.Writer;
 import java.lang.Runnable;
 import java.util.Set;
 
-import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.impl.policies.SimpleTerminationPolicy;
+import it.cnr.iasi.leks.bedspread.impl.policies.TerminationPolicyFactory;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
@@ -45,8 +46,16 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	
 	private SetOfNodesFactory setOfNodesFactory;
 	
+	private final Object callbackMutex = new Object();
+	private ComputationStatusCallback callback;
+	private String optionalID;
+	
 	protected KnowledgeBase kb;
 
+	public AbstractSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+		this(origin, kb, TerminationPolicyFactory.getInstance().getTerminationPolicy());
+	}
+		
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term){
 		this.origin = origin;
 		this.origin.updateScore(1);
@@ -62,13 +71,17 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.forthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
 		this.justProcessedForthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
 	}
-		
+
 	public Node getOrigin(){
 		return this.origin;
 	}
 	
 	public ComputationStatus getComputationStatus() {
-		return this.status;
+		ComputationStatus s;
+		synchronized (this.status) {
+			s = this.status;
+		}
+		return s;
 	}
 	
 	private void refreshInternalState(){
@@ -81,7 +94,9 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	}
 	
 	public void run (){
-		this.status = ComputationStatus.Running;
+		synchronized (this.status) {
+			this.status = ComputationStatus.Running;
+		}
 		this.refreshInternalState();
 		while (!term.wasMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
@@ -105,7 +120,10 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			}
 			this.filterCurrenltyActiveNode();
 		}
-		this.status = ComputationStatus.Completed;
+		synchronized (this.status) {
+			this.status = ComputationStatus.Completed;
+		}
+		this.notifyCallback();
 	}
 	
 	private void extractForthcomingActiveNodes(Node node) {
@@ -134,6 +152,23 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		n.addAll(this.justProcessedForthcomingActiveNodes);
 		
 		return n;
+	}
+	
+	public void setCallback(String notifierID, ComputationStatusCallback callback){
+		synchronized (this.callbackMutex) {
+			this.optionalID = notifierID;
+			this.callback = callback;			
+		}
+	}
+	
+	private void notifyCallback(){
+		synchronized (this.callbackMutex) {
+			if ((this.optionalID != null) && (this.callback != null)){
+				synchronized (this.status) {
+					this.callback.notifyStatus(this.optionalID, this.status);
+				}
+			}
+		}	
 	}
 	
 	protected abstract double computeScore(Node spreadingNode, Node targetNode); 

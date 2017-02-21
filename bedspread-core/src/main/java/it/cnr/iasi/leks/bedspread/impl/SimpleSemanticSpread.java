@@ -36,6 +36,10 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  */
 public class SimpleSemanticSpread extends AbstractSemanticSpread {
 
+	public SimpleSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		super(origin, kb);
+	}
+
 	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {
 		super(origin, kb, term);
 	}

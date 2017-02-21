@@ -41,6 +41,12 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 
 	private WeightingFunction weightingModule; 
 	
+	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		super(origin, kb);
+
+		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);
+	}
+
 	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {
 		super(origin, kb, term);
 
