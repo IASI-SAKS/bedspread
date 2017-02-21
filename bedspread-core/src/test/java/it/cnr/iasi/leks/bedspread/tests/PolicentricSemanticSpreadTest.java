@@ -31,11 +31,10 @@ import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.PolicentricSemanticSpread;
-import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
-import it.cnr.iasi.leks.bedspread.impl.policies.SimpleTerminationPolicy;
+import it.cnr.iasi.leks.bedspread.impl.HT13PolicentricSemanticSpread;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
@@ -61,8 +60,10 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 		System.getProperties().setProperty(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
-		PolicentricSemanticSpread pool = new PolicentricSemanticSpread(resourceOriginSet, kb);
-		pool.startAndTrackProcessing();
+		PolicentricSemanticSpread pool = new HT13PolicentricSemanticSpread(resourceOriginSet, kb);
+		String fileNamePolicentric = this.getFlushFileName("firstMinimalTestConf_Policentric");
+		Writer outPolicentric = new FileWriter(fileNamePolicentric);
+		pool.startProcessingAndFlushData(outPolicentric);
 		
 		List<AbstractSemanticSpread> list = pool.getCompletedSemanticSpreadList();
 		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);

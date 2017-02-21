@@ -18,6 +18,8 @@
  */
 package it.cnr.iasi.leks.bedspread;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.SematicSpreadFactory;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -37,11 +40,12 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * @author gulyx
  *
  */
-public class PolicentricSemanticSpread implements ComputationStatusCallback{
+public abstract class PolicentricSemanticSpread implements ComputationStatusCallback{
 
 	private volatile Map<String, AbstractSemanticSpread> semanticSpreadMap;
 	private volatile Map<String, ComputationStatus> semanticSpreadStatusMap;
-//	private volatile Map<String, Thread> semanticSpreadStatusMap;
+	
+	protected KnowledgeBase kb;
 	
 	private SecureRandom random;
 	
@@ -50,21 +54,25 @@ public class PolicentricSemanticSpread implements ComputationStatusCallback{
 
 		this.semanticSpreadMap = Collections.synchronizedMap(new HashMap<String, AbstractSemanticSpread>());
 		this.semanticSpreadStatusMap = Collections.synchronizedMap(new HashMap<String, ComputationStatus>());
+
+		this.kb = kb;
 		
 		for (Node origin : originSet) {
 			String key = this.randomId();
-			AbstractSemanticSpread semSpread = SematicSpreadFactory.getInstance().getSemanticSpread(origin, kb, key, this);
+			AbstractSemanticSpread semSpread = SematicSpreadFactory.getInstance().getSemanticSpread(origin, this.kb, key, this);
 			this.semanticSpreadMap.put(key, semSpread);
 			this.semanticSpreadStatusMap.put(key, semSpread.getComputationStatus());
 		}
 		
 	}
 	
-	public void startAndTrackProcessing() throws InterruptedException{
+	public void startProcessingAndFlushData(Writer out) throws InterruptedException, InteractionProtocolViolationException, IOException{
 		this.startProcessing();
 		while (! this.isOver()) {
 			Thread.sleep(5000);
 		}
+		Set<Node> s = this.mergeProcessingResults();
+		this.flushData(out);
 	}
 	
 	public void startProcessing() {
@@ -89,7 +97,7 @@ public class PolicentricSemanticSpread implements ComputationStatusCallback{
 	
 	public List<AbstractSemanticSpread> getCompletedSemanticSpreadList() throws InteractionProtocolViolationException{
 		if (! this.isOver()){
-			InteractionProtocolViolationException ex = new InteractionProtocolViolationException("Processing was not completed yet!!");
+			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
 			throw ex;
 		}
 		List<AbstractSemanticSpread> list = new ArrayList<AbstractSemanticSpread>(this.semanticSpreadMap.values());
@@ -111,5 +119,8 @@ public class PolicentricSemanticSpread implements ComputationStatusCallback{
 	public void notifyStatus(String id, ComputationStatus status) {
 		this.semanticSpreadStatusMap.put(id, status);
 	}
+	
+	protected abstract void flushData(Writer out)throws InteractionProtocolViolationException, IOException;
+	public abstract Set<Node> mergeProcessingResults() throws InteractionProtocolViolationException;
 	
 }

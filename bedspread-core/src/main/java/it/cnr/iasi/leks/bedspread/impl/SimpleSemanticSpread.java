@@ -24,8 +24,11 @@ import java.io.Writer;
 import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
@@ -56,17 +59,21 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	@Override
-	public void flushData(Writer out) throws IOException {		
+	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException{		
+		if (this.getStatus() != ComputationStatus.Completed){
+			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
+			throw ex;
+		}
 		CSVWriter writer = new CSVWriter(out);
-	     String[] csvEntry = new String[2];
+	    String[] csvEntry = new String[2];
 	     
-	     for (Node n : this.getActiveNodes()) {
+	    for (Node n : this.getActiveNodes()) {
 	    	 csvEntry[0] = n.getResource().getResourceID();
 	    	 csvEntry[1] = String.valueOf(n.getScore());
 		     writer.writeNext(csvEntry);
-	     }
+	    }
 	     
-	     writer.close();		
+	    writer.close();		
 	}
 
 	@Override
