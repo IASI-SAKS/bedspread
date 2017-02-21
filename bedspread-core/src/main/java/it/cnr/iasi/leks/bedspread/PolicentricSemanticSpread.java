@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.SematicSpreadFactory;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -66,10 +67,10 @@ public abstract class PolicentricSemanticSpread implements ComputationStatusCall
 		
 	}
 	
-	public void startProcessingAndFlushData(Writer out) throws InterruptedException, InteractionProtocolViolationException, IOException{
+	public void startProcessingAndFlushData(Writer out) throws InteractionProtocolViolationException, AbstractBedspreadException, IOException{
 		this.startProcessing();
 		while (! this.isOver()) {
-			Thread.sleep(5000);
+			this.doSomethingWhileProcessing();
 		}
 		Set<Node> s = this.mergeProcessingResults();
 		this.flushData(out);
@@ -120,6 +121,7 @@ public abstract class PolicentricSemanticSpread implements ComputationStatusCall
 		this.semanticSpreadStatusMap.put(id, status);
 	}
 	
+	protected abstract void doSomethingWhileProcessing() throws AbstractBedspreadException;
 	protected abstract void flushData(Writer out)throws InteractionProtocolViolationException, IOException;
 	public abstract Set<Node> mergeProcessingResults() throws InteractionProtocolViolationException;
 	

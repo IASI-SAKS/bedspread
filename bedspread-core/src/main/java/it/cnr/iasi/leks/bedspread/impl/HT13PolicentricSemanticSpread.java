@@ -21,24 +21,17 @@ package it.cnr.iasi.leks.bedspread.impl;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
-import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.PolicentricSemanticSpread;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
-import it.cnr.iasi.leks.bedspread.impl.SematicSpreadFactory;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
@@ -104,6 +97,17 @@ public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 	    }
 	     
 	    writer.close();		
+	}
+
+	@Override
+	protected void doSomethingWhileProcessing() throws AbstractBedspreadException {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			AbstractBedspreadException  ex = new AbstractBedspreadException(e.getMessage(),e.getCause()) {
+			};
+			throw ex;			
+		}
 	}
 	
 }
