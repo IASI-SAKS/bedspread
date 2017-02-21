@@ -40,6 +40,9 @@ public class PropertyUtil {
 	public static final String KB_LABEL =  "bedspread.kb.class";
 	public static final String KB_FILE_LABEL =  "bedspread.kb.file";
 	public static final String SEMANTIC_SPREAD_LABEL =  "bedspread.semanticspread.class";
+	public static final String TERMINATION_POLICY_LABEL =  "bedspread.terminationpolicy.class";
+	// TODO THE FOLLOWING FEATURE IS NOT SUPPORTED YET!!!
+	public static final String WEIGHTING_FUNCTION_LABEL =  "bedspread.weightingfunction.class";
 	
 	private Properties properties;
 	
