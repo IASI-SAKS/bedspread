@@ -19,9 +19,9 @@
 package it.cnr.iasi.leks.bedspread.impl;
 
 import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
-import it.cnr.iasi.leks.bedspread.WeightingFunctionFactory;
-import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.impl.weights.WeightingFunctionFactory;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 

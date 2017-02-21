@@ -16,7 +16,7 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.policies;
+package it.cnr.iasi.leks.bedspread;
 
 /**
  * 

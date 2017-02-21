@@ -25,7 +25,7 @@ import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
