@@ -23,7 +23,8 @@ import java.io.Writer;
 import java.lang.Runnable;
 import java.util.Set;
 
-import it.cnr.iasi.leks.bedspread.impl.policies.SimpleTerminationPolicy;
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.policies.TerminationPolicyFactory;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -126,6 +127,15 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.notifyCallback();
 	}
 	
+	public Set<Node> getSemanticSpreadForNode() throws InteractionProtocolViolationException{
+		if (this.getStatus() != ComputationStatus.Completed){
+			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
+			throw ex;
+		}
+		Set<Node> s = this.getAllActiveNodes();
+		return s;
+	}	
+	
 	private void extractForthcomingActiveNodes(Node node) {
 		this.forthcomingActiveNodes.clear();
 		for (AnyResource neighbor : this.kb.getNeighborhood(node.getResource())) {
@@ -154,6 +164,10 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 	
+	public synchronized ComputationStatus getStatus() {
+		return this.status;
+	}
+	
 	public void setCallback(String notifierID, ComputationStatusCallback callback){
 		synchronized (this.callbackMutex) {
 			this.optionalID = notifierID;
@@ -164,9 +178,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	private void notifyCallback(){
 		synchronized (this.callbackMutex) {
 			if ((this.optionalID != null) && (this.callback != null)){
-				synchronized (this.status) {
-					this.callback.notifyStatus(this.optionalID, this.status);
-				}
+					this.callback.notifyStatus(this.optionalID, this.getStatus());
 			}
 		}	
 	}
@@ -175,5 +187,5 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	protected abstract void filterCurrenltyActiveNode();
 
 	
-	public abstract void flushData (Writer out) throws IOException; 
+	public abstract void flushData (Writer out) throws IOException, InteractionProtocolViolationException; 
 }
