@@ -18,7 +18,6 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,6 +28,7 @@ import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread;
 import it.cnr.iasi.leks.bedspread.impl.SematicSpreadFactory;
 import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
@@ -55,7 +55,7 @@ public class SemanticSpreadTest extends AbstractTest{
 	private static final String INPUT_GRAPH_FILE = "src/test/resources/whiteboardRDFGraph.csv";
 	
 	@Test
-	public void firstMinimalTestDefault() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void firstMinimalTestDefault() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
 		TerminationPolicy term = new SimpleTerminationPolicy();
@@ -73,7 +73,7 @@ public class SemanticSpreadTest extends AbstractTest{
 	}
 	
 	@Test
-	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
 		TerminationPolicy term = new SimpleTerminationPolicy();
@@ -100,7 +100,7 @@ public class SemanticSpreadTest extends AbstractTest{
 
 
 	@Test
-	public void testHT13ConfSemanticSpread() throws IOException{
+	public void testHT13ConfSemanticSpread() throws IOException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
 		TerminationPolicy term = new SimpleTerminationPolicy();
