@@ -30,6 +30,7 @@ public class ForbiddenUpdateException extends AbstractBedspreadException {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4459711819447299110L;
+
 
 }
