@@ -18,10 +18,14 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
 
 /*
@@ -43,4 +47,22 @@ public abstract class AbstractTest {
     protected int randomInt() {
         return new BigInteger(10, random).intValue();
     }
+    
+	protected String getFlushFileName(String s){
+		String sysTmpDir = System.getProperties().getProperty("java.io.tmpdir");
+		String prefix = "output";
+		String extension = ".csv";
+		
+		String flushFileName = sysTmpDir + File.separatorChar + prefix + "_" + s + extension;
+//		System.out.println(flushFileName);
+		return flushFileName;
+	}
+	
+	@Test
+	@Ignore
+	public void checkTmpDirExists(){
+		String sysTmpDir = System.getProperties().getProperty("java.io.tmpdir");
+		Assert.assertTrue(sysTmpDir != null);
+	}
+
 }

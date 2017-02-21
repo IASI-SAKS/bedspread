@@ -16,15 +16,14 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread;
+package it.cnr.iasi.leks.bedspread.impl.weights;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
-import it.cnr.iasi.leks.bedspread.impl.weights.DefaultWeightingFunction;
-import it.cnr.iasi.leks.bedspread.impl.weights.SemanticWeightingFunction;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
 

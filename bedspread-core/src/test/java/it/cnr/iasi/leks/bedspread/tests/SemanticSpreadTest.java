@@ -27,12 +27,12 @@ import java.lang.reflect.InvocationTargetException;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.SematicSpreadFactory;
+import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread;
+import it.cnr.iasi.leks.bedspread.impl.SematicSpreadFactory;
 import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
-import it.cnr.iasi.leks.bedspread.policies.SimpleTerminationPolicy;
-import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.impl.policies.SimpleTerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
@@ -53,12 +53,6 @@ public class SemanticSpreadTest extends AbstractTest{
 //	private static final String INPUT_GRAPH_FILE = "src/test/resources/anotherSimpleRDFGraph.csv";
 //	private static final String INPUT_GRAPH_FILE = "src/test/resources/yetAnotherSimpleRDFGraph.csv";
 	private static final String INPUT_GRAPH_FILE = "src/test/resources/whiteboardRDFGraph.csv";
-	
-	@Test
-	public void checkTmpDirExists(){
-		String sysTmpDir = System.getProperties().getProperty("java.io.tmpdir");
-		Assert.assertTrue(sysTmpDir != null);
-	}
 	
 	@Test
 	public void firstMinimalTestDefault() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
@@ -139,15 +133,5 @@ public class SemanticSpreadTest extends AbstractTest{
 		
 		return this.rdfGraph;
 	}
-	
-	private String getFlushFileName(String s){
-		String sysTmpDir = System.getProperties().getProperty("java.io.tmpdir");
-		String prefix = "output";
-		String extension = ".csv";
 		
-		String flushFileName = sysTmpDir + File.separatorChar + prefix + "_" + s + extension;
-//		System.out.println(flushFileName);
-		return flushFileName;
-	}
-	
 }

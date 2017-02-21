@@ -16,14 +16,16 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread;
+package it.cnr.iasi.leks.bedspread.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.ComputationStatusCallback;
+import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
-import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
-import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
 /**
@@ -45,6 +47,23 @@ public class SematicSpreadFactory {
 		return FACTORY;
 	}
 
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term, String id, ComputationStatusCallback callback) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, term);
+		semSpread.setCallback(id, callback);
+		return semSpread;
+	}
+
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, null);
+		return semSpread;
+	}
+
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, String id, ComputationStatusCallback callback) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, null);
+		semSpread.setCallback(id, callback);
+		return semSpread;
+	}
+
 	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, term);
 		return semSpread;
@@ -53,14 +72,24 @@ public class SematicSpreadFactory {
 	private AbstractSemanticSpread configureSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		AbstractSemanticSpread semSpread = null; 
 		
+		String termPolicyClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.TERMINATION_POLICY_LABEL);
 		String semSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
 		if (semSpreadClassName != null){
 			Class<?> semSpreadClass = Class.forName(semSpreadClassName);
-			Constructor<?> constructor = semSpreadClass.getConstructor(new Class[]{Node.class, KnowledgeBase.class, TerminationPolicy.class});
-			semSpread = (AbstractSemanticSpread) constructor.newInstance(origin, kb, term);
-
+			Constructor<?> constructor;
+			if (termPolicyClassName != null){
+				constructor = semSpreadClass.getConstructor(new Class[]{Node.class, KnowledgeBase.class, TerminationPolicy.class});
+				semSpread = (AbstractSemanticSpread) constructor.newInstance(origin, kb, term);
+			}else{
+				constructor = semSpreadClass.getConstructor(new Class[]{Node.class, KnowledgeBase.class});				
+				semSpread = (AbstractSemanticSpread) constructor.newInstance(origin, kb);
+			}	
 		}else{
-			semSpread = new SimpleSemanticSpread(origin, kb, term);
+			if (termPolicyClassName != null){
+				semSpread = new SimpleSemanticSpread(origin, kb, term);
+			}else{
+				semSpread = new SimpleSemanticSpread(origin, kb);				
+			}	
 		}
 		return semSpread;
 	}

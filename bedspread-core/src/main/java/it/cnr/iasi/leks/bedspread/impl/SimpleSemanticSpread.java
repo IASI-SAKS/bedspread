@@ -25,7 +25,7 @@ import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
@@ -35,6 +35,10 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  *
  */
 public class SimpleSemanticSpread extends AbstractSemanticSpread {
+
+	public SimpleSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		super(origin, kb);
+	}
 
 	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {
 		super(origin, kb, term);

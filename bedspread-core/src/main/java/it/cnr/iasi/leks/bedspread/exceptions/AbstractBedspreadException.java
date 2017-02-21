@@ -25,10 +25,11 @@ package it.cnr.iasi.leks.bedspread.exceptions;
  */
 public abstract class AbstractBedspreadException extends Exception {
 
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -6773211644270881856L;
 
 	public AbstractBedspreadException() {
 		super();

@@ -26,9 +26,9 @@ import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
-import it.cnr.iasi.leks.bedspread.WeightingFunctionFactory;
-import it.cnr.iasi.leks.bedspread.policies.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.impl.weights.WeightingFunctionFactory;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
@@ -41,6 +41,12 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 
 	private WeightingFunction weightingModule; 
 	
+	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		super(origin, kb);
+
+		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);
+	}
+
 	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {
 		super(origin, kb, term);
 
