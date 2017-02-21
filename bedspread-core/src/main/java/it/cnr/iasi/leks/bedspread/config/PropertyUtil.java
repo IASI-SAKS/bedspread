@@ -36,6 +36,8 @@ public class PropertyUtil {
 	
 	private static final String DEFAULT_CONFIG_FILE = "config.properties";
 
+	public static final String INTERACTION_PROTOCOL_ERROR_MESSAGE = "Error : Processing was not completed yet!!";
+	
 	public static final String CONFIG_FILE_LOCATION_LABEL = "bedspread.config.file.location";
 	public static final String KB_LABEL =  "bedspread.kb.class";
 	public static final String KB_FILE_LABEL =  "bedspread.kb.file";
