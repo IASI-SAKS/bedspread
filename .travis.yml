@@ -12,10 +12,10 @@ addons:
             - gcc
             - make
             - maven
-            - oraclejdk8
             - build-essential
             - sed
-
+    jdk: "oraclejdk8"
+    
 cache:
     directories:
         - $HOME/.m2
