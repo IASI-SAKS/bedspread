@@ -16,14 +16,30 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.policies;
+package it.cnr.iasi.leks.bedspread.exceptions.impl;
 
-/**
- * 
- * @author gulyx
- *
- */
-public abstract class TerminationPolicy {
+import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 
-	public abstract boolean wasMet();
+public class InteractionProtocolViolationException extends AbstractBedspreadException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8993234614736446559L;
+	
+	public InteractionProtocolViolationException() {
+		super();
+	}
+
+	public InteractionProtocolViolationException(String message) {
+		super(message);
+	}
+
+	public InteractionProtocolViolationException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public InteractionProtocolViolationException(Throwable cause) {
+		super(cause);
+	}
 }

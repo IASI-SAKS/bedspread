@@ -16,21 +16,14 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.exceptions.impl;
-
-import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
+package it.cnr.iasi.leks.bedspread;
 
 /**
  * 
  * @author gulyx
  *
  */
-public class ForbiddenUpdateException extends AbstractBedspreadException {
+public abstract class TerminationPolicy {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4459711819447299110L;
-
-
+	public abstract boolean wasMet();
 }

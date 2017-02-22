@@ -18,15 +18,23 @@
  */
 package it.cnr.iasi.leks.bedspread.main;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 
 public class Main {
 
-	public static void main (String args[]){
+	public static void main (String args[]) throws IllegalArgumentException, IllegalAccessException{
+		System.out.println("This Entry Point has not been defined yet!!!");
+
 		PropertyUtil prop = PropertyUtil.getInstance();
-		String testValue = prop.getProperty("kb-class");
-		System.out.println(testValue);
-		
+		for (Field f : PropertyUtil.class.getFields()) {
+			int fieldModifiers = f.getModifiers();
+			if (Modifier.isFinal(fieldModifiers) && Modifier.isPublic(fieldModifiers)){
+				System.out.println("Label: \'" + f.getName() + "\', Value: \'"+ f.get(prop)+"\'");
+			}
+		}		
 	}
 	
 }

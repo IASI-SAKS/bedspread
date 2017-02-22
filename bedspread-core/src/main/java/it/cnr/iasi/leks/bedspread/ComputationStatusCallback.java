@@ -16,33 +16,9 @@
  *	 You should have received a copy of the GNU Lesser General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.policies;
+package it.cnr.iasi.leks.bedspread;
 
-/**
- * 
- * @author gulyx
- *
- */
-public class SimpleTerminationPolicy extends TerminationPolicy {
+public interface ComputationStatusCallback {
 
-	private final int MAX_QUERIES_BEFORE_TRUE = 10;
-	private int nQueries;
-	
-	public SimpleTerminationPolicy(){
-		this.nQueries = MAX_QUERIES_BEFORE_TRUE;
-	}
-	
-	public SimpleTerminationPolicy(int i){
-		this.nQueries = i;
-	}
-
-	@Override
-	public boolean wasMet() {
-		if (this.nQueries > 0){
-			this.nQueries --;
-			return false;
-		}	
-		return true;
-	}
-
+	public void notifyStatus(String id, ComputationStatus status);
 }
