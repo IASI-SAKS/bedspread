@@ -12,7 +12,7 @@ addons:
             - gcc
             - make
             - maven
-	    - oraclejdk8
+            - oraclejdk8
             - build-essential
             - sed
 
