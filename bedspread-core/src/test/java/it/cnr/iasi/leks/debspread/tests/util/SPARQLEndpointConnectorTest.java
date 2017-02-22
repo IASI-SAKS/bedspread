@@ -2,8 +2,9 @@ package it.cnr.iasi.leks.debspread.tests.util;
 
 import static org.junit.Assert.*;
 
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import java.util.Vector;
+
+import com.hp.hpl.jena.query.QuerySolution;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,19 +16,18 @@ public class SPARQLEndpointConnectorTest {
 	public void executeQuery() {
 		int result = 0;
 		String DBPEDIA_ENDPOINT = "http://dbpedia.org/sparql";
-		String queryString = "SELECT (COUNT(*) AS ?count) FROM <http://dbpedia.org> WHERE {"
+		String DBPEDIA_GRAPH = "http://dbpedia.org";
+		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+DBPEDIA_GRAPH+"> WHERE {"
 				+ "?s <http://dbpedia.org/property/birthPlace> ?o"
-				+ "}"
-				+ "GROUP BY ?s";
+				+ "}";
 		
-		ResultSet results = SPARQLEndpointConnector.execQuery(DBPEDIA_ENDPOINT, queryString);
+		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(DBPEDIA_ENDPOINT); 
+		Vector<QuerySolution> qss = sec.execQuery(queryString);
 		
-		while(results.hasNext()) {
-			QuerySolution soln = results.nextSolution();
-			result = soln.getLiteral("count").asLiteral().getInt();
-		}
+		result = qss.elementAt(0).getLiteral("count").asLiteral().getInt();
+		
+		System.out.println("triples="+result);
 		Assert.assertTrue(result>0);
-//		this.closeQueryExecution();
 	}
 
 }
