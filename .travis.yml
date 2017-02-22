@@ -1,4 +1,6 @@
 language: java
+jdk:
+    - oraclejdk8
 ##script: bash build --debug
 script: mvn clean install -B -f ./bedspread-core/pom.xml
 # We need to avoid sudo for caching on Travis
@@ -12,11 +14,9 @@ addons:
             - gcc
             - make
             - maven
-            - openjdk-7-jdk
-            - openjdk-7-jre
             - build-essential
             - sed
-
+    
 cache:
     directories:
         - $HOME/.m2
