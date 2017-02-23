@@ -21,9 +21,15 @@ package it.cnr.iasi.leks.bedspread.impl.weights;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.impl.policies.SimpleTerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
 
@@ -46,7 +52,7 @@ public class WeightingFunctionFactory {
 		return FACTORY;
 	}
 
-	public WeightingFunction getWeightingFunction() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException{
+	public WeightingFunction getWeightingFunction() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, SecurityException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException{
 		
 		WeightingFunction wf = null;
 		KnowledgeBase kb = null;
@@ -63,8 +69,27 @@ public class WeightingFunctionFactory {
 		return wf;
 	}
 
-	public WeightingFunction getWeightingFunction(KnowledgeBase kb){
-		WeightingFunction wf = new SemanticWeightingFunction(kb);		
+	public WeightingFunction getWeightingFunction(KnowledgeBase kb) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+		
+		WeightingFunction wf = null;
+		
+		PropertyUtil prop = PropertyUtil.getInstance();
+		String wfClassName = prop.getProperty(PropertyUtil.WEIGHTING_FUNCTION_LABEL);
+		
+		if ( wfClassName != null ){
+			ClassLoader loader = ClassLoader.getSystemClassLoader();
+			Class<?> wfClass = loader.loadClass(wfClassName);
+			Constructor<?> constructor;
+			try {
+				constructor = wfClass.getConstructor(new Class[]{KnowledgeBase.class});
+				wf = (WeightingFunction) constructor.newInstance(kb);			
+			} catch (NoSuchMethodException e) {
+				constructor = wfClass.getConstructor();
+				wf = (WeightingFunction) constructor.newInstance();			
+			}
+		}else{
+			wf = new DefaultWeightingFunction();
+		}
 		
 		return wf;
 	}
