@@ -43,11 +43,12 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 
 	private Set<Node> setOfNodes;
-	
+	private PropertyUtil prop;
 	
 	public HT13PolicentricSemanticSpread (Set<Node> originSet, KnowledgeBase kb) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		super(originSet, kb);
 		this.setOfNodes = SetOfNodesFactory.getInstance().getSetOfNodesInstance();
+		this.prop = PropertyUtil.getInstance();
 	}
 	
 	public Set<Node> mergeProcessingResults() throws InteractionProtocolViolationException{
@@ -102,7 +103,8 @@ public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 	@Override
 	protected void doSomethingWhileProcessing() throws AbstractBedspreadException {
 		try {
-			Thread.sleep(5000);
+			long sleeptime = Long.parseLong(this.prop.getProperty(PropertyUtil.POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL, "5000"));
+			Thread.sleep(sleeptime);
 		} catch (InterruptedException e) {
 			AbstractBedspreadException  ex = new AbstractBedspreadException(e.getMessage(),e.getCause()) {
 			};
