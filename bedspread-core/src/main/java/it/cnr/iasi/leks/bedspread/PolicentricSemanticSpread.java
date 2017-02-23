@@ -33,7 +33,7 @@ import java.util.Set;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
-import it.cnr.iasi.leks.bedspread.impl.SematicSpreadFactory;
+import it.cnr.iasi.leks.bedspread.impl.SemanticSpreadFactory;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
 /**
@@ -60,7 +60,7 @@ public abstract class PolicentricSemanticSpread implements ComputationStatusCall
 		
 		for (Node origin : originSet) {
 			String key = this.randomId();
-			AbstractSemanticSpread semSpread = SematicSpreadFactory.getInstance().getSemanticSpread(origin, this.kb, key, this);
+			AbstractSemanticSpread semSpread = SemanticSpreadFactory.getInstance().getSemanticSpread(origin, this.kb, key, this);
 			this.semanticSpreadMap.put(key, semSpread);
 			this.semanticSpreadStatusMap.put(key, semSpread.getComputationStatus());
 		}

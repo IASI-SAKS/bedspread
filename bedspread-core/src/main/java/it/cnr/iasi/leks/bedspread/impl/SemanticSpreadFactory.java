@@ -33,16 +33,16 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * @author gulyx
  *
  */
-public class SematicSpreadFactory {
+public class SemanticSpreadFactory {
 
-	protected static SematicSpreadFactory FACTORY = null;
+	protected static SemanticSpreadFactory FACTORY = null;
 	
-	protected SematicSpreadFactory(){		
+	protected SemanticSpreadFactory(){		
 	}
 	
-	public static synchronized SematicSpreadFactory getInstance(){
+	public static synchronized SemanticSpreadFactory getInstance(){
 		if (FACTORY == null){
-			FACTORY = new SematicSpreadFactory();
+			FACTORY = new SemanticSpreadFactory();
 		}
 		return FACTORY;
 	}
