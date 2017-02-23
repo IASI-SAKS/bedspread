@@ -1,4 +1,4 @@
-<!-- This file is part of Bedspread, originally promoted and developed at 
+﻿<!-- This file is part of Bedspread, originally promoted and developed at 
 	CNR-IASI. For more information visit: https://github.com/IASI-LEKS/bedspread 
 	This is free software: you can redistribute it and/or modify it under the 
 	terms of the GNU General Public License as published by the Free Software 
@@ -21,11 +21,12 @@
 		<artifact.jar.mainclass>it.cnr.iasi.leks.bedspread.main.Main</artifact.jar.mainclass>
 		<junit.version>4.0</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler>3.1</maven.compiler>
+		<maven.compiler>3.6.1</maven.compiler>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.jar.version>3.0.0</maven.jar.version>
 		<slf4j.version>1.7.12</slf4j.version>
+		<jena_arq.version>3.1.1</jena_arq.version>
 	</properties>
 
 	<developers>
@@ -66,7 +67,7 @@
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-arq</artifactId>
-			<version>2.12.1</version>
+			<version>${jena_arq.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
