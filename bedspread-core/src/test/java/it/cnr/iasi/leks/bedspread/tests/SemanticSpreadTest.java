@@ -30,7 +30,7 @@ import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread;
-import it.cnr.iasi.leks.bedspread.impl.SematicSpreadFactory;
+import it.cnr.iasi.leks.bedspread.impl.SemanticSpreadFactory;
 import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
 import it.cnr.iasi.leks.bedspread.impl.policies.SimpleTerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
@@ -62,7 +62,7 @@ public class SemanticSpreadTest extends AbstractTest{
 		
 		PropertyUtilNoSingleton.getInstance();
  
-		AbstractSemanticSpread ss = SematicSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("firstMinimalTestDefault");
@@ -82,7 +82,7 @@ public class SemanticSpreadTest extends AbstractTest{
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
-		AbstractSemanticSpread ss = SematicSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("firstMinimalTestConf");
@@ -130,7 +130,7 @@ public class SemanticSpreadTest extends AbstractTest{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
 		
-		AbstractSemanticSpread ss = SematicSpreadFactory.getInstance().getSemanticSpread(resourceOrigin, kb);
+		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin, kb);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("testSemanticSpreadAllConf");
