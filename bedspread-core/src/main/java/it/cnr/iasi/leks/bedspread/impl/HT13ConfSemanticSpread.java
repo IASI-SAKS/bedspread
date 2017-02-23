@@ -20,6 +20,7 @@ package it.cnr.iasi.leks.bedspread.impl;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import com.opencsv.CSVWriter;
@@ -44,13 +45,13 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 
 	private WeightingFunction weightingModule; 
 	
-	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
 		super(origin, kb);
 
 		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);
 	}
 
-	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) {
+	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		super(origin, kb, term);
 
 		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);

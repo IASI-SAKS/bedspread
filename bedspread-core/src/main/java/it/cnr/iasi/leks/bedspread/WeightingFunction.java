@@ -24,7 +24,7 @@ package it.cnr.iasi.leks.bedspread;
  *
  */
 public interface WeightingFunction {
-
+	
 	public double weight (Node n1, Node n2);
 	
 }

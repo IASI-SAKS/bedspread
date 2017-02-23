@@ -100,7 +100,7 @@ public class SemanticSpreadTest extends AbstractTest{
 
 
 	@Test
-	public void testHT13ConfSemanticSpread() throws IOException, InteractionProtocolViolationException{
+	public void testHT13ConfSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
 		TerminationPolicy term = new SimpleTerminationPolicy();
@@ -121,6 +121,31 @@ public class SemanticSpreadTest extends AbstractTest{
 		Assert.assertTrue(true);		
 	}
 	
+	@Test
+	public void testSemanticSpreadAllConf() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		String testPropertyFile = "configTestAllClassesSpecified.properties";
+		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
+		PropertyUtilNoSingleton.getInstance();
+		
+		KnowledgeBase kb = this.loadMinimalKB();
+		Node resourceOrigin = this.extractTrivialOrigin();
+		
+		AbstractSemanticSpread ss = SematicSpreadFactory.getInstance().getSemanticSpread(resourceOrigin, kb);
+		ss.run();
+		
+		String fileName = this.getFlushFileName("testSemanticSpreadAllConf");
+		Writer out = new FileWriter(fileName);
+		ss.flushData(out);
+		
+		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
+//		System.out.println(ss.getClass().getTypeName() + ", " + ss.getClass().getName() +", "+ss.getClass().getCanonicalName());
+		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
+		
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+
+		Assert.assertTrue(condition);		
+	}
+
 	private Node extractTrivialOrigin() {
 		AnyResource resource = RDFFactory.getInstance().createBlankNode(ORIGIN_LABEL);
 		Node n = new Node(resource);

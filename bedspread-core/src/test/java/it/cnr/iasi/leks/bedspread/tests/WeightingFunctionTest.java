@@ -19,7 +19,7 @@
 package it.cnr.iasi.leks.bedspread.tests;
 
 import java.io.IOException;
-
+import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ import junit.framework.Assert;
 public class WeightingFunctionTest {
 
 	@Test
-	public void testWeightingFunctionFactoryDefault() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException{		
+	public void testWeightingFunctionFactoryDefault() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{		
 		String testPropertyFile = "configTest.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		this.configurePropertyUtilInstance();
@@ -53,7 +53,7 @@ public class WeightingFunctionTest {
 	}
 
 	@Test
-	public void testWeightingFunctionFactoryConf() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException{
+	public void testWeightingFunctionFactoryConf() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
 		String testPropertyFile = "config.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		this.configurePropertyUtilInstance();
