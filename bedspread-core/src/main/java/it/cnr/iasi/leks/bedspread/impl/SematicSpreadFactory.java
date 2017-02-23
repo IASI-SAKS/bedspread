@@ -72,12 +72,11 @@ public class SematicSpreadFactory {
 	private AbstractSemanticSpread configureSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		AbstractSemanticSpread semSpread = null; 
 		
-		String termPolicyClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.TERMINATION_POLICY_LABEL);
 		String semSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
 		if (semSpreadClassName != null){
 			Class<?> semSpreadClass = Class.forName(semSpreadClassName);
 			Constructor<?> constructor;
-			if (termPolicyClassName != null){
+			if (term != null){
 				constructor = semSpreadClass.getConstructor(new Class[]{Node.class, KnowledgeBase.class, TerminationPolicy.class});
 				semSpread = (AbstractSemanticSpread) constructor.newInstance(origin, kb, term);
 			}else{
@@ -85,7 +84,7 @@ public class SematicSpreadFactory {
 				semSpread = (AbstractSemanticSpread) constructor.newInstance(origin, kb);
 			}	
 		}else{
-			if (termPolicyClassName != null){
+			if (term != null){
 				semSpread = new SimpleSemanticSpread(origin, kb, term);
 			}else{
 				semSpread = new SimpleSemanticSpread(origin, kb);				
