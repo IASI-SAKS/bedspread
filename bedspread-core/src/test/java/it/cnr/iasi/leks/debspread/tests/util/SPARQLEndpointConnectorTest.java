@@ -20,7 +20,7 @@ package it.cnr.iasi.leks.debspread.tests.util;
 
 import java.util.Vector;
 
-import com.hp.hpl.jena.query.QuerySolution;
+import org.apache.jena.query.QuerySolution;
 import org.junit.Assert;
 import org.junit.Test;
 
