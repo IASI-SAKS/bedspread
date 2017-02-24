@@ -1,5 +1,7 @@
 package it.cnr.iasi.leks.bedspread.impl;
 
+import java.util.Set;
+
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
@@ -17,14 +19,23 @@ public class SimpleSemanticSpreadConservative extends SimpleSemanticSpread {
 
 	@Override
 	protected double computeScore(Node spreadingNode, Node targetNode) {		
+		double score = spreadingNode.getScore();
+
 		AnyResource resource = spreadingNode.getResource();
-		int neighborhoodSize = this.kb.getNeighborhood(resource).size();
-		
-		if (!this.getOrigin().equals(spreadingNode)){
-			neighborhoodSize --;
+		Set<AnyResource> neighborhood = this.kb.getNeighborhood(resource);
+		if (neighborhood == null){
+			return score;
 		}
 		
-		double score = spreadingNode.getScore();
+		int neighborhoodSize = neighborhood.size();
+		
+		for (AnyResource neighbor : neighborhood) {
+			Node n = new Node(neighbor);
+			if (this.getActiveNodes().contains(n)){
+				neighborhoodSize --;
+			}
+		}
+				
 		if (neighborhoodSize > 0){
 			score = score/neighborhoodSize;
 		}
