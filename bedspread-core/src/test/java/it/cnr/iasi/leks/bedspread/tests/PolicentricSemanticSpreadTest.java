@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
@@ -49,11 +50,13 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 	private static final int NUMBER_OF_ORIGINS = 2;
 
 	private static final String INPUT_GRAPH_FILE = "src/test/resources/whiteboardTwoOriginsRDFGraph.csv";
+	private static final String INPUT_TREE_FILE = "src/test/resources/whiteboardTwoOriginsRDFTree.csv";
 	
 	
 	@Test
+	@Ignore
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
-		KnowledgeBase kb = this.loadMinimalKB();
+		KnowledgeBase kb = this.loadMinimalKB(0);
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
 		String testPropertyFile = "configTestPolicentricDefaultWeigh.properties";
@@ -83,7 +86,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 	
 	@Test
 	public void actualTestByComparingOverllActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
-		KnowledgeBase kb = this.loadMinimalKB();
+		KnowledgeBase kb = this.loadMinimalKB(1);
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
 		String testPropertyFile = "configTestPolicentricDefaultWeighConservative.properties";
@@ -123,8 +126,20 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 		return s;
 	}
 
-	private KnowledgeBase loadMinimalKB() throws IOException{
-		FileReader kbReader = new FileReader(INPUT_GRAPH_FILE);
+	private KnowledgeBase loadMinimalKB(int i) throws IOException{
+		String filename;
+		switch (i) {
+		case 0:
+			filename = INPUT_GRAPH_FILE;
+			break;
+		case 1:
+			filename = INPUT_TREE_FILE;			
+			break;
+		default:
+			filename = INPUT_GRAPH_FILE;			
+			break;
+		}
+		FileReader kbReader = new FileReader(filename);
 		this.rdfGraph = new RDFGraph(kbReader);
 		
 		return this.rdfGraph;
