@@ -81,6 +81,36 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 		Assert.assertTrue(condition);				
 	}
 	
+	@Test
+	public void actualTestByComparingOverllActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
+		KnowledgeBase kb = this.loadMinimalKB();
+		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
+		
+		String testPropertyFile = "configTestPolicentricDefaultWeighConservative.properties";
+		System.getProperties().setProperty(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
+		PropertyUtilNoSingleton.getInstance();
+		
+		PolicentricSemanticSpread pool = new HT13PolicentricSemanticSpread(resourceOriginSet, kb);
+		String fileNamePolicentric = this.getFlushFileName("actualTestByComparingOverllActivationSpreadConf_Policentric");
+		Writer outPolicentric = new FileWriter(fileNamePolicentric);
+		pool.startProcessingAndFlushData(outPolicentric);
+		
+		List<AbstractSemanticSpread> list = pool.getCompletedSemanticSpreadList();
+		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
+		boolean condition = ( semantiSpreadClassName != null );
+		for (AbstractSemanticSpread ss : list) {
+			String originID = ss.getOrigin().getResource().getResourceID();
+			String fileName = this.getFlushFileName("actualTestByComparingOverllActivationSpreadConf_"+originID);
+			Writer out = new FileWriter(fileName);
+			ss.flushData(out);			
+
+			condition = condition && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));				
+		}
+
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+		Assert.assertTrue(condition);				
+	}
+
 	private Set<Node> extractTrivialOriginSet() {
 		Set<Node> s = SetOfNodesFactory.getInstance().getSetOfNodesInstance();
 		
