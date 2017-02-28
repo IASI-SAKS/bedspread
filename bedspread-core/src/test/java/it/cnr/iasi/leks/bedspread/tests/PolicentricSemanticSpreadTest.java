@@ -86,7 +86,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 	
 	@Test
 	public void actualTestByComparingOverllActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
-		KnowledgeBase kb = this.loadMinimalKB(1);
+		KnowledgeBase kb = this.loadMinimalKB(0);
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
 		String testPropertyFile = "configTestPolicentricDefaultWeighConservative.properties";
@@ -107,9 +107,16 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 			Writer out = new FileWriter(fileName);
 			ss.flushData(out);			
 
-			condition = condition && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));				
+			condition = condition && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
+			
+			double score=0;
+			for (Node n : ss.getExporationLeaves()) {
+				score += n.getScore();
+				System.out.print(n.getResource().getResourceID()+", ");
+			}
+			System.out.println(score);
 		}
-
+		
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
 		Assert.assertTrue(condition);				
 	}
