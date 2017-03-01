@@ -49,12 +49,14 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 	private static final String ORIGIN_PREFIX_LABEL = "origin";
 	private static final int NUMBER_OF_ORIGINS = 2;
 
+	private static final double INITIAL_STIMULUS = 1.0;
+	private static final double STIMULUS_DELTA = 0.000000000000001;
+	
 	private static final String INPUT_GRAPH_FILE = "src/test/resources/whiteboardTwoOriginsRDFGraph.csv";
 	private static final String INPUT_TREE_FILE = "src/test/resources/whiteboardTwoOriginsRDFTree.csv";
 	
 	
 	@Test
-	@Ignore
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
 		KnowledgeBase kb = this.loadMinimalKB(0);
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
@@ -86,7 +88,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 	
 	@Test
 	public void actualTestByComparingOverllActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
-		KnowledgeBase kb = this.loadMinimalKB(0);
+		KnowledgeBase kb = this.loadMinimalKB(1);
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
 		String testPropertyFile = "configTestPolicentricDefaultWeighConservative.properties";
@@ -114,7 +116,9 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 				score += n.getScore();
 				System.out.print(n.getResource().getResourceID()+", ");
 			}
-			System.out.println(score);
+			boolean equals = Math.abs(score - INITIAL_STIMULUS) <= STIMULUS_DELTA;
+			condition = condition && equals;
+//			System.out.println(score);
 		}
 		
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
