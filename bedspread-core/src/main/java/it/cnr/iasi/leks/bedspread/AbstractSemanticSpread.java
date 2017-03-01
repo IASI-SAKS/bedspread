@@ -149,7 +149,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.forthcomingActiveNodes.clear();
 		for (AnyResource neighbor : this.kb.getNeighborhood(node.getResource())) {
 			Node neighborNode = new Node(neighbor);
-			if ((! this.activatedNodes.contains(neighborNode)) && (! this.currentlyActiveNodes.contains(neighborNode))){
+			if ((! this.activatedNodes.contains(neighborNode)) && (! this.currentlyActiveNodes.contains(neighborNode)) && (! this.justProcessedForthcomingActiveNodes.contains(neighborNode))){
 // Note that elements already present are not doubled in "forthcomingActiveNodes" according to : java.util.Set				
 				this.forthcomingActiveNodes.add(neighborNode);
 			}	
