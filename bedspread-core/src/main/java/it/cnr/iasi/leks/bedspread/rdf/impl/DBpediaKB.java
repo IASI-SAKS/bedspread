@@ -7,8 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.commons.io.output.ThresholdingOutputStream;
-
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
@@ -19,8 +18,8 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  */
 public class DBpediaKB implements KnowledgeBase {
 
-	private String endpoint = "http://dbpedia.org/sparql";
-	private String graph = "http://dbpedia.org";
+	private String endpoint;
+	private String graph;
 	
 	DBpediaKBCache cache = new DBpediaKBCache();
 	
@@ -29,7 +28,10 @@ public class DBpediaKB implements KnowledgeBase {
 	/**
 	 * 
 	 */
-	public DBpediaKB() {
+	private DBpediaKB() {
+		PropertyUtil p = PropertyUtil.getInstance();
+		this.endpoint = p.getProperty(PropertyUtil.KB_ENDPOINT_LABEL, PropertyUtil.KB_ENDPOINT_DEFAULT);
+		this.graph = p.getProperty(PropertyUtil.KB_ENDPOINT_GRAPH_LABEL, PropertyUtil.KB_ENDPOINT_GRAPH_DEFAULT);
 	}
 	
     public String getEndpoint() {
@@ -56,7 +58,7 @@ public class DBpediaKB implements KnowledgeBase {
 
 
 
-	public static DBpediaKB getInstance(){
+	public synchronized static DBpediaKB getInstance(){
     	if (instance == null){
     		instance = new DBpediaKB();
     	}
