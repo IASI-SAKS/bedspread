@@ -173,7 +173,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 	
-	public Set<Node> getExporationLeaves(){
+	public Set<Node> getExplorationLeaves(){
 		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
 		n.addAll(this.explorationLeaves);
 		

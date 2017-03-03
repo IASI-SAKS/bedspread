@@ -87,7 +87,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 	}
 	
 	@Test
-	public void actualTestByComparingOverllActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
+	public void actualTestByComparingOverallActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
 		KnowledgeBase kb = this.loadMinimalKB(1);
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
@@ -112,7 +112,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 			condition = condition && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
 			
 			double score=0;
-			for (Node n : ss.getExporationLeaves()) {
+			for (Node n : ss.getExplorationLeaves()) {
 				score += n.getScore();
 				System.out.print(n.getResource().getResourceID()+", ");
 			}
