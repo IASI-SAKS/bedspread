@@ -143,53 +143,50 @@ public class EdgeWeighting_IC {
 	}
 	
 	/**
-	 * Compute the information content of an edge having pred as the edge type  
+	 * Compute the information content of an edge, which is identified by a triple 
 	 * @param kb
-	 * @param resource
+	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_IC(DBpediaKB kb, AnyResource pred) {
+	public static double edgeWeight_IC(DBpediaKB kb, RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(kb, pred);
+		result = predicate_IC(kb, edge.getTriplePredicate());
 		return result;
 	}
 	
 	/**
-	 * Compute the Joint Information Content (jointIC) 
+	 * Compute the Joint Information Content (jointIC) of an edge, which is identified by a triple 
 	 * @param kb
-	 * @param pred
-	 * @param node
+	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_jointIC(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double edgeWeight_jointIC(DBpediaKB kb, RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(kb, pred) +  nodeConditionalToPredicate_IC(kb, pred, node);
+		result = predicate_IC(kb, edge.getTriplePredicate()) +  nodeConditionalToPredicate_IC(kb, edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
 	}
 	
 	/**
-	 * Compute the Combined Information Content (combIC)
+	 * Compute the Combined Information Content (combIC), which is identified by a triple
 	 * @param kb
-	 * @param pred
-	 * @param node
+	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_CombIC(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double edgeWeight_CombIC(DBpediaKB kb, RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(kb, pred) + node_IC(kb, node);
+		result = predicate_IC(kb, edge.getTriplePredicate()) + node_IC(kb, edge.getTripleObject());
 		return result;
 	}
 	
 	/**
-	 * Compute the Information Content and Pointwise Mutual Information (IC+PMI)
+	 * Compute the Information Content and Pointwise Mutual Information (IC+PMI), which is identified by a triple 
 	 * @param kb
-	 * @param pred
-	 * @param node
+	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_ICplusPMI(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double edgeWeight_ICplusPMI(DBpediaKB kb, RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(kb, pred) + pmi(kb, pred,node);
+		result = predicate_IC(kb, edge.getTriplePredicate()) + pmi(kb, edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
 	}
 	
