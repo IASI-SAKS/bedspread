@@ -39,8 +39,8 @@ public class EdgeWeighting_IC {
 	 */
 	public static double predicateProbability(DBpediaKB kb, AnyResource resource) {
 		double result = 0.0;
-		int total_triple = kb.countAllTriples();
-		int total_triple_by_predicate = kb.countTriplesByPredicate(resource);
+		double total_triple = kb.countAllTriples();
+		double total_triple_by_predicate = kb.countTriplesByPredicate(resource);
 		result = total_triple_by_predicate/total_triple;
 		return result;
 	}  
@@ -53,8 +53,8 @@ public class EdgeWeighting_IC {
 	 */
 	public static double nodeProbability(DBpediaKB kb, AnyResource resource) {
 		double result = 0.0;
-		int total_triple = kb.countAllTriples();
-		int total_triple_by_node = kb.countTriplesByNode(resource);
+		double total_triple = kb.countAllTriples();
+		double total_triple_by_node = kb.countTriplesByNode(resource);
 		result = total_triple_by_node/total_triple;
 		return result;
 	}
@@ -68,8 +68,8 @@ public class EdgeWeighting_IC {
 	 */
 	public static double nodeProbabilityConditionalToPredicate(DBpediaKB kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
-		int total_triple_by_predicate = kb.countTriplesByPredicate(pred);
-		int total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(kb, pred, node);
+		double total_triple_by_predicate = kb.countTriplesByPredicate(pred);
+		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(kb, pred, node);
 		result = total_triple_by_predicate_and_node/total_triple_by_predicate;
 		return result;
 	}
@@ -83,8 +83,8 @@ public class EdgeWeighting_IC {
 	 */
 	public static double nodeAndPredicateProbability(DBpediaKB kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
-		int total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(kb, pred, node);
-		int total_triple = kb.countAllTriples();
+		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(kb, pred, node);
+		double total_triple = kb.countAllTriples();
 		result = total_triple_by_predicate_and_node/total_triple;
 		return result;
 	}

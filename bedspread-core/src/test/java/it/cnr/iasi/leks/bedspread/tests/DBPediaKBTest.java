@@ -110,4 +110,13 @@ public class DBPediaKBTest {
 		System.out.println("degree="+degree);
 		Assert.assertTrue(degree>0);
 	}
+	
+	@Test
+	public void countAllTriples() {
+		int result = 0;
+		DBpediaKB kb = DBpediaKB.getInstance();
+		result = kb.countAllTriples();
+		System.out.println("countAllTriples="+result);
+		Assert.assertTrue(result>0);
+	}
 }
