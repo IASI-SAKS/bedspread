@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+/**
+ * 
+ * @author ftaglino
+ *
+ */
 public class DBpediaKBCache {
 	
 	int num_total_triple = 0;

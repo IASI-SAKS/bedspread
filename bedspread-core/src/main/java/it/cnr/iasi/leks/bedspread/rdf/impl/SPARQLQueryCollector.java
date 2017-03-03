@@ -9,6 +9,11 @@ import org.apache.jena.rdf.model.RDFNode;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 
+/**
+ * 
+ * @author ftaglino
+ *
+ */
 public class SPARQLQueryCollector {
 
 	public static Vector<AnyResource> getIncomingPredicates(DBpediaKB kb, AnyResource resource) {
