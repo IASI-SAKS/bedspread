@@ -40,6 +40,7 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
 import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /*
@@ -146,6 +147,32 @@ public class SemanticSpreadTest extends AbstractTest{
 		Assert.assertTrue(condition);		
 	}
 
+	@Test
+	public void actualTestByComparingOverllActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
+		KnowledgeBase kb = this.loadMinimalKB();
+		Node resourceOrigin = this.extractTrivialOrigin();
+		TerminationPolicy term = new SimpleTerminationPolicy();
+		
+		String testPropertyFile = "configTestConservative.properties";
+		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
+		PropertyUtilNoSingleton.getInstance();
+		
+		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
+		ss.run();
+		
+		String fileName = this.getFlushFileName("actualTestByComparingOverllActivationSpreadConf");
+		Writer out = new FileWriter(fileName);
+		ss.flushData(out);
+		
+		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
+//		System.out.println(ss.getClass().getTypeName() + ", " + ss.getClass().getName() +", "+ss.getClass().getCanonicalName());
+		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
+		
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+
+		Assert.assertTrue(condition);		
+	}	
+	
 	private Node extractTrivialOrigin() {
 		AnyResource resource = RDFFactory.getInstance().createBlankNode(ORIGIN_LABEL);
 		Node n = new Node(resource);

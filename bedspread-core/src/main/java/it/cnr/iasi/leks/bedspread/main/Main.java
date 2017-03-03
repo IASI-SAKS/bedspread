@@ -26,13 +26,20 @@ import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 public class Main {
 
 	public static void main (String args[]) throws IllegalArgumentException, IllegalAccessException{
-		System.out.println("This Entry Point has not been defined yet!!!");
+		System.err.println("This Entry Point has not been defined yet!!!");
 
 		PropertyUtil prop = PropertyUtil.getInstance();
 		for (Field f : PropertyUtil.class.getFields()) {
 			int fieldModifiers = f.getModifiers();
 			if (Modifier.isFinal(fieldModifiers) && Modifier.isPublic(fieldModifiers)){
-				System.out.println("Label: \'" + f.getName() + "\', Value: \'"+ f.get(prop)+"\'");
+				String msg = "";
+				String labelName = f.getName();
+				String labelValue = f.get(prop).toString();
+				String configuredValue = prop.getProperty(labelValue);
+				if (configuredValue != null){
+					msg = ", Configured Value: \'" + configuredValue +"\'";
+				}
+				System.err.println("Label: \'" + labelName + "\', Value: \'"+ labelValue +"\'" + msg);
 			}
 		}		
 	}

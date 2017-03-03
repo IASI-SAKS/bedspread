@@ -45,6 +45,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	private Set<Node> forthcomingActiveNodes;	
 	private Set<Node> justProcessedForthcomingActiveNodes;
 	
+	private Set<Node> explorationLeaves; 
+	
 	private SetOfNodesFactory setOfNodesFactory;
 	
 	private final Object callbackMutex = new Object();
@@ -71,6 +73,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.activatedNodes = this.setOfNodesFactory.getNaviteSetOfNodesInstance();
 		this.forthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
 		this.justProcessedForthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
+
+		this.explorationLeaves = this.setOfNodesFactory.getSetOfNodesInstance();		
 	}
 
 	public Node getOrigin(){
@@ -90,6 +94,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.activatedNodes.clear();
 		this.forthcomingActiveNodes.clear();
 		this.justProcessedForthcomingActiveNodes.clear();
+		this.explorationLeaves.clear();		
 
 		this.currentlyActiveNodes.add(this.origin);
 	}
@@ -103,6 +108,10 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			this.justProcessedForthcomingActiveNodes.clear();
 			for (Node node : currentlyActiveNodes) {
 				this.extractForthcomingActiveNodes(node);
+				
+				if ((this.forthcomingActiveNodes == null) || this.forthcomingActiveNodes.isEmpty()){
+					this.explorationLeaves.add(node);
+				}
 				
 				for (Node newNode : this.forthcomingActiveNodes) {
 					Double newScore = this.computeScore(node, newNode);
@@ -140,7 +149,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.forthcomingActiveNodes.clear();
 		for (AnyResource neighbor : this.kb.getNeighborhood(node.getResource())) {
 			Node neighborNode = new Node(neighbor);
-			if ((! this.activatedNodes.contains(neighborNode)) && (! this.currentlyActiveNodes.contains(neighborNode))){
+			if ((! this.activatedNodes.contains(neighborNode)) && (! this.currentlyActiveNodes.contains(neighborNode)) && (! this.justProcessedForthcomingActiveNodes.contains(neighborNode))){
 // Note that elements already present are not doubled in "forthcomingActiveNodes" according to : java.util.Set				
 				this.forthcomingActiveNodes.add(neighborNode);
 			}	
@@ -164,6 +173,13 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 	
+	public Set<Node> getExplorationLeaves(){
+		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
+		n.addAll(this.explorationLeaves);
+		
+		return n;
+	}
+
 	public synchronized ComputationStatus getStatus() {
 		return this.status;
 	}
