@@ -20,24 +20,23 @@ package it.cnr.iasi.leks.bedspread.tests;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 
-import org.apache.jena.query.QuerySolution;
 import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.rdf.impl.LiteralImpl;
-import it.cnr.iasi.leks.bedspread.rdf.impl.SPARQLEndpointConnector;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 
 public class DBPediaKBTest {
 
-	//@Test
+	private static final String HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION = "http://dbpedia.org/resource/Innovation";
+
+	@Test
 	public void getIncomingNeighborhood() {
-		DBpediaKB kb = new DBpediaKB();
-		URIImpl node = new URIImpl("http://dbpedia.org/resource/Innovation"); 
+		DBpediaKB kb = DBpediaKB.getInstance();
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
 		Set<URIImpl> uris = new HashSet<URIImpl>();
 		for(AnyResource n:nodes) {
@@ -49,10 +48,10 @@ public class DBPediaKBTest {
 		Assert.assertTrue(nodes.size()>0);
 	}
 
-	//@Test
+	@Test
 	public void getOutgoingNeighborhood() {
-		DBpediaKB kb = new DBpediaKB();
-		URIImpl node = new URIImpl("http://dbpedia.org/resource/Innovation"); 
+		DBpediaKB kb = DBpediaKB.getInstance();
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION); 
 		Set<AnyResource> nodes = kb.getOutgoingNeighborhood(node);
 		Set<URIImpl> uris = new HashSet<URIImpl>();
 		Set<LiteralImpl> lits = new HashSet<LiteralImpl>();
@@ -73,8 +72,8 @@ public class DBPediaKBTest {
 	
 	@Test
 	public void getNeighborhood() {
-		DBpediaKB kb = new DBpediaKB();
-		URIImpl node = new URIImpl("http://dbpedia.org/resource/Innovation"); 
+		DBpediaKB kb = DBpediaKB.getInstance();
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
 		nodes.addAll(kb.getOutgoingNeighborhood(node));
 
@@ -97,16 +96,16 @@ public class DBPediaKBTest {
 	
 	@Test
 	public void isMemberOf() {
-		DBpediaKB kb = new DBpediaKB();
-		URIImpl node = new URIImpl("http://dbpedia.org/resource/Innovation");
+		DBpediaKB kb = DBpediaKB.getInstance();
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION);
 		boolean membership = kb.isMemberof(node);
 		Assert.assertTrue(membership == true);
 	}
 	
 	@Test
 	public void degree() {
-		DBpediaKB kb = new DBpediaKB();
-		URIImpl node = new URIImpl("http://dbpedia.org/resource/Innovation");
+		DBpediaKB kb = DBpediaKB.getInstance();
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION);
 		int degree = kb.degree(node);
 		System.out.println("degree="+degree);
 		Assert.assertTrue(degree>0);

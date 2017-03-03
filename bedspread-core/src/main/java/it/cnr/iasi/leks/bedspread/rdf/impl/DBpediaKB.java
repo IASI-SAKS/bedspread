@@ -1,3 +1,21 @@
+/*
+ * 	 This file is part of Bedspread, originally promoted and
+ *	 developed at CNR-IASI. For more information visit:
+ *	 https://github.com/IASI-LEKS/bedspread
+ *	     
+ *	 This is free software: you can redistribute it and/or modify
+ *	 it under the terms of the GNU General Public License as 
+ *	 published by the Free Software Foundation, either version 3 of the 
+ *	 License, or (at your option) any later version.
+ *	 
+ *	 This software is distributed in the hope that it will be useful,
+ *	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	 GNU General Public License for more details.
+ * 
+ *	 You should have received a copy of the GNU General Public License
+ *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.cnr.iasi.leks.bedspread.rdf.impl;
 /**
  * 
@@ -7,9 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.rdf.model.RDFNode;
-
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
@@ -20,34 +36,63 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  */
 public class DBpediaKB implements KnowledgeBase {
 
-	String DBPEDIA_ENDPOINT = "http://dbpedia.org/sparql";
-	String DBPEDIA_GRAPH = "http://dbpedia.org";
+	private String endpoint;
+	private String graph;
 	
+	DBpediaKBCache cache = new DBpediaKBCache();
+	
+	private static DBpediaKB instance = null;
+	 
 	/**
 	 * 
 	 */
-	public DBpediaKB() {
-		// TODO Auto-generated constructor stub
+	private DBpediaKB() {
+		PropertyUtil p = PropertyUtil.getInstance();
+		this.endpoint = p.getProperty(PropertyUtil.KB_ENDPOINT_LABEL, PropertyUtil.KB_ENDPOINT_DEFAULT);
+		this.graph = p.getProperty(PropertyUtil.KB_ENDPOINT_GRAPH_LABEL, PropertyUtil.KB_ENDPOINT_GRAPH_DEFAULT);
+	}
+	
+    public String getEndpoint() {
+		return endpoint;
 	}
 
+
+
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
+
+
+
+	public String getGraph() {
+		return graph;
+	}
+
+
+
+	public void setGraph(String graph) {
+		this.graph = graph;
+	}
+
+
+
+	public synchronized static DBpediaKB getInstance(){
+    	if (instance == null){
+    		instance = new DBpediaKB();
+    	}
+    	return instance;
+    }
+	
 	/* (non-Javadoc)
 	 * @see it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase#degree(it.cnr.iasi.leks.bedspread.rdf.AnyResource)
 	 */
 	@Override
 	public int degree(AnyResource resource) {
-		int result = 0; 
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(DBPEDIA_ENDPOINT);
-		
-		// Search for incoming predicates
-		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+DBPEDIA_GRAPH+"> WHERE {"
-				+ "{?s ?p <"+resource.getResourceID()+">} "
-				+ "UNION "
-				+ "{<"+resource.getResourceID()+"> ?p ?o}"
-				+ "}";
-		
-		Vector<QuerySolution> query_results = sec.execQuery(queryString);
-		if(query_results.size()>0)
-			result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
+		int result = 0; 	
+		Vector<AnyResource> incoming_predicates = SPARQLQueryCollector.getIncomingPredicates(this, resource);
+		Vector<AnyResource> outgoing_predicates = SPARQLQueryCollector.getOutgoingPredicates(this, resource);
+
+		result = incoming_predicates.size() + outgoing_predicates.size(); 
 		
 		return result;
 	}
@@ -67,21 +112,13 @@ public class DBpediaKB implements KnowledgeBase {
 	@Override
 	public boolean isMemberof(AnyResource resource) {
 		boolean result = false;
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(DBPEDIA_ENDPOINT);
-		Vector<QuerySolution> query_results;
-		if(resource instanceof URIImpl) {
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+DBPEDIA_GRAPH+"> WHERE {"
-					+ "{?s1 ?p1 <"+resource.getResourceID()+">} "
-					+ "UNION "
-					+ "{<"+resource.getResourceID()+"> ?p2 ?o2}"
-					+ "UNION "
-					+ "{ ?s3 <"+resource.getResourceID()+"> ?o3}"
-					+ "}";
-			query_results = sec.execQuery(queryString);
-			if(query_results.size()>0)
-				if(query_results.elementAt(0).getLiteral("count").asLiteral().getInt()>0)
-					result = true;
-		}
+
+		boolean isPredicate = SPARQLQueryCollector.isPredicate(this, resource);
+		boolean isNode = SPARQLQueryCollector.isNode(this, resource);
+		
+		if(isPredicate || isNode )
+			result = true;
+		
 		return result;
 	}
 
@@ -95,58 +132,129 @@ public class DBpediaKB implements KnowledgeBase {
 		return result;
 	}
 	
-	/**
-	 * Return all the resources that play the role of SUBJECT in the triples having the passed resource as the OBJECT
-	 * If more than a triple having the same SUBJECT and OBJECT exists, this is not recorded (the returning type is a Set and not a Vector. 
-	 * @param resource
-	 * @return 
-	 */
 	public Set<AnyResource> getIncomingNeighborhood(AnyResource resource) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(DBPEDIA_ENDPOINT);
-		
-		String queryString = "SELECT ?s FROM <"+DBPEDIA_GRAPH+"> WHERE {"
-				+ "?s ?p <"+resource.getResourceID()+">"
-				+ "}";
-		
-		Vector<QuerySolution> query_results = sec.execQuery(queryString);
-		
-		for(int i=0; i<query_results.size(); i++) {
-			String neighboor = query_results.elementAt(i).getResource("s").getURI().toString();  
-			result.add(new URIImpl(neighboor)); 
- 		}		
+		result = SPARQLQueryCollector.getIncomingNeighborhood(this, resource);
 		return result;
 	}
 
-	/**
-	 * Return all the resources that play the role of OBJECT in the triples having the passed resource as the SUBJECT
-	 * If more than a triple having the same SUBJECT and OBJECT exists, this is not recorded (the returning type is a Set and not a Vector. 
-	 * @param resource
-	 * @return 
-	 */
+
 	public Set<AnyResource> getOutgoingNeighborhood(AnyResource resource) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(DBPEDIA_ENDPOINT);
-		
-		String queryString = "SELECT ?o FROM <"+DBPEDIA_GRAPH+"> WHERE {"
-				+ "<"+resource.getResourceID()+"> ?p ?o "
-				+ "}";
-		
-		Vector<QuerySolution> query_results = sec.execQuery(queryString);
-		
-		for(int i=0; i<query_results.size(); i++) {
-			RDFNode node = query_results.elementAt(i).get("o");
-			if(node.isResource()) {
-				String neighboor = node.asResource().getURI().toString();  
-				result.add(new URIImpl(neighboor));
-			}
-			if(node.isLiteral()) {
-				String neighboor = node.asLiteral().toString();
-				result.add(new LiteralImpl(neighboor));
-			}
- 		}		
+		result = SPARQLQueryCollector.getOutgoingNeighborhood(this, resource);
 		return result;
 	}
 	
 	
+	public int countAllTriples() {
+		int result = 0;
+		
+		if(this.cache.num_total_triple!=0)
+			result = this.cache.num_total_triple;
+		else {
+			result = SPARQLQueryCollector.countTotalTriples(this);
+			this.cache.num_total_triple = result;
+		}
+		
+		return result;
+	}
+	
+	
+	public int countTriplesByPredicate(AnyResource resource) {
+		int result = 0;
+		
+		if(this.cache.num_triples_by_predicate.containsKey(resource.getResourceID()))
+			result = this.cache.num_triples_by_predicate.get(resource.getResourceID());
+		else {
+			result = SPARQLQueryCollector.countTriplesByPredicate(this, resource);
+			this.cache.num_triples_by_predicate.put(resource.getResourceID(), result);
+		}
+			
+		return result;
+	}
+
+	public int countTriplesBySubject(AnyResource resource) {
+		int result = 0;
+		
+		if(this.cache.num_triples_by_subject.containsKey(resource.getResourceID()))
+			result = this.cache.num_triples_by_subject.get(resource.getResourceID());
+		else {
+			result = SPARQLQueryCollector.countTriplesBySubject(this, resource);
+			this.cache.num_triples_by_subject.put(resource.getResourceID(), result);
+		}
+
+		return result;
+	}
+	
+	public int countTriplesByObject(AnyResource resource) {
+		int result = 0;
+		
+		if(this.cache.num_triples_by_object.containsKey(resource.getResourceID()))
+			result = this.cache.num_triples_by_object.get(resource.getResourceID());
+		else {
+			result = SPARQLQueryCollector.countTriplesByObject(this, resource);
+			this.cache.num_triples_by_object.put(resource.getResourceID(), result);
+		}
+		
+		return result;
+	}
+	
+	public int countTriplesByNode(AnyResource resource) {
+		int result = 0;
+		
+		if(this.cache.num_triples_by_node.containsKey(resource.getResourceID()))
+			result = this.cache.num_triples_by_node.get(resource.getResourceID());
+		else {
+			result = SPARQLQueryCollector.countTriplesByNode(this, resource);
+			this.cache.num_triples_by_node.put(resource.getResourceID(), result);
+		}
+		
+		return result;
+	}
+	
+	public int countTriplesByPredicateAndObject(DBpediaKB kb, AnyResource pred, AnyResource node) {
+		int result = 0;
+		Vector<String> pair = new Vector<String>();
+		pair.add(pred.getResourceID());
+		pair.add(node.getResourceID());
+		if(this.cache.num_triples_by_predicate_and_object.containsKey(pair))
+			result = this.cache.num_triples_by_predicate_and_object.get(pair);
+		else {
+			result = SPARQLQueryCollector.countTriplesByPredicateAndObject(this, pred, node);
+			this.cache.num_triples_by_predicate_and_object.put(pair, result);
+		}
+		
+		return result;
+	}
+	
+	public int countTriplesByPredicateAndSubject(DBpediaKB kb, AnyResource pred, AnyResource node) {
+		int result = 0;
+		Vector<String> pair = new Vector<String>();
+		pair.add(pred.getResourceID());
+		pair.add(node.getResourceID());
+		if(this.cache.num_triples_by_predicate_and_subject.containsKey(pair))
+			result = this.cache.num_triples_by_predicate_and_subject.get(pair);
+		else {
+			result = SPARQLQueryCollector.countTriplesByPredicateAndSubject(this, pred, node);
+			this.cache.num_triples_by_predicate_and_subject.put(pair, result);
+		}
+		
+		return result;
+	}
+	
+	public int countTriplesByPredicateAndNode(DBpediaKB kb, AnyResource pred, AnyResource node) {
+		int result = 0;
+		Vector<String> pair = new Vector<String>();
+		pair.add(pred.getResourceID());
+		pair.add(node.getResourceID());
+		if(this.cache.num_triples_by_predicate_and_node.containsKey(pair))
+			result = this.cache.num_triples_by_predicate_and_node.get(pair);
+		else {
+			result = SPARQLQueryCollector.countTriplesByPredicateAndNode(this, pred, node);
+			this.cache.num_triples_by_predicate_and_node.put(pair, result);
+		}
+		
+		return result;
+		
+	}
 }
