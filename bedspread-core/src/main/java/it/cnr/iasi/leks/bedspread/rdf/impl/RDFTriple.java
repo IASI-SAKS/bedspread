@@ -73,4 +73,12 @@ public class RDFTriple {
 		return newHash;
 	}
 
+	@Override
+	public String toString(){
+		return 	"<" 
+				+this.tripleSubject.getResourceID() + ", "
+				+this.triplePredicate.getResourceID() +", "
+				+this.tripleObject.getResourceID()
+				+">";
+	}
 }
