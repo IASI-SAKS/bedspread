@@ -137,8 +137,7 @@ public class DBpediaKB implements KnowledgeBase {
 		result = SPARQLQueryCollector.getIncomingNeighborhood(this, resource);
 		return result;
 	}
-
-
+	
 	public Set<AnyResource> getOutgoingNeighborhood(AnyResource resource) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 		result = SPARQLQueryCollector.getOutgoingNeighborhood(this, resource);
@@ -212,7 +211,7 @@ public class DBpediaKB implements KnowledgeBase {
 		return result;
 	}
 	
-	public int countTriplesByPredicateAndObject(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public int countTriplesByPredicateAndObject(AnyResource pred, AnyResource node) {
 		int result = 0;
 		Vector<String> pair = new Vector<String>();
 		pair.add(pred.getResourceID());
@@ -227,7 +226,7 @@ public class DBpediaKB implements KnowledgeBase {
 		return result;
 	}
 	
-	public int countTriplesByPredicateAndSubject(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public int countTriplesByPredicateAndSubject(AnyResource pred, AnyResource node) {
 		int result = 0;
 		Vector<String> pair = new Vector<String>();
 		pair.add(pred.getResourceID());
@@ -242,7 +241,7 @@ public class DBpediaKB implements KnowledgeBase {
 		return result;
 	}
 	
-	public int countTriplesByPredicateAndNode(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public int countTriplesByPredicateAndNode(AnyResource pred, AnyResource node) {
 		int result = 0;
 		Vector<String> pair = new Vector<String>();
 		pair.add(pred.getResourceID());
@@ -256,5 +255,11 @@ public class DBpediaKB implements KnowledgeBase {
 		
 		return result;
 		
+	}
+	
+	public Set<AnyResource> getPredicatesBySubjectAndObject(AnyResource r1, AnyResource r2) {
+		Set<AnyResource> result = new HashSet<AnyResource>();
+		result = SPARQLQueryCollector.getPredicatesBySubjectAndObject(this, r1, r2);
+		return result;
 	}
 }

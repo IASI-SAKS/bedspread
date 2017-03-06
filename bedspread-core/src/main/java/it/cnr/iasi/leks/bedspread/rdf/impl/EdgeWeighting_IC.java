@@ -69,7 +69,7 @@ public class EdgeWeighting_IC {
 	public static double nodeProbabilityConditionalToPredicate(DBpediaKB kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
 		double total_triple_by_predicate = kb.countTriplesByPredicate(pred);
-		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(kb, pred, node);
+		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(pred, node);
 		result = total_triple_by_predicate_and_node/total_triple_by_predicate;
 		return result;
 	}
@@ -83,7 +83,7 @@ public class EdgeWeighting_IC {
 	 */
 	public static double nodeAndPredicateProbability(DBpediaKB kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
-		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(kb, pred, node);
+		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(pred, node);
 		double total_triple = kb.countAllTriples();
 		result = total_triple_by_predicate_and_node/total_triple;
 		return result;

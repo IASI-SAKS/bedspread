@@ -32,19 +32,21 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 public class DBPediaKBTest {
 
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION = "http://dbpedia.org/resource/Innovation";
+	private static final String HTTP_DBPEDIA_ORG_RESOURCE_REIGATE = "http://dbpedia.org/resource/Reigate";
+	
 
 	@Test
 	public void getIncomingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION); 
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_REIGATE); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
 		Set<URIImpl> uris = new HashSet<URIImpl>();
 		for(AnyResource n:nodes) {
 				uris.add((URIImpl)n);
-				System.out.println("Resource: "+n.getResourceID());
+				System.out.println("incomingNeighbor: "+n.getResourceID());
 		}
-		System.out.println("Total URIs = "+uris.size());
-
+		System.out.println("incomingNeighborhood = "+uris.size());
+				
 		Assert.assertTrue(nodes.size()>0);
 	}
 
@@ -58,15 +60,15 @@ public class DBPediaKBTest {
 		for(AnyResource n:nodes) {
 			if(n instanceof URIImpl) {
 				uris.add((URIImpl)n);
-				System.out.println("Resource: "+n.getResourceID());
+				System.out.println("outgoingNeighbor: "+n.getResourceID());
 			}
 			else if (n instanceof LiteralImpl) {
 				lits.add((LiteralImpl)n);
 				System.out.println("Literal: "+n.getResourceID());
 			}
 		}
-		System.out.println("Total URIs = "+uris.size());
-		System.out.println("Total Literals = "+lits.size());
+		System.out.println("outgoiingNeighborhood(URIs) = "+uris.size());
+		System.out.println("outgoingNeighborhood(Literals) = "+lits.size());
 		Assert.assertTrue(nodes.size()>0);
 	}
 	
@@ -119,4 +121,5 @@ public class DBPediaKBTest {
 		System.out.println("countAllTriples="+result);
 		Assert.assertTrue(result>0);
 	}
+
 }
