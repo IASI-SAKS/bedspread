@@ -151,17 +151,14 @@ public class SPARQLQueryCollector {
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
 		
 		for(int i=0; i<query_results.size(); i++) {
-			String r = query_results.elementAt(i).getResource("o").getURI().toString();
-			if(!(r.equals(resource.getResourceID()))) {
-				RDFNode node = query_results.elementAt(i).get("o");
-				if(node.isResource()) {
-					String neighboor = node.asResource().getURI().toString();  
-					result.add(new URIImpl(neighboor));
-				}
-				if(node.isLiteral()) {
-					String neighboor = node.asLiteral().toString();
-					result.add(new LiteralImpl(neighboor));
-				}
+			RDFNode node = query_results.elementAt(i).get("o");
+			if(node.isResource() && !(query_results.elementAt(i).getResource("o").getURI().toString().equals(resource.getResourceID()))) {
+				String neighboor = node.asResource().getURI().toString();  
+				result.add(new URIImpl(neighboor));
+			}
+			if(node.isLiteral()) {
+				String neighboor = node.asLiteral().toString();
+				result.add(new LiteralImpl(neighboor));
 			}
  		}		
 		return result;
