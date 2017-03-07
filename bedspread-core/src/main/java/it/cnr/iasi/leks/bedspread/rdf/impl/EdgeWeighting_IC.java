@@ -39,8 +39,8 @@ public class EdgeWeighting_IC {
 	 */
 	public static double predicateProbability(DBpediaKB kb, AnyResource resource) {
 		double result = 0.0;
-		int total_triple = kb.countAllTriples();
-		int total_triple_by_predicate = kb.countTriplesByPredicate(resource);
+		double total_triple = kb.countAllTriples();
+		double total_triple_by_predicate = kb.countTriplesByPredicate(resource);
 		result = total_triple_by_predicate/total_triple;
 		return result;
 	}  
@@ -53,8 +53,8 @@ public class EdgeWeighting_IC {
 	 */
 	public static double nodeProbability(DBpediaKB kb, AnyResource resource) {
 		double result = 0.0;
-		int total_triple = kb.countAllTriples();
-		int total_triple_by_node = kb.countTriplesByNode(resource);
+		double total_triple = kb.countAllTriples();
+		double total_triple_by_node = kb.countTriplesByNode(resource);
 		result = total_triple_by_node/total_triple;
 		return result;
 	}
@@ -68,8 +68,8 @@ public class EdgeWeighting_IC {
 	 */
 	public static double nodeProbabilityConditionalToPredicate(DBpediaKB kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
-		int total_triple_by_predicate = kb.countTriplesByPredicate(pred);
-		int total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(kb, pred, node);
+		double total_triple_by_predicate = kb.countTriplesByPredicate(pred);
+		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(pred, node);
 		result = total_triple_by_predicate_and_node/total_triple_by_predicate;
 		return result;
 	}
@@ -83,8 +83,8 @@ public class EdgeWeighting_IC {
 	 */
 	public static double nodeAndPredicateProbability(DBpediaKB kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
-		int total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(kb, pred, node);
-		int total_triple = kb.countAllTriples();
+		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(pred, node);
+		double total_triple = kb.countAllTriples();
 		result = total_triple_by_predicate_and_node/total_triple;
 		return result;
 	}
@@ -143,53 +143,50 @@ public class EdgeWeighting_IC {
 	}
 	
 	/**
-	 * Compute the information content of an edge having pred as the edge type  
+	 * Compute the information content of an edge, which is identified by a triple 
 	 * @param kb
-	 * @param resource
+	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_IC(DBpediaKB kb, AnyResource pred) {
+	public static double edgeWeight_IC(DBpediaKB kb, RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(kb, pred);
+		result = predicate_IC(kb, edge.getTriplePredicate());
 		return result;
 	}
 	
 	/**
-	 * Compute the Joint Information Content (jointIC) 
+	 * Compute the Joint Information Content (jointIC) of an edge, which is identified by a triple 
 	 * @param kb
-	 * @param pred
-	 * @param node
+	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_jointIC(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double edgeWeight_jointIC(DBpediaKB kb, RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(kb, pred) +  nodeConditionalToPredicate_IC(kb, pred, node);
+		result = predicate_IC(kb, edge.getTriplePredicate()) +  nodeConditionalToPredicate_IC(kb, edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
 	}
 	
 	/**
-	 * Compute the Combined Information Content (combIC)
+	 * Compute the Combined Information Content (combIC), which is identified by a triple
 	 * @param kb
-	 * @param pred
-	 * @param node
+	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_CombIC(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double edgeWeight_CombIC(DBpediaKB kb, RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(kb, pred) + node_IC(kb, node);
+		result = predicate_IC(kb, edge.getTriplePredicate()) + node_IC(kb, edge.getTripleObject());
 		return result;
 	}
 	
 	/**
-	 * Compute the Information Content and Pointwise Mutual Information (IC+PMI)
+	 * Compute the Information Content and Pointwise Mutual Information (IC+PMI), which is identified by a triple 
 	 * @param kb
-	 * @param pred
-	 * @param node
+	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_ICplusPMI(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double edgeWeight_ICplusPMI(DBpediaKB kb, RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(kb, pred) + pmi(kb, pred,node);
+		result = predicate_IC(kb, edge.getTriplePredicate()) + pmi(kb, edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
 	}
 	
