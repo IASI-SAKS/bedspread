@@ -191,7 +191,7 @@ public class RDFGraph implements KnowledgeBase {
 
 	@Override
 	public int countAllTriples() {
-		return subjectsMap.size();
+		return subjectsMap.values().size();
 	}
 
 	@Override
