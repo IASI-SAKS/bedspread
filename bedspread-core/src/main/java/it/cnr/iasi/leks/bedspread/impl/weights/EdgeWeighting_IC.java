@@ -16,9 +16,11 @@
  *	 You should have received a copy of the GNU General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.rdf.impl;
+package it.cnr.iasi.leks.bedspread.impl.weights;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 
 /**
  * The Implementation of this class refers to the following publication
@@ -37,7 +39,7 @@ public class EdgeWeighting_IC {
 	 * @param resource
 	 * @return
 	 */
-	public static double predicateProbability(DBpediaKB kb, AnyResource resource) {
+	public static double predicateProbability(KnowledgeBase kb, AnyResource resource) {
 		double result = 0.0;
 		double total_triple = kb.countAllTriples();
 		double total_triple_by_predicate = kb.countTriplesByPredicate(resource);
@@ -51,7 +53,7 @@ public class EdgeWeighting_IC {
 	 * @param resource
 	 * @return
 	 */
-	public static double nodeProbability(DBpediaKB kb, AnyResource resource) {
+	public static double nodeProbability(KnowledgeBase kb, AnyResource resource) {
 		double result = 0.0;
 		double total_triple = kb.countAllTriples();
 		double total_triple_by_node = kb.countTriplesByNode(resource);
@@ -66,7 +68,7 @@ public class EdgeWeighting_IC {
 	 * @param node
 	 * @return
 	 */
-	public static double nodeProbabilityConditionalToPredicate(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double nodeProbabilityConditionalToPredicate(KnowledgeBase kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
 		double total_triple_by_predicate = kb.countTriplesByPredicate(pred);
 		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(pred, node);
@@ -81,7 +83,7 @@ public class EdgeWeighting_IC {
 	 * @param node
 	 * @return
 	 */
-	public static double nodeAndPredicateProbability(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double nodeAndPredicateProbability(KnowledgeBase kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
 		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndNode(pred, node);
 		double total_triple = kb.countAllTriples();
@@ -95,7 +97,7 @@ public class EdgeWeighting_IC {
 	 * @param resource
 	 * @return
 	 */
-	public static double predicate_IC(DBpediaKB kb, AnyResource resource) {
+	public static double predicate_IC(KnowledgeBase kb, AnyResource resource) {
 		double result = 0.0;
 		result = - Math.log(predicateProbability(kb, resource));
 		return result;
@@ -107,7 +109,7 @@ public class EdgeWeighting_IC {
 	 * @param resource
 	 * @return
 	 */
-	public static double node_IC(DBpediaKB kb, AnyResource resource) {
+	public static double node_IC(KnowledgeBase kb, AnyResource resource) {
 		double result = 0.0;
 		result = - Math.log(nodeProbability(kb, resource));
 		return result;
@@ -120,7 +122,7 @@ public class EdgeWeighting_IC {
 	 * @param node
 	 * @return
 	 */
-	public static double nodeConditionalToPredicate_IC(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double nodeConditionalToPredicate_IC(KnowledgeBase kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
 		result = - Math.log(nodeProbabilityConditionalToPredicate(kb, pred, node));
 		return result;
@@ -133,7 +135,7 @@ public class EdgeWeighting_IC {
 	 * @param node
 	 * @return
 	 */
-	public static double pmi(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static double pmi(KnowledgeBase kb, AnyResource pred, AnyResource node) {
 		double result = 0.0;
 		double nodeAndPredicateProbability = nodeAndPredicateProbability(kb, pred, node);
 		double predicateProbability = predicateProbability(kb, pred);
@@ -148,7 +150,7 @@ public class EdgeWeighting_IC {
 	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_IC(DBpediaKB kb, RDFTriple edge) {
+	public static double edgeWeight_IC(KnowledgeBase kb, RDFTriple edge) {
 		double result = 0.0;
 		result = predicate_IC(kb, edge.getTriplePredicate());
 		return result;
@@ -160,7 +162,7 @@ public class EdgeWeighting_IC {
 	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_jointIC(DBpediaKB kb, RDFTriple edge) {
+	public static double edgeWeight_jointIC(KnowledgeBase kb, RDFTriple edge) {
 		double result = 0.0;
 		result = predicate_IC(kb, edge.getTriplePredicate()) +  nodeConditionalToPredicate_IC(kb, edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
@@ -172,7 +174,7 @@ public class EdgeWeighting_IC {
 	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_CombIC(DBpediaKB kb, RDFTriple edge) {
+	public static double edgeWeight_CombIC(KnowledgeBase kb, RDFTriple edge) {
 		double result = 0.0;
 		result = predicate_IC(kb, edge.getTriplePredicate()) + node_IC(kb, edge.getTripleObject());
 		return result;
@@ -184,7 +186,7 @@ public class EdgeWeighting_IC {
 	 * @param edge
 	 * @return
 	 */
-	public static double edgeWeight_ICplusPMI(DBpediaKB kb, RDFTriple edge) {
+	public static double edgeWeight_ICplusPMI(KnowledgeBase kb, RDFTriple edge) {
 		double result = 0.0;
 		result = predicate_IC(kb, edge.getTriplePredicate()) + pmi(kb, edge.getTriplePredicate(), edge.getTripleObject());
 		return result;

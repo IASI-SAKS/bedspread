@@ -24,10 +24,10 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import it.cnr.iasi.leks.bedspread.impl.weights.EdgeWeighting_IC;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
-import it.cnr.iasi.leks.bedspread.rdf.impl.EdgeWeighting_IC;
 import it.cnr.iasi.leks.bedspread.rdf.impl.LiteralImpl;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;

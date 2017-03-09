@@ -31,4 +31,10 @@ public interface KnowledgeBase {
 	public int depth(AnyResource resource);
 	public boolean isMemberof(AnyResource resource);
 	public Set<AnyResource> getNeighborhood (AnyResource resource);
+	
+	public Set<AnyResource> getPredicatesBySubjectAndObject(AnyResource r1, AnyResource r2);
+	public int countAllTriples();
+	public int countTriplesByPredicate(AnyResource resource);
+	public int countTriplesByNode(AnyResource resource);
+	public int countTriplesByPredicateAndNode(AnyResource pred, AnyResource node);
 }
