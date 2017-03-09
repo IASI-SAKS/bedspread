@@ -23,8 +23,8 @@ import java.util.Set;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
-import it.cnr.iasi.leks.bedspread.rdf.impl.EdgeWeighting_IC;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 
@@ -35,9 +35,9 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
  */
 public class SemanticWeighting_IC implements WeightingFunction {
 
-	DBpediaKB kb;
+	KnowledgeBase kb;
 	
-	public SemanticWeighting_IC(DBpediaKB kb) {
+	public SemanticWeighting_IC(KnowledgeBase kb) {
 		this.kb = kb;
 	}
 	

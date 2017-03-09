@@ -93,7 +93,7 @@ public class SPARQLQueryCollector {
 	 * @param resource
 	 * @return 
 	 */
-	public static boolean isNode(DBpediaKB kb, AnyResource resource) {
+	public static boolean isSubjectOrObject(DBpediaKB kb, AnyResource resource) {
 		boolean result = false;
 
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
@@ -232,8 +232,7 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 
-	//TO BE TESTED
-	public static int countTriplesByNode(DBpediaKB kb, AnyResource resource) {
+	public static int countTriplesBySubjectOrObject(DBpediaKB kb, AnyResource resource) {
 		int result = 0;
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
@@ -253,16 +252,16 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static int countTriplesByPredicateAndObject(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static int countTriplesByPredicateAndObject(DBpediaKB kb, AnyResource predicate, AnyResource resource) {
 		int result = 0;
 
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 
 		Vector<QuerySolution> query_results;
-		if(pred instanceof URIImpl) {
-			if(node instanceof URIImpl) {
+		if(predicate instanceof URIImpl) {
+			if(resource instanceof URIImpl) {
 				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE { "
-						+ "?s <"+pred.getResourceID()+"> <"+node.getResourceID()+"> "
+						+ "?s <"+predicate.getResourceID()+"> <"+resource.getResourceID()+"> "
 						+ "}";
 				query_results = sec.execQuery(queryString);
 				if(query_results.size()>0)
@@ -274,15 +273,15 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static int countTriplesByPredicateAndSubject(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static int countTriplesByPredicateAndSubject(DBpediaKB kb, AnyResource predicate, AnyResource resource) {
 		int result = 0;
 
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 
 		Vector<QuerySolution> query_results;
-		if((pred instanceof URIImpl) && (node instanceof URIImpl)) {
+		if((predicate instanceof URIImpl) && (resource instanceof URIImpl)) {
 			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE { "
-					+ "?s <"+node.getResourceID()+"> <"+pred.getResourceID()+"> "
+					+ "?s <"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> "
 					+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
@@ -292,17 +291,17 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static int countTriplesByPredicateAndNode(DBpediaKB kb, AnyResource pred, AnyResource node) {
+	public static int countTriplesByPredicateAndSubjectOrObject(DBpediaKB kb, AnyResource predicate, AnyResource resource) {
 		int result = 0;
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
 		Vector<QuerySolution> query_results;
-		if(pred instanceof URIImpl) {
-			if(node instanceof URIImpl) {
+		if(predicate instanceof URIImpl) {
+			if(resource instanceof URIImpl) {
 				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-						+ "{<"+node.getResourceID()+"> <"+pred.getResourceID()+"> ?o} "
+						+ "{<"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> ?o} "
 						+ "UNION "
-						+ "{?s <"+pred.getResourceID()+ "> <"+node.getResourceID()+">} "
+						+ "{?s <"+predicate.getResourceID()+ "> <"+resource.getResourceID()+">} "
 						+ "}";
 				query_results = sec.execQuery(queryString);
 				if(query_results.size()>0)

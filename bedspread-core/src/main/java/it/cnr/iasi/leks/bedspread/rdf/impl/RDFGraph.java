@@ -167,5 +167,65 @@ public class RDFGraph implements KnowledgeBase {
 
 		return outputSet;
 	}
-	
+
+	@Override
+	public Set<AnyResource> getPredicatesBySubjectAndObject(AnyResource r1, AnyResource r2) {
+		Set<AnyResource> result = new HashSet<AnyResource>();
+		Set<RDFTriple> triplesBySubject = subjectsMap.get(r1.getResourceID());
+		Set<RDFTriple> triplesByObject = objectsMap.get(r1.getResourceID());
+		
+		Set<String> preds = new HashSet<String>(); 
+		
+		for(RDFTriple t:triplesBySubject) 
+			preds.add(t.getTriplePredicate().getResourceID());
+		for(RDFTriple t:triplesByObject) 
+			preds.add(t.getTriplePredicate().getResourceID());
+			
+		for(String p:preds) {
+			URIImpl r = new URIImpl(p);
+			result.add(r);
+		}	
+		
+		return result;
+	}
+
+	@Override
+	public int countAllTriples() {
+		return subjectsMap.values().size();
+	}
+
+	@Override
+	public int countTriplesByPredicate(AnyResource resource) {
+		int result = 0;
+		result = predicatesMap.get(resource.getResourceID()).size();
+		return result;
+	}
+
+	@Override
+	public int countTriplesBySubjectOrObject(AnyResource resource) {
+		int result = 0; 
+		
+		Set<RDFTriple> triplesBySubject = subjectsMap.get(resource.getResourceID());
+		Set<RDFTriple> triplesByObject = objectsMap.get(resource.getResourceID());
+		
+		result = triplesBySubject.size();
+		for(RDFTriple t:triplesByObject) 
+			if(!(triplesBySubject.contains(t)))
+				result ++;
+			
+		return result;
+	}
+
+	@Override
+	public int countTriplesByPredicateAndSubjectOrObject(AnyResource pred, AnyResource resource) {
+		int result = 0;
+		
+		Set<RDFTriple> triplesByPredicates = objectsMap.get(resource.getResourceID());
+		for(RDFTriple t:triplesByPredicates) 
+			if((t.getTripleSubject().getResourceID().equals(resource.getResourceID())) ||
+					(t.getTripleObject().getResourceID().equals(resource.getResourceID())))
+				result ++;
+		
+		return result;
+	}	
 }
