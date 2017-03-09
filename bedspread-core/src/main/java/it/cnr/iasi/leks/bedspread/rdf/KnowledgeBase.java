@@ -34,7 +34,7 @@ public interface KnowledgeBase {
 	
 	public Set<AnyResource> getPredicatesBySubjectAndObject(AnyResource r1, AnyResource r2);
 	public int countAllTriples();
-	public int countTriplesByPredicate(AnyResource resource);
-	public int countTriplesByNode(AnyResource resource);
-	public int countTriplesByPredicateAndNode(AnyResource pred, AnyResource node);
+	public int countTriplesByPredicate(AnyResource r);
+	public int countTriplesBySubjectOrObject(AnyResource r);
+	public int countTriplesByPredicateAndSubjectOrObject(AnyResource pred, AnyResource r);
 }

@@ -114,9 +114,9 @@ public class DBpediaKB implements KnowledgeBase {
 		boolean result = false;
 
 		boolean isPredicate = SPARQLQueryCollector.isPredicate(this, resource);
-		boolean isNode = SPARQLQueryCollector.isNode(this, resource);
+		boolean isSubjectOrObject = SPARQLQueryCollector.isSubjectOrObject(this, resource);
 		
-		if(isPredicate || isNode )
+		if(isPredicate || isSubjectOrObject )
 			result = true;
 		
 		return result;
@@ -198,59 +198,59 @@ public class DBpediaKB implements KnowledgeBase {
 		return result;
 	}
 	
-	public int countTriplesByNode(AnyResource resource) {
+	public int countTriplesBySubjectOrObject(AnyResource resource) {
 		int result = 0;
 		
-		if(this.cache.num_triples_by_node.containsKey(resource.getResourceID()))
-			result = this.cache.num_triples_by_node.get(resource.getResourceID());
+		if(this.cache.num_triples_by_subject_or_object.containsKey(resource.getResourceID()))
+			result = this.cache.num_triples_by_subject_or_object.get(resource.getResourceID());
 		else {
-			result = SPARQLQueryCollector.countTriplesByNode(this, resource);
-			this.cache.num_triples_by_node.put(resource.getResourceID(), result);
+			result = SPARQLQueryCollector.countTriplesBySubjectOrObject(this, resource);
+			this.cache.num_triples_by_subject_or_object.put(resource.getResourceID(), result);
 		}
 		
 		return result;
 	}
 	
-	public int countTriplesByPredicateAndObject(AnyResource pred, AnyResource node) {
+	public int countTriplesByPredicateAndObject(AnyResource predicate, AnyResource resource) {
 		int result = 0;
 		Vector<String> pair = new Vector<String>();
-		pair.add(pred.getResourceID());
-		pair.add(node.getResourceID());
+		pair.add(predicate.getResourceID());
+		pair.add(resource.getResourceID());
 		if(this.cache.num_triples_by_predicate_and_object.containsKey(pair))
 			result = this.cache.num_triples_by_predicate_and_object.get(pair);
 		else {
-			result = SPARQLQueryCollector.countTriplesByPredicateAndObject(this, pred, node);
+			result = SPARQLQueryCollector.countTriplesByPredicateAndObject(this, predicate, resource);
 			this.cache.num_triples_by_predicate_and_object.put(pair, result);
 		}
 		
 		return result;
 	}
 	
-	public int countTriplesByPredicateAndSubject(AnyResource pred, AnyResource node) {
+	public int countTriplesByPredicateAndSubject(AnyResource predicate, AnyResource resource) {
 		int result = 0;
 		Vector<String> pair = new Vector<String>();
-		pair.add(pred.getResourceID());
-		pair.add(node.getResourceID());
+		pair.add(predicate.getResourceID());
+		pair.add(resource.getResourceID());
 		if(this.cache.num_triples_by_predicate_and_subject.containsKey(pair))
 			result = this.cache.num_triples_by_predicate_and_subject.get(pair);
 		else {
-			result = SPARQLQueryCollector.countTriplesByPredicateAndSubject(this, pred, node);
+			result = SPARQLQueryCollector.countTriplesByPredicateAndSubject(this, predicate, resource);
 			this.cache.num_triples_by_predicate_and_subject.put(pair, result);
 		}
 		
 		return result;
 	}
 	
-	public int countTriplesByPredicateAndNode(AnyResource pred, AnyResource node) {
+	public int countTriplesByPredicateAndSubjectOrObject(AnyResource predicate, AnyResource resource) {
 		int result = 0;
 		Vector<String> pair = new Vector<String>();
-		pair.add(pred.getResourceID());
-		pair.add(node.getResourceID());
-		if(this.cache.num_triples_by_predicate_and_node.containsKey(pair))
-			result = this.cache.num_triples_by_predicate_and_node.get(pair);
+		pair.add(predicate.getResourceID());
+		pair.add(resource.getResourceID());
+		if(this.cache.num_triples_by_predicate_and_subject_or_object.containsKey(pair))
+			result = this.cache.num_triples_by_predicate_and_subject_or_object.get(pair);
 		else {
-			result = SPARQLQueryCollector.countTriplesByPredicateAndNode(this, pred, node);
-			this.cache.num_triples_by_predicate_and_node.put(pair, result);
+			result = SPARQLQueryCollector.countTriplesByPredicateAndSubjectOrObject(this, predicate, resource);
+			this.cache.num_triples_by_predicate_and_subject_or_object.put(pair, result);
 		}
 		
 		return result;

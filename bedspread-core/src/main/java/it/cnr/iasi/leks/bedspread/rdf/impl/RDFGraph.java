@@ -202,7 +202,7 @@ public class RDFGraph implements KnowledgeBase {
 	}
 
 	@Override
-	public int countTriplesByNode(AnyResource resource) {
+	public int countTriplesBySubjectOrObject(AnyResource resource) {
 		int result = 0; 
 		
 		Set<RDFTriple> triplesBySubject = subjectsMap.get(resource.getResourceID());
@@ -217,13 +217,13 @@ public class RDFGraph implements KnowledgeBase {
 	}
 
 	@Override
-	public int countTriplesByPredicateAndNode(AnyResource pred, AnyResource node) {
+	public int countTriplesByPredicateAndSubjectOrObject(AnyResource pred, AnyResource resource) {
 		int result = 0;
 		
-		Set<RDFTriple> triplesByPredicates = objectsMap.get(node.getResourceID());
+		Set<RDFTriple> triplesByPredicates = objectsMap.get(resource.getResourceID());
 		for(RDFTriple t:triplesByPredicates) 
-			if((t.getTripleSubject().getResourceID().equals(node.getResourceID())) ||
-					(t.getTripleObject().getResourceID().equals(node.getResourceID())))
+			if((t.getTripleSubject().getResourceID().equals(resource.getResourceID())) ||
+					(t.getTripleObject().getResourceID().equals(resource.getResourceID())))
 				result ++;
 		
 		return result;
