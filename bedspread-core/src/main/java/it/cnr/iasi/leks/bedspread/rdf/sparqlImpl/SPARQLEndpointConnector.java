@@ -16,15 +16,8 @@
  *	 You should have received a copy of the GNU General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.rdf.impl;
+package it.cnr.iasi.leks.bedspread.rdf.sparqlImpl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Vector;
 
 import org.apache.jena.query.Query;
@@ -33,13 +26,6 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
-
-import com.opencsv.CSVWriter;
-
-import it.cnr.iasi.leks.bedspread.ComputationStatus;
-import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
-import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 
 /**
  * 
