@@ -41,7 +41,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /*
- * @author gulyx
+ * @author ftaglino
  */
 public class SemanticSpreadOnWhiteboardRDFGraph_modifiedTest extends AbstractTest{
 

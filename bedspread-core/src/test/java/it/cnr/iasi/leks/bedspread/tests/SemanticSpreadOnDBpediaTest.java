@@ -41,7 +41,7 @@ import org.junit.Test;
 
 
 /*
- * @author gulyx
+ * @author ftaglino
  */
 public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 
