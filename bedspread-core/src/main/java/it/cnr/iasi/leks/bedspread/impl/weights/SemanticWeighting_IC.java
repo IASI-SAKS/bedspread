@@ -18,15 +18,17 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
-import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
-import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 
 /**
  * 
@@ -35,7 +37,9 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
  */
 public class SemanticWeighting_IC implements WeightingFunction {
 
-	KnowledgeBase kb;
+	final static double MAX_WEIGHT = 50.0d;
+	
+	private KnowledgeBase kb; 
 	
 	public SemanticWeighting_IC(KnowledgeBase kb) {
 		this.kb = kb;
@@ -54,37 +58,51 @@ public class SemanticWeighting_IC implements WeightingFunction {
 	@Override
 	public double weight(Node n1, Node n2) {
 		double result = 0.0; 
-		// Find predicates linking n1 and n2 
-		// 	firstly predicates from n1 to n2 
-		Set<AnyResource> predicates =  this.kb.getPredicatesBySubjectAndObject(n1.getResource(), n2.getResource());
-		// For each predicate compute the weighting function
-		for(AnyResource pred:predicates) {
-			URIImpl s = new URIImpl(n1.getResource().getResourceID());
-			URIImpl p = new URIImpl(pred.getResourceID());
-			URIImpl o = new URIImpl(n2.getResource().getResourceID());
-			// create the edge
-			RDFTriple edge = new RDFTriple(s, p, o);
-			double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
-			if(w>result)
-				result = w;
-		}
 		
+		// Find predicates linking n1 and n2 
+		// 	firstly predicates from n1 to n2
+		if(n1.getResource() instanceof AnyURI) {
+			Set<AnyResource> predicates =  this.kb.getPredicatesBySubjectAndObject(n1.getResource(), n2.getResource());
+	
+			// For each predicate compute the weighting function
+			for(AnyResource pred:predicates) {
+				AnyURI s =  (AnyURI)n1.getResource();
+				URI p = (URI)pred;
+				AnyResource o = n2.getResource();
+				// create the edge
+				RDFTriple edge = new RDFTriple(s, p, o);
+				//double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
+				double w = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge);
+				if(w>result)
+					result = w;
+			}
+		}
 		// 	secondly predicates from n2 to n1
-		predicates =  kb.getPredicatesBySubjectAndObject(n2.getResource(), n1.getResource());
-		// For each predicate compute the weighting function
-		for(AnyResource pred:predicates) {
-			URIImpl s = new URIImpl(n2.getResource().getResourceID());
-			URIImpl p = new URIImpl(pred.getResourceID());
-			URIImpl o = new URIImpl(n1.getResource().getResourceID());
-			// create the edge
-			RDFTriple edge = new RDFTriple(s, p, o);
-			double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
-			if(w>result)
-				result = w;
+		if(n2.getResource() instanceof AnyURI) {
+			Set<AnyResource> predicates =  kb.getPredicatesBySubjectAndObject(n2.getResource(), n1.getResource());
+			// For each predicate compute the weighting function
+			for(AnyResource pred:predicates) {
+				AnyURI s =  (AnyURI)n2.getResource();
+				URI p = (URI)pred;
+				AnyResource o = n1.getResource();
+				// create the edge
+				RDFTriple edge = new RDFTriple(s, p, o);
+				//double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
+				double w = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge);
+				if(w>result)
+					result = w;
+			}
 		}
 
-		// Return the maximum weight 
-		return result;
+		return result / MAX_WEIGHT;
+	}
+
+	public KnowledgeBase getKb() {
+		return kb;
+	}
+
+	public void setKb(KnowledgeBase kb) {
+		this.kb = kb;
 	}
 
 }

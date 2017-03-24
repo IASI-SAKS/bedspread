@@ -33,12 +33,12 @@ public class DBPediaKBTest {
 
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION = "http://dbpedia.org/resource/Innovation";
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_REIGATE = "http://dbpedia.org/resource/Reigate";
-	
+	private static final String HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR = "http://dbpedia.org/ontology/Actor";
 
 	@Test
 	public void getIncomingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_REIGATE); 
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
 		Set<URIImpl> uris = new HashSet<URIImpl>();
 		for(AnyResource n:nodes) {
@@ -53,7 +53,7 @@ public class DBPediaKBTest {
 	@Test
 	public void getOutgoingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION); 
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
 		Set<AnyResource> nodes = kb.getOutgoingNeighborhood(node);
 		Set<URIImpl> uris = new HashSet<URIImpl>();
 		Set<LiteralImpl> lits = new HashSet<LiteralImpl>();
@@ -75,7 +75,7 @@ public class DBPediaKBTest {
 	@Test
 	public void getNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION); 
+		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
 		nodes.addAll(kb.getOutgoingNeighborhood(node));
 

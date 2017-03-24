@@ -1,0 +1,11 @@
+origin,p1,n1
+origin,p2,n2
+origin,p3,n3
+n1,p2,n11
+n1,p1,n12
+n12,p4,n121
+n2,p2,n21
+n2,p1,n5
+n2,p2,n4
+n5,p5,n12
+n4,p2,n121
