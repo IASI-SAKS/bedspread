@@ -18,6 +18,13 @@
  */
 package it.cnr.iasi.leks.bedspread.rdf.impl;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Vector;
 
 import org.apache.jena.query.Query;
@@ -26,6 +33,13 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+
+import com.opencsv.CSVWriter;
+
+import it.cnr.iasi.leks.bedspread.ComputationStatus;
+import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 
 /**
  * 
@@ -54,7 +68,7 @@ public class SPARQLEndpointConnector {
 	 * @param queryString The SPARQL query
 	 * @return Vector<QuerySolution> 
 	 */	
-	public Vector<QuerySolution> execQuery(String queryString) {
+	public Vector<QuerySolution> execQuery(String queryString) {	
 		Vector<QuerySolution> qss = new Vector<QuerySolution>(); 
 		Query query = QueryFactory.create(queryString);        
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
@@ -71,4 +85,8 @@ public class SPARQLEndpointConnector {
 		}
 		return qss;
 	}
+	
+	
+	
+
 }

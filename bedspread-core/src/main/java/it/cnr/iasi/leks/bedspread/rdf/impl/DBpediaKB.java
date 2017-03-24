@@ -89,8 +89,8 @@ public class DBpediaKB implements KnowledgeBase {
 	@Override
 	public int degree(AnyResource resource) {
 		int result = 0; 	
-		Vector<AnyResource> incoming_predicates = SPARQLQueryCollector.getIncomingPredicates(this, resource);
-		Vector<AnyResource> outgoing_predicates = SPARQLQueryCollector.getOutgoingPredicates(this, resource);
+		Vector<AnyResource> incoming_predicates = getIncomingPredicates(resource);
+		Vector<AnyResource> outgoing_predicates = getOutgoingPredicates(resource);
 
 		result = incoming_predicates.size() + outgoing_predicates.size(); 
 		
@@ -261,5 +261,22 @@ public class DBpediaKB implements KnowledgeBase {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 		result = SPARQLQueryCollector.getPredicatesBySubjectAndObject(this, r1, r2);
 		return result;
+	}
+	
+	public Vector<AnyResource> getIncomingPredicates(AnyResource resource) {
+		return SPARQLQueryCollector.getIncomingPredicates(this, resource);
+	} 
+
+	public Vector<AnyResource> getOutgoingPredicates(AnyResource resource) {
+		Vector<AnyResource> result = new Vector<AnyResource>();
+		if(isUri(resource.getResourceID()))
+			SPARQLQueryCollector.getOutgoingPredicates(this, resource);
+		return result;
+	} 	
+	
+	private boolean isUri(String s) {
+		if(s.startsWith("http"))
+			return true;
+		else return false;
 	}
 }

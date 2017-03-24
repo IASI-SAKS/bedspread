@@ -26,6 +26,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.RDFNode;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
 
 /**
  * 
@@ -40,14 +41,15 @@ public class SPARQLQueryCollector {
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
 		// Search for incoming predicates
-		String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE {"
-				+ "?s ?p <"+resource.getResourceID()+">"
+		String queryString = "";
+		
+		queryString = "SELECT ?p FROM <http://dbpedia.org> WHERE {"
+				+ "?s ?p "+adjustObject(resource)
 				+ "}";
 		
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
 		for(QuerySolution qs:query_results)
-			result.add(new URIImpl(qs.getResource("p").getURI().toString()));
-		
+			result.add(RDFFactory.getInstance().createURI(qs.getResource("p").getURI().toString()));
 		return result;
 	}
 
@@ -55,26 +57,27 @@ public class SPARQLQueryCollector {
 	public static Vector<AnyResource> getOutgoingPredicates(DBpediaKB kb, AnyResource resource) {
 		Vector<AnyResource> result = new Vector<AnyResource>(); 
 		
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-		
-		// Search for outgoing predicates
-		String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE {"
-				+ "<"+resource.getResourceID()+"> ?p ?o"
-				+ "}";
-		
-		Vector<QuerySolution> query_results = sec.execQuery(queryString);
-		for(QuerySolution qs:query_results)
-			result.add(new URIImpl(qs.getResource("p").getURI().toString()));
-		
+		if(resource instanceof URIImpl) {
+			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+			
+			// Search for outgoing predicates
+			String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE {"
+					+ "<"+resource.getResourceID()+"> ?p ?o"
+					+ "}";
+			
+			Vector<QuerySolution> query_results = sec.execQuery(queryString);
+			for(QuerySolution qs:query_results)
+				result.add(RDFFactory.getInstance().createURI(qs.getResource("p").getURI().toString()));
+		}
 		return result;
 	}
 	
 	public static boolean isPredicate(DBpediaKB kb, AnyResource resource) {
 		boolean result = false;
 
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-		Vector<QuerySolution> query_results;
 		if(resource instanceof URIImpl) {
+			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+			Vector<QuerySolution> query_results;
 			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
 					+ "?s <"+resource.getResourceID()+"> ?o"
 					+ "}";
@@ -98,17 +101,24 @@ public class SPARQLQueryCollector {
 
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		Vector<QuerySolution> query_results;
-		if(resource instanceof URIImpl) {
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "{?s1 ?p1 <"+resource.getResourceID()+">} "
-					+ "UNION "
-					+ "{<"+resource.getResourceID()+"> ?p2 ?o2}"
-					+ "}";
+		String queryString = "";
+		if(resource instanceof URIImpl) { 
+			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
+				+ "<"+resource.getResourceID()+"> ?p ?o"
+				+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
 				if(query_results.elementAt(0).getLiteral("count").asLiteral().getInt()>0)
 					result = true;
 		}
+		if(result == false)
+			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
+					+ "?s ?p "+adjustObject(resource)
+					+ "}";
+			query_results = sec.execQuery(queryString);
+			if(query_results.size()>0)
+				if(query_results.elementAt(0).getLiteral("count").asLiteral().getInt()>0)
+					result = true;
 		
 		return result;
 	}
@@ -124,17 +134,15 @@ public class SPARQLQueryCollector {
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
 		String queryString = "SELECT DISTINCT ?s FROM <"+kb.getGraph()+"> WHERE {"
-				+ "?s ?p <"+resource.getResourceID()+"> "
+				+ "?s ?p "+adjustObject(resource)
 				+ "}";
 		
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
 		
 		for(int i=0; i<query_results.size(); i++) {
-			String r = query_results.elementAt(i).getResource("s").getURI().toString();
-			if(!(r.equals(resource.getResourceID()))) {
-				String neighboor = query_results.elementAt(i).getResource("s").getURI().toString();  
-				result.add(new URIImpl(neighboor)); 
-			}
+			String neighboor = query_results.elementAt(i).getResource("s").getURI().toString();
+			if(!(neighboor.equals(resource.getResourceID())))  
+				result.add(RDFFactory.getInstance().createURI(neighboor));
  		}		
 		return result;
 	}
@@ -142,25 +150,28 @@ public class SPARQLQueryCollector {
 	
 	public static Set<AnyResource> getOutgoingNeighborhood(DBpediaKB kb, AnyResource resource) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
-		String queryString = "SELECT ?o FROM <"+kb.getGraph()+"> WHERE {"
-				+ "<"+resource.getResourceID()+"> ?p ?o "
-				+ "}";
-		
-		Vector<QuerySolution> query_results = sec.execQuery(queryString);
-		
-		for(int i=0; i<query_results.size(); i++) {
-			RDFNode node = query_results.elementAt(i).get("o");
-			if(node.isResource() && !(query_results.elementAt(i).getResource("o").getURI().toString().equals(resource.getResourceID()))) {
-				String neighboor = node.asResource().getURI().toString();  
-				result.add(new URIImpl(neighboor));
-			}
-			if(node.isLiteral()) {
-				String neighboor = node.asLiteral().toString();
-				result.add(new LiteralImpl(neighboor));
-			}
- 		}		
+		if(resource instanceof URIImpl) {
+			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+			
+			String queryString = "SELECT ?o FROM <"+kb.getGraph()+"> WHERE {"
+					+ "<"+resource.getResourceID()+"> ?p ?o "
+					+ "}";
+			
+			Vector<QuerySolution> query_results = sec.execQuery(queryString);
+			
+			for(int i=0; i<query_results.size(); i++) {
+				RDFNode node = query_results.elementAt(i).get("o");
+				if(node.isResource() && !(query_results.elementAt(i).getResource("o").getURI().toString().equals(resource.getResourceID()))) {
+					String neighboor = node.asResource().getURI().toString();  
+					result.add(RDFFactory.getInstance().createURI(neighboor));
+				}
+				if(node.isLiteral()) {
+					String neighboor = node.asLiteral().toString();
+					result.add(RDFFactory.getInstance().createLiteral(neighboor));
+				}
+	 		}		
+		}
 		return result;
 	}
 	
@@ -199,17 +210,20 @@ public class SPARQLQueryCollector {
 		
 	public static int countTriplesBySubject(DBpediaKB kb, AnyResource resource) {
 		int result = 0;
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
-		Vector<QuerySolution> query_results;
 		if(resource instanceof URIImpl) {
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "<"+resource.getResourceID()+"> ?p ?o"
-					+ "}";
-			query_results = sec.execQuery(queryString);
-			if(query_results.size()>0)
-				result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
-		}		
+			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+			
+			Vector<QuerySolution> query_results;
+			if(resource instanceof URIImpl) {
+				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
+						+ "<"+resource.getResourceID()+"> ?p ?o"
+						+ "}";
+				query_results = sec.execQuery(queryString);
+				if(query_results.size()>0)
+					result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
+			}		
+		}
 		
 		return result;
 	}
@@ -220,14 +234,14 @@ public class SPARQLQueryCollector {
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
 		Vector<QuerySolution> query_results;
-		if(resource instanceof URIImpl) {
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "?s ?p <"+resource.getResourceID()+">"
-					+ "}";
-			query_results = sec.execQuery(queryString);
-			if(query_results.size()>0)
-				result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
-		}		
+		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
+				+ "?s ?p "+adjustObject(resource)
+				+ "}";
+			
+		query_results = sec.execQuery(queryString);
+		if(query_results.size()>0)
+			result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
+			
 		
 		return result;
 	}
@@ -239,15 +253,18 @@ public class SPARQLQueryCollector {
 		Vector<QuerySolution> query_results;
 		if(resource instanceof URIImpl) {
 			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "{<"+resource.getResourceID()+"> ?p ?o} "
-					+ "UNION "
-					+ "{?s ?p <"+resource.getResourceID()+">} "
+					+ "<"+resource.getResourceID()+"> ?p ?o "
 					+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
 				result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
 		}		
-		else {}
+		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
+				+ "?s ?p "+adjustObject(resource)
+				+ "}";
+		query_results = sec.execQuery(queryString);
+		if(query_results.size()>0)
+			result = result + query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
 		
 		return result;
 	}
@@ -258,16 +275,13 @@ public class SPARQLQueryCollector {
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 
 		Vector<QuerySolution> query_results;
-		if(predicate instanceof URIImpl) {
-			if(resource instanceof URIImpl) {
-				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE { "
-						+ "?s <"+predicate.getResourceID()+"> <"+resource.getResourceID()+"> "
-						+ "}";
-				query_results = sec.execQuery(queryString);
-				if(query_results.size()>0)
-					result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
-			}
-			else {}
+		if(predicate instanceof URIImpl) {			
+			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE { "
+					+ "?s <"+predicate.getResourceID()+"> "+adjustObject(resource)
+					+ "}";
+			query_results = sec.execQuery(queryString);
+			if(query_results.size()>0)
+				result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
 		}
 		
 		return result;
@@ -276,10 +290,10 @@ public class SPARQLQueryCollector {
 	public static int countTriplesByPredicateAndSubject(DBpediaKB kb, AnyResource predicate, AnyResource resource) {
 		int result = 0;
 
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+		if(resource instanceof URIImpl && predicate instanceof URIImpl) {
+			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 
-		Vector<QuerySolution> query_results;
-		if((predicate instanceof URIImpl) && (resource instanceof URIImpl)) {
+			Vector<QuerySolution> query_results;
 			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE { "
 					+ "?s <"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> "
 					+ "}";
@@ -299,15 +313,18 @@ public class SPARQLQueryCollector {
 		if(predicate instanceof URIImpl) {
 			if(resource instanceof URIImpl) {
 				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-						+ "{<"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> ?o} "
-						+ "UNION "
-						+ "{?s <"+predicate.getResourceID()+ "> <"+resource.getResourceID()+">} "
+						+ "<"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> ?o "
 						+ "}";
 				query_results = sec.execQuery(queryString);
 				if(query_results.size()>0)
 					result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
 			}
-			else {}
+			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
+					+ "?s <"+predicate.getResourceID()+"> "+adjustObject(resource)
+					+ "}";
+			query_results = sec.execQuery(queryString);
+			if(query_results.size()>0)
+				result = result + query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
 		}		
 		
 		return result;
@@ -316,17 +333,20 @@ public class SPARQLQueryCollector {
 	public static Set<AnyResource> getPredicatesBySubjectAndObject(DBpediaKB kb, AnyResource s, AnyResource o) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 
-		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-
-		Vector<QuerySolution> query_results;
-		String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE { "
-				+ "<"+s.getResourceID()+"> ?p <"+o.getResourceID()+"> "
-				+ "}";
+		if(s instanceof URIImpl) {
 		
-		query_results = sec.execQuery(queryString);
-		
-		for(QuerySolution qs:query_results)
-			result.add(new URIImpl(qs.getResource("p").getURI().toString()));
+			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+	
+			Vector<QuerySolution> query_results;
+			String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE { "
+					+ "<"+s.getResourceID()+"> ?p "+adjustObject(o)
+					+ "}";
+			
+			query_results = sec.execQuery(queryString);
+			
+			for(QuerySolution qs:query_results)
+				result.add(RDFFactory.getInstance().createURI(qs.getResource("p").getURI().toString()));
+		}
 		
 		return result;
 	}
@@ -343,8 +363,25 @@ public class SPARQLQueryCollector {
 		query_results = sec.execQuery(queryString);
 		
 		for(QuerySolution qs:query_results)
-			result.add(new URIImpl(qs.getResource("x").getURI().toString()));
+			result.add(RDFFactory.getInstance().createURI(qs.getResource("x").getURI().toString()));
 		
 		return result;
+	}
+	
+	private static String adjustObject(AnyResource resource) {
+		String result = "";
+		if(resource.getResourceID().contains("@")) {
+			result = "\""+resource.getResourceID().substring(0, resource.getResourceID().indexOf("@")) +"\"@"+resource.getResourceID().substring(resource.getResourceID().indexOf("@")+1);
+		}
+		else if(resource.getResourceID().contains("^^")) {
+			result = "\""+resource.getResourceID().substring(0, resource.getResourceID().indexOf("^^")) +"\"^^<"+resource.getResourceID().substring(resource.getResourceID().indexOf("^^")+2)+">";
+		}
+		else if(resource instanceof URI){
+			result = "<"+resource.getResourceID()+">";
+		}
+		else
+			result = "'"+resource.getResourceID()+"'";
+		
+		return result+" ";
 	}
 }
