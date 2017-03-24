@@ -25,15 +25,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
-import it.cnr.iasi.leks.bedspread.rdf.impl.LiteralImpl;
-import it.cnr.iasi.leks.bedspread.rdf.impl.SPARQLQueryCollector;
-import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.SPARQLQueryCollector;
 
 public class SPARQLQueryCollectorTest {
 
-	private static final URIImpl r1 = new URIImpl("http://dbpedia.org/resource/Barack_Obama");
-	private static final URIImpl r2 = new URIImpl("http://dbpedia.org/resource/Joe_Biden");
+	private static final URI r1 = RDFFactory.getInstance().createURI("http://dbpedia.org/resource/Barack_Obama");
+	private static final URI r2 = RDFFactory.getInstance().createURI("http://dbpedia.org/resource/Joe_Biden");
 
 	private static DBpediaKB kb = DBpediaKB.getInstance();
 	
