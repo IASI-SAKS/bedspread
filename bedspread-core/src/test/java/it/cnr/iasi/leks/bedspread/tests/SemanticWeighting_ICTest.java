@@ -18,18 +18,14 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.impl.weights.SemanticWeighting_IC;
-import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
-import it.cnr.iasi.leks.bedspread.rdf.impl.LiteralImpl;
-import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 
 public class SemanticWeighting_ICTest {
 
@@ -40,8 +36,9 @@ public class SemanticWeighting_ICTest {
 	@Test
 	public void weight() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl r1 = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA);
-		URIImpl r2 = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_JOE_BIDEN);
+		RDFFactory f = RDFFactory.getInstance();
+		URI r1 = f.createURI(HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA);
+		URI r2 = f.createURI(HTTP_DBPEDIA_ORG_RESOURCE_JOE_BIDEN);
 		
 		Node n1 = new Node(r1);
 		Node n2 = new Node(r2);
