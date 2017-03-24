@@ -16,7 +16,7 @@
  *	 You should have received a copy of the GNU General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.impl.weights;
+package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;

@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.impl.weights.SemanticWeighting_IC;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.SemanticWeighting_IC;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;

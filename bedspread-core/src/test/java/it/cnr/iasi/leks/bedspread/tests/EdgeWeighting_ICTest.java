@@ -22,7 +22,7 @@ package it.cnr.iasi.leks.bedspread.tests;
 import org.junit.Assert;
 import org.junit.Test;
 
-import it.cnr.iasi.leks.bedspread.impl.weights.EdgeWeighting_IC;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_IC;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;

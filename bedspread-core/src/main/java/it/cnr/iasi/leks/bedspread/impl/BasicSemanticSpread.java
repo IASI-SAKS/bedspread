@@ -32,8 +32,8 @@ import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
-import it.cnr.iasi.leks.bedspread.impl.weights.SemanticWeighting_IC;
 import it.cnr.iasi.leks.bedspread.impl.weights.WeightingFunctionFactory;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.SemanticWeighting_IC;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
