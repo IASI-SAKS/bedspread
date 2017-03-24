@@ -24,7 +24,7 @@ import org.apache.jena.query.QuerySolution;
 import org.junit.Assert;
 import org.junit.Test;
 
-import it.cnr.iasi.leks.bedspread.rdf.impl.SPARQLEndpointConnector;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.SPARQLEndpointConnector;
 
 public class SPARQLEndpointConnectorTest {
 
