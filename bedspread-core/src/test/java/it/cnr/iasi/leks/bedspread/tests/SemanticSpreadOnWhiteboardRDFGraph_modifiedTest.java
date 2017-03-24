@@ -23,7 +23,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
@@ -31,21 +30,15 @@ import it.cnr.iasi.leks.bedspread.TerminationPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread;
-import it.cnr.iasi.leks.bedspread.impl.SemanticSpreadFactory;
-import it.cnr.iasi.leks.bedspread.impl.SimpleSemanticSpread;
 import it.cnr.iasi.leks.bedspread.impl.policies.SimpleTerminationPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
-import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
 import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import com.opencsv.CSVReader;
 
 /*
  * @author gulyx

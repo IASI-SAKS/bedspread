@@ -18,19 +18,14 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.impl.weights.EdgeWeighting_IC;
-import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
-import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
-import it.cnr.iasi.leks.bedspread.rdf.impl.LiteralImpl;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 
 public class EdgeWeighting_ICTest {
 

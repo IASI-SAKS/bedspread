@@ -40,7 +40,6 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
 import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /*

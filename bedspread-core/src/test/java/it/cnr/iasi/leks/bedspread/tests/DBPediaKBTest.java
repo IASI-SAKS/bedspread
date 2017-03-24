@@ -25,9 +25,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.rdf.impl.LiteralImpl;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 
 public class DBPediaKBTest {
 
