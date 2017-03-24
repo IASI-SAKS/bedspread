@@ -18,31 +18,28 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
-import it.cnr.iasi.leks.bedspread.rdf.impl.LiteralImpl;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
-import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 
 public class RDFTripleToStringTest {
 
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION = "http://dbpedia.org/resource/Innovation";
 
 	@Test
-	public void RDFTriple_toStringTest() {
+	public void RDFTriple_toStringTest() {		
+		RDFFactory f = RDFFactory.getInstance();
 		String subject_id = "http://dbpedia.org/resource/Barack_Obama";
-		URIImpl subject = new URIImpl(subject_id); 
+		URI subject = f.createURI(subject_id); 
 		String predicate_id = "http://dbpedia.org/ontology/residence";
-		URIImpl predicate = new URIImpl(predicate_id);
+		URI predicate = f.createURI(predicate_id);
 		String object_id = "http://dbpedia.org/resource/Washington,_D.C.";
-		URIImpl object = new URIImpl(object_id);
-		
+		URI object = f.createURI(object_id);
+
 		RDFTriple edge = new RDFTriple(subject, predicate, object); 
 		
 		String edge_String = edge.toString();
