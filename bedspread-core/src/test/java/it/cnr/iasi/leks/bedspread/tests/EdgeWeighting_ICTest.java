@@ -23,8 +23,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.impl.weights.EdgeWeighting_IC;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
-import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 
 public class EdgeWeighting_ICTest {
@@ -33,9 +33,9 @@ public class EdgeWeighting_ICTest {
 	
 	private static RDFTriple edge_noLiterals = 
 			new RDFTriple(
-					new URIImpl("http://dbpedia.org/resource/Barack_Obama"), 
-					new URIImpl("http://dbpedia.org/ontology/residence"), 
-					new URIImpl("http://dbpedia.org/resource/Washington,_D.C.")
+					RDFFactory.getInstance().createURI("http://dbpedia.org/resource/Barack_Obama"), 
+					RDFFactory.getInstance().createURI("http://dbpedia.org/ontology/residence"), 
+					RDFFactory.getInstance().createURI("http://dbpedia.org/resource/Washington,_D.C.")
 					);
 
 	@Test
