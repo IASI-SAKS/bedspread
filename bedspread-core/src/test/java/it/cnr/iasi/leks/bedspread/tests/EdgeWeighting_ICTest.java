@@ -22,10 +22,18 @@ package it.cnr.iasi.leks.bedspread.tests;
 import org.junit.Assert;
 import org.junit.Test;
 
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeightingFactory;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_CombIC;
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_IC;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_IC_PMI;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_JointIC;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
+import it.cnr.iasi.leks.debspread.tests.util.weightsIC.EdgeWeighting_CombIC_Test;
+import it.cnr.iasi.leks.debspread.tests.util.weightsIC.EdgeWeighting_IC_PMI_Test;
+import it.cnr.iasi.leks.debspread.tests.util.weightsIC.EdgeWeighting_IC_Test;
+import it.cnr.iasi.leks.debspread.tests.util.weightsIC.EdgeWeighting_JointIC_Test;
 
 public class EdgeWeighting_ICTest {
 
@@ -39,86 +47,98 @@ public class EdgeWeighting_ICTest {
 					);
 
 	@Test
-	public void edgeWeight_IC() {
-		double result = EdgeWeighting_IC.edgeWeight_IC(kb, edge_noLiterals);
-		System.out.println("EdgeWeighting_IC.edgeWeight_IC="+result);
+	public void edgeWeight_IC() {		
+		EdgeWeighting_IC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_IC(kb);
+		double result = ew.computeEdgeWeight(edge_noLiterals); 
+		System.out.println("EdgeWeighting_IC.computeEdgeWeight="+result);
 		Assert.assertTrue(result>0);
 	}
 
 	@Test
 	public void edgeWeight_jointIC(){
-		double result = EdgeWeighting_IC.edgeWeight_jointIC(kb, edge_noLiterals);
-		System.out.println("EdgeWeighting_IC.edgeWeight_jointIC="+result);
+		EdgeWeighting_JointIC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_JointIC(kb);
+		double result = ew.computeEdgeWeight(edge_noLiterals); 
+		System.out.println("EdgeWeighting_JointIC.computeEdgeWeight="+result);
 		Assert.assertTrue(result>0);
 	}
 
 	@Test
 	public void edgeWeight_CombIC() {
-		double result = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge_noLiterals);
-		System.out.println("EdgeWeighting_IC.edgeWeight_CombIC="+result);
+		EdgeWeighting_CombIC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_CombIC(kb);
+		double result = ew.computeEdgeWeight(edge_noLiterals); 
+		System.out.println("EdgeWeighting_CombIC.computeEdgeWeight="+result);
 		Assert.assertTrue(result>0);
 	}
 	
 	@Test
 	public void edgeWeight_ICplusPMI(){
-		double result = EdgeWeighting_IC.edgeWeight_ICplusPMI(kb, edge_noLiterals);
-		System.out.println("EdgeWeighting_IC.edgeWeight_ICplusPMI="+result);
+		EdgeWeighting_IC_PMI ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_IC_PMI(kb);
+		double result = ew.computeEdgeWeight(edge_noLiterals); 
+		System.out.println("EdgeWeighting_IC_PMI.computeEdgeWeight="+result);
 		Assert.assertTrue(result>0);
 	}
 	
 	@Test
 	public void predicateProbability() {
-		double result = EdgeWeighting_IC.predicateProbability(kb, edge_noLiterals.getTriplePredicate());
-		System.out.println("EdgeWeighting_IC.predicateProbability="+result);
+		EdgeWeighting_IC_Test ew = new EdgeWeighting_IC_Test(kb);
+		double result = ew.predicateProbability(edge_noLiterals.getTriplePredicate());
+		System.out.println("EdgeWeighting_IC_Test.predicateProbability="+result);
 		Assert.assertTrue(result>0);
 	}
 	
 	@Test
 	public void nodeProbability() {
-		double result = EdgeWeighting_IC.nodeProbability(kb, edge_noLiterals.getTripleObject());
-		System.out.println("EdgeWeighting_IC.nodeProbability="+result);
+		EdgeWeighting_CombIC_Test ew = new EdgeWeighting_CombIC_Test(kb);
+		double result = ew.nodeProbability(edge_noLiterals.getTriplePredicate());
+		System.out.println("EdgeWeighting_CombIC_Test.nodeProbability="+result);
 		Assert.assertTrue(result>0);
 	}
 
 	@Test
 	public void nodeProbabilityConditionalToPredicate() {
-		double result = EdgeWeighting_IC.nodeProbabilityConditionalToPredicate(kb, edge_noLiterals.getTriplePredicate(), edge_noLiterals.getTripleObject());
-		System.out.println("EdgeWeighting_IC.nodeProbabilityConditionalToPredicate="+result);
+		EdgeWeighting_JointIC_Test ew = new EdgeWeighting_JointIC_Test(kb);
+		double result = ew.nodeProbabilityConditionalToPredicate(edge_noLiterals.getTriplePredicate(), edge_noLiterals.getTripleObject());
+		System.out.println("EdgeWeighting_JointIC_Test.nodeProbabilityConditionalToPredicate="+result);
 		Assert.assertTrue(result>0);
 	}
 
 	@Test
 	public void nodeAndPredicateProbability() {
-		double result = EdgeWeighting_IC.nodeAndPredicateProbability(kb, edge_noLiterals.getTriplePredicate(), edge_noLiterals.getTripleObject());
-		System.out.println("EdgeWeighting_IC.nodeAndPredicateProbability="+result);
+		EdgeWeighting_IC_PMI_Test ew = new EdgeWeighting_IC_PMI_Test(kb);
+		double result = ew.nodeAndPredicateProbability(edge_noLiterals.getTriplePredicate(), edge_noLiterals.getTripleObject());
+		System.out.println("EdgeWeighting_IC_PMI_Test.nodeAndPredicateProbability="+result);
 		Assert.assertTrue(result>0);
 	}
 	
 	@Test
 	public void node_IC() {
-		double result = EdgeWeighting_IC.node_IC(kb, edge_noLiterals.getTripleObject());
-		System.out.println("EdgeWeighting_IC.node_IC="+result);
+		EdgeWeighting_CombIC_Test ew = new EdgeWeighting_CombIC_Test(kb);
+		double result = ew.node_IC(edge_noLiterals.getTripleObject());
+		System.out.println("EdgeWeighting_CombIC_Test.node_IC="+result);
 		Assert.assertTrue(result>0);
 	}
 	
 	@Test
 	public void nodeConditionalToPredicate_IC() {
-		double result = EdgeWeighting_IC.nodeConditionalToPredicate_IC(kb, edge_noLiterals.getTriplePredicate(), edge_noLiterals.getTripleObject());
-		System.out.println("EdgeWeighting_IC.nodeConditionalToPredicate_IC="+result);
+		EdgeWeighting_JointIC_Test ew = new EdgeWeighting_JointIC_Test(kb);
+		double result = ew.nodeConditionalToPredicate_IC(edge_noLiterals.getTriplePredicate(), edge_noLiterals.getTripleObject());
+		System.out.println("EdgeWeighting_JointIC_Test.nodeConditionalToPredicate_IC="+result);
 		Assert.assertTrue(result>0);
 	}
 
 	@Test
 	public void pmi() {
-		double result = EdgeWeighting_IC.pmi(kb, edge_noLiterals.getTriplePredicate(), edge_noLiterals.getTripleObject());
-		System.out.println("EdgeWeighting_IC.pmi="+result);
+		EdgeWeighting_IC_PMI_Test ew = new EdgeWeighting_IC_PMI_Test(kb);
+		double result = ew.pmi(edge_noLiterals.getTriplePredicate(), edge_noLiterals.getTripleObject());
+		System.out.println("EdgeWeighting_IC_PMI_Test.pmi="+result);
 		Assert.assertTrue(result>0);
 	}
 	
 	@Test
 	public void predicate_IC() {
-		double result = EdgeWeighting_IC.predicate_IC(kb, edge_noLiterals.getTriplePredicate());
-		System.out.println("EdgeWeighting_IC.predicate_IC="+result);
+		EdgeWeighting_IC_Test ew = new EdgeWeighting_IC_Test(kb);
+		double result = ew.predicate_IC(edge_noLiterals.getTriplePredicate());
+		System.out.println("EdgeWeighting_IC_Test.predicate_IC="+result);
 		Assert.assertTrue(result>0);
 	}
 	

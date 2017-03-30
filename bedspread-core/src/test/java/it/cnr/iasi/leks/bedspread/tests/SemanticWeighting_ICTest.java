@@ -22,6 +22,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.Abstract_EdgeWeighting_IC;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeightingFactory;
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.SemanticWeighting_IC;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
@@ -32,7 +34,7 @@ public class SemanticWeighting_ICTest {
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA = "http://dbpedia.org/resource/Barack_Obama";
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_JOE_BIDEN = "http://dbpedia.org/resource/Joe_Biden";
 	
-
+	
 	@Test
 	public void weight() {
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -43,7 +45,9 @@ public class SemanticWeighting_ICTest {
 		Node n1 = new Node(r1);
 		Node n2 = new Node(r2);
 		
-		SemanticWeighting_IC sw = new SemanticWeighting_IC(kb);
+		Abstract_EdgeWeighting_IC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_IC(kb);
+		
+		SemanticWeighting_IC sw = new SemanticWeighting_IC(kb,ew);
 		double w = sw.weight(n1, n2);
 		
 		System.out.println("SemanticWeighting_IC.weight(="+r1.getResourceID()+", "+r2.getResourceID()+")="+w);
