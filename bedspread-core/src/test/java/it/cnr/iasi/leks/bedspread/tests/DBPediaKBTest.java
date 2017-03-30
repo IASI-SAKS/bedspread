@@ -25,9 +25,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.impl.DBpediaKB;
-import it.cnr.iasi.leks.bedspread.rdf.impl.LiteralImpl;
-import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
+import it.cnr.iasi.leks.bedspread.rdf.Literal;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 
 public class DBPediaKBTest {
 
@@ -38,11 +39,11 @@ public class DBPediaKBTest {
 	@Test
 	public void getIncomingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
-		Set<URIImpl> uris = new HashSet<URIImpl>();
+		Set<URI> uris = new HashSet<URI>();
 		for(AnyResource n:nodes) {
-				uris.add((URIImpl)n);
+				uris.add((URI)n);
 				System.out.println("incomingNeighbor: "+n.getResourceID());
 		}
 		System.out.println("incomingNeighborhood = "+uris.size());
@@ -53,17 +54,17 @@ public class DBPediaKBTest {
 	@Test
 	public void getOutgoingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
 		Set<AnyResource> nodes = kb.getOutgoingNeighborhood(node);
-		Set<URIImpl> uris = new HashSet<URIImpl>();
-		Set<LiteralImpl> lits = new HashSet<LiteralImpl>();
+		Set<URI> uris = new HashSet<URI>();
+		Set<Literal> lits = new HashSet<Literal>();
 		for(AnyResource n:nodes) {
-			if(n instanceof URIImpl) {
-				uris.add((URIImpl)n);
+			if(n instanceof URI) {
+				uris.add((URI)n);
 				System.out.println("outgoingNeighbor: "+n.getResourceID());
 			}
-			else if (n instanceof LiteralImpl) {
-				lits.add((LiteralImpl)n);
+			else if (n instanceof Literal) {
+				lits.add((Literal)n);
 				System.out.println("Literal: "+n.getResourceID());
 			}
 		}
@@ -75,19 +76,19 @@ public class DBPediaKBTest {
 	@Test
 	public void getNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
 		nodes.addAll(kb.getOutgoingNeighborhood(node));
 
-		Set<URIImpl> uris = new HashSet<URIImpl>();
-		Set<LiteralImpl> lits = new HashSet<LiteralImpl>();
+		Set<URI> uris = new HashSet<URI>();
+		Set<Literal> lits = new HashSet<Literal>();
 		for(AnyResource n:nodes) {
-			if(n instanceof URIImpl) {
-				uris.add((URIImpl)n);
+			if(n instanceof URI) {
+				uris.add((URI)n);
 				System.out.println("Resource: "+n.getResourceID());
 			}
-			else if (n instanceof LiteralImpl) {
-				lits.add((LiteralImpl)n);
+			else if (n instanceof Literal) {
+				lits.add((Literal)n);
 				System.out.println("Literal: "+n.getResourceID());
 			}
 		}
@@ -99,7 +100,7 @@ public class DBPediaKBTest {
 	@Test
 	public void isMemberOf() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION);
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION);
 		boolean membership = kb.isMemberof(node);
 		Assert.assertTrue(membership == true);
 	}
@@ -107,7 +108,7 @@ public class DBPediaKBTest {
 	@Test
 	public void degree() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URIImpl node = new URIImpl(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION);
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION);
 		int degree = kb.degree(node);
 		System.out.println("degree="+degree);
 		Assert.assertTrue(degree>0);

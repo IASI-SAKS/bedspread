@@ -16,7 +16,7 @@
  *	 You should have received a copy of the GNU General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.bedspread.rdf.impl;
+package it.cnr.iasi.leks.bedspread.rdf.sparqlImpl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +27,8 @@ import org.apache.jena.rdf.model.RDFNode;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
+import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 
 /**
  * 

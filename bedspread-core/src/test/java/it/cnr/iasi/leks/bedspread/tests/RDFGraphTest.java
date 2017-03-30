@@ -29,8 +29,9 @@ import org.junit.Test;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
-import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
 
 public class RDFGraphTest {
 	private RDFGraph rdfGraph;
@@ -40,8 +41,9 @@ public class RDFGraphTest {
 	public void getPredicatesBySubjectAndObject() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{			
 		KnowledgeBase kb = this.loadMinimalKB();
 		
-		URIImpl r1 = new URIImpl("origin");
-		URIImpl r2 = new URIImpl("n1");
+		RDFFactory f = RDFFactory.getInstance();
+		URI r1 = f.createURI("origin");
+		URI r2 = f.createURI("n1");
 		
 		Set<AnyResource> preds = kb.getPredicatesBySubjectAndObject(r1, r2);
 		

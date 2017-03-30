@@ -49,6 +49,7 @@ public class PropertyUtil {
 	public static final String SEMANTIC_SPREAD_LABEL =  "bedspread.semanticspread.class";
 	public static final String TERMINATION_POLICY_LABEL =  "bedspread.terminationpolicy.class";
 	public static final String WEIGHTING_FUNCTION_LABEL =  "bedspread.weightingfunction.class";
+	public static final String EDGE_WEIGHTING_IC_LABEL = "bedspread.edgeweightingic.class";
 	public static final String POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL = "bedspread.policentricsemanticspread.sleeptime";
 
 	private Properties properties;

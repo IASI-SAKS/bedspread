@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
