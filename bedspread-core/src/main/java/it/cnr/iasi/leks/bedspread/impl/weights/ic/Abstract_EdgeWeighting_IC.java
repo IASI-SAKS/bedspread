@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 
@@ -30,25 +31,38 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  * @author ftaglino
  *
  */
-public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
+public abstract class Abstract_EdgeWeighting_IC{
 
-	public EdgeWeighting_IC(KnowledgeBase kb) {
-		super(kb);
+	protected KnowledgeBase kb;
+	
+	public Abstract_EdgeWeighting_IC(KnowledgeBase kb) {
+		this.kb = kb;
 	}
 
 	/**
-	 * Compute the information content of an edge, which is identified by a triple
-	 * 
-	 * edgeWeight_IC
-	 *  
-	 * @param edge
+	 * Compute the frequence of the triples having pred as the predicate with respect to all the triples in the kb
+	 * @param resource
 	 * @return
 	 */
-	@Override
-	public double computeEdgeWeight(RDFTriple edge) {
+	protected double predicateProbability(AnyResource resource) {
 		double result = 0.0;
-		result = this.predicate_IC(edge.getTriplePredicate());
+		double total_triple = this.kb.countAllTriples();
+		double total_triple_by_predicate = this.kb.countTriplesByPredicate(resource);
+		result = total_triple_by_predicate/total_triple;
+		return result;
+	}  
+		
+	/**
+	 * Compute the Information Content of a predicate 
+	 * @param resource
+	 * @return
+	 */
+	protected double predicate_IC(AnyResource resource) {
+		double result = 0.0;
+		result = - Math.log(predicateProbability(resource));
 		return result;
 	}
+		
+	public abstract double computeEdgeWeight(RDFTriple edge);
 	
 }

@@ -18,10 +18,12 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.UndefinedPropertyException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -37,10 +39,17 @@ public class SemanticWeighting_IC implements WeightingFunction {
 
 	final static double MAX_WEIGHT = 50.0d;
 	
-	private KnowledgeBase kb; 
+	protected KnowledgeBase kb; 
+	protected Abstract_EdgeWeighting_IC edgeWeightingIC;
 	
-	public SemanticWeighting_IC(KnowledgeBase kb) {
+	public SemanticWeighting_IC(KnowledgeBase kb) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, UndefinedPropertyException {
 		this.kb = kb;
+		this.edgeWeightingIC = EdgeWeightingFactory.getInstance().getAbstract_EdgeWeighting_IC(kb);
+	}
+
+	public SemanticWeighting_IC(KnowledgeBase kb, Abstract_EdgeWeighting_IC ew) {
+		this.kb = kb;
+		this.edgeWeightingIC = ew;
 	}
 	
 	/**
@@ -69,8 +78,9 @@ public class SemanticWeighting_IC implements WeightingFunction {
 				AnyResource o = n2.getResource();
 				// create the edge
 				RDFTriple edge = new RDFTriple(s, p, o);
-				//double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
-				double w = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge);
+//				double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
+//				double w = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge);
+				double w = this.edgeWeightingIC.computeEdgeWeight(edge);
 				if(w>result)
 					result = w;
 			}
@@ -85,8 +95,9 @@ public class SemanticWeighting_IC implements WeightingFunction {
 				AnyResource o = n1.getResource();
 				// create the edge
 				RDFTriple edge = new RDFTriple(s, p, o);
-				//double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
-				double w = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge);
+//				double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
+//				double w = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge);
+				double w = this.edgeWeightingIC.computeEdgeWeight(edge);
 				if(w>result)
 					result = w;
 			}
@@ -102,5 +113,4 @@ public class SemanticWeighting_IC implements WeightingFunction {
 	public void setKb(KnowledgeBase kb) {
 		this.kb = kb;
 	}
-
 }

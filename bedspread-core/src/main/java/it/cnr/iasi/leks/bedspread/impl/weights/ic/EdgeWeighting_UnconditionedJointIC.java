@@ -18,8 +18,8 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
-import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 
 /**
  * The Implementation of this class refers to the following publication
@@ -30,25 +30,24 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  * @author ftaglino
  *
  */
-public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
+public abstract class EdgeWeighting_UnconditionedJointIC extends Abstract_EdgeWeighting_IC{
 
-	public EdgeWeighting_IC(KnowledgeBase kb) {
+	public EdgeWeighting_UnconditionedJointIC(KnowledgeBase kb) {
 		super(kb);
 	}
 
 	/**
-	 * Compute the information content of an edge, which is identified by a triple
-	 * 
-	 * edgeWeight_IC
-	 *  
-	 * @param edge
+	 * Compute the frequence of the triples having node as the subject or as the object, with respect to all the triples in the kb 	
+	 *
+	 * @param resource
 	 * @return
 	 */
-	@Override
-	public double computeEdgeWeight(RDFTriple edge) {
+	protected double nodeProbability(AnyResource resource) {
 		double result = 0.0;
-		result = this.predicate_IC(edge.getTriplePredicate());
+		double total_triple = this.kb.countAllTriples();
+		double total_triple_by_node = this.kb.countTriplesBySubjectOrObject(resource);
+		result = total_triple_by_node/total_triple;
 		return result;
 	}
-	
+		
 }

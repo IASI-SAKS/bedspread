@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 
@@ -30,24 +31,52 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  * @author ftaglino
  *
  */
-public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
+public class EdgeWeighting_JointIC extends Abstract_EdgeWeighting_IC {
 
-	public EdgeWeighting_IC(KnowledgeBase kb) {
+	public EdgeWeighting_JointIC(KnowledgeBase kb) {
 		super(kb);
+	}
+	
+	/**
+	 * Compute the frequence of the triples having node as the subject or as the object with respect to those triples having pred as the predicate 
+	 *
+	 * @param pred
+	 * @param node
+	 * @return
+	 */
+	protected double nodeProbabilityConditionalToPredicate(AnyResource pred, AnyResource node) {
+		double result = 0.0;
+		double total_triple_by_predicate = kb.countTriplesByPredicate(pred);
+		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndSubjectOrObject(pred, node);
+		result = total_triple_by_predicate_and_node/total_triple_by_predicate;
+		return result;
 	}
 
 	/**
-	 * Compute the information content of an edge, which is identified by a triple
+	 * Compute the Information Content of a node knowing the predicate 
 	 * 
-	 * edgeWeight_IC
-	 *  
+	 * @param pred
+	 * @param node
+	 * @return
+	 */
+	protected double nodeConditionalToPredicate_IC(AnyResource pred, AnyResource node) {
+		double result = 0.0;
+		result = - Math.log(nodeProbabilityConditionalToPredicate(pred, node));
+		return result;
+	}
+	
+	/**
+	 * Compute the Joint Information Content (jointIC) of an edge, which is identified by a triple 
+	 * 
+	 * edgeWeight_jointIC
+	 * 
 	 * @param edge
 	 * @return
 	 */
 	@Override
 	public double computeEdgeWeight(RDFTriple edge) {
 		double result = 0.0;
-		result = this.predicate_IC(edge.getTriplePredicate());
+		result = predicate_IC(edge.getTriplePredicate()) +  nodeConditionalToPredicate_IC(edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
 	}
 	

@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 
@@ -30,24 +31,36 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  * @author ftaglino
  *
  */
-public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
+public class EdgeWeighting_CombIC extends EdgeWeighting_UnconditionedJointIC{
 
-	public EdgeWeighting_IC(KnowledgeBase kb) {
+	public EdgeWeighting_CombIC(KnowledgeBase kb) {
 		super(kb);
 	}
-
+		
 	/**
-	 * Compute the information content of an edge, which is identified by a triple
+	 * Compute the Information Content of a node 
+	 *
+	 * @param resource
+	 * @return
+	 */
+	protected double node_IC(AnyResource resource) {
+		double result = 0.0;
+		result = - Math.log(nodeProbability(resource));
+		return result;
+	}
+		
+	/**
+	 * Compute the Combined Information Content (combIC), which is identified by a triple
 	 * 
-	 * edgeWeight_IC
-	 *  
+	 * edgeWeight_CombIC
+	 * 
 	 * @param edge
 	 * @return
 	 */
 	@Override
 	public double computeEdgeWeight(RDFTriple edge) {
 		double result = 0.0;
-		result = this.predicate_IC(edge.getTriplePredicate());
+		result = predicate_IC(edge.getTriplePredicate()) + node_IC(edge.getTripleObject());
 		return result;
 	}
 	
