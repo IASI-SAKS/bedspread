@@ -3,10 +3,8 @@ package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.UndefinedPropertyException;
-import it.cnr.iasi.leks.bedspread.impl.weights.DefaultWeightingFunction;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
 /**

@@ -21,7 +21,6 @@ package it.cnr.iasi.leks.bedspread.impl;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
 
 import com.opencsv.CSVWriter;
 
@@ -33,8 +32,6 @@ import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.weights.WeightingFunctionFactory;
-import it.cnr.iasi.leks.bedspread.impl.weights.ic.SemanticWeighting_IC;
-import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
 /**
