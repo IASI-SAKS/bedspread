@@ -23,6 +23,9 @@ import java.io.Writer;
 import java.lang.Runnable;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.policies.TerminationPolicyFactory;
@@ -55,6 +58,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	
 	protected KnowledgeBase kb;
 
+	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpread.class);
+	
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
 		this(origin, kb, TerminationPolicyFactory.getInstance().getTerminationPolicy());
 	}
@@ -102,11 +107,14 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	public void run (){
 		synchronized (this.status) {
 			this.status = ComputationStatus.Running;
+			this.logger.info("--- NEW EXECUTION ---");
 		}
 		this.refreshInternalState();
 		while (!term.wasMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
 			for (Node node : currentlyActiveNodes) {
+				this.logger.info("{}", node.getResource().getResourceID());
+				
 				this.extractForthcomingActiveNodes(node);
 				
 				if ((this.forthcomingActiveNodes == null) || this.forthcomingActiveNodes.isEmpty()){
@@ -118,6 +126,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 					newNode.updateScore(newScore);
 // Note that elements already present are not doubled in "tempActiveNodes" according to : java.util.Set				
 					this.justProcessedForthcomingActiveNodes.add(newNode);
+
+					this.logger.info("{} --> {}, {}", node.getResource().getResourceID(),newNode.getResource().getResourceID(),newNode.getScore());
 				}
 			}
 			
@@ -132,6 +142,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		}
 		synchronized (this.status) {
 			this.status = ComputationStatus.Completed;
+			this.logger.info("--- EXECUTION COMPLETED ---");
 		}
 		this.notifyCallback();
 	}
