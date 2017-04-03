@@ -50,7 +50,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 // they do not bring any contribution to the concept. So it is recommended to limit
 // the dependencies on them.
 	private Node weightNodeFirstArg;
-	private Node weightNodeSecongAgr;
+	private Node weightNodeSecongArg;
 	
 	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
 		super(origin, kb);
@@ -76,7 +76,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 
 	protected void configureWeightNodes(Node firstArg, Node secondArg){
 		this.weightNodeFirstArg = firstArg;
-		this.weightNodeSecongAgr = secondArg;
+		this.weightNodeSecongArg = secondArg;
 	}
 	
 	protected double calculateScore(Node spreadingNode, Node targetNode) {
@@ -92,7 +92,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 			neighborhoodScore += (neighborNode.getScore()/degree);
 		}
 		
-		double weight = this.weightingModule.weight(this.weightNodeFirstArg, this.weightNodeSecongAgr);
+		double weight = this.weightingModule.weight(this.weightNodeFirstArg, this.weightNodeSecongArg);
 		double score = this.stimulus(targetNode) + (weight * neighborhoodScore);
 		
 		return score;
