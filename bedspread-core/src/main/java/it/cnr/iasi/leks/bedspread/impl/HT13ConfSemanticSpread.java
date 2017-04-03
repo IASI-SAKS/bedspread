@@ -45,6 +45,13 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 
 	private WeightingFunction weightingModule; 
 	
+// Note that these two attributes (and related operations) are only conceived to better
+// structuring the implementation of this class and its potential sub-classes. Actually
+// they do not bring any contribution to the concept. So it is recommended to limit
+// the dependencies on them.
+	private Node weightNodeFirstArg;
+	private Node weightNodeSecongArg;
+	
 	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
 		super(origin, kb);
 
@@ -59,6 +66,20 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 
 	@Override
 	protected double computeScore(Node spreadingNode, Node targetNode) {
+//		Note that in this implementation the parameter {@code Node spreadingNode} is not used!!!
+
+		this.configureWeightNodes(targetNode, this.getOrigin());
+		double score = this.calculateScore(spreadingNode, targetNode);
+		
+		return score;
+	}
+
+	protected void configureWeightNodes(Node firstArg, Node secondArg){
+		this.weightNodeFirstArg = firstArg;
+		this.weightNodeSecongArg = secondArg;
+	}
+	
+	protected double calculateScore(Node spreadingNode, Node targetNode) {
 		
 //	Note that in this implementation the parameter {@code Node spreadingNode} is not used!!!
 		
@@ -71,7 +92,9 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 			neighborhoodScore += (neighborNode.getScore()/degree);
 		}
 		
-		double score = this.stimulus(targetNode) + (this.weightingModule.weight(targetNode, this.getOrigin()) * neighborhoodScore);
+		double weight = this.weightingModule.weight(this.weightNodeFirstArg, this.weightNodeSecongArg);
+		double score = this.stimulus(targetNode) + (weight * neighborhoodScore);
+		
 		return score;
 	}
 
@@ -116,4 +139,5 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		}	
 		return 0;
 	}
+
 }
