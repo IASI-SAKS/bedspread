@@ -48,7 +48,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 // Note that these two attributes (and related operations) are only conceived to better
 // structuring the implementation of this class and its potential sub-classes. Actually
 // they do not bring any contribution to the concept. So it is recommended to limit
-// the dependency with them.
+// the dependencies on them.
 	private Node weightNodeFirstArg;
 	private Node weightNodeSecongAgr;
 	
@@ -75,8 +75,8 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	protected void configureWeightNodes(Node firstArg, Node secondArg){
-		this.setWeightNodeFirstArg(firstArg);
-		this.setWeightNodeSecongAgr(secondArg);
+		this.weightNodeFirstArg = firstArg;
+		this.weightNodeSecongAgr = secondArg;
 	}
 	
 	protected double calculateScore(Node spreadingNode, Node targetNode) {
@@ -139,22 +139,5 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		}	
 		return 0;
 	}
-
-	protected Node getWeightNodeFirstArg() {
-		return weightNodeFirstArg;
-	}
-
-	protected void setWeightNodeFirstArg(Node weightNodeFirstArg) {
-		this.weightNodeFirstArg = weightNodeFirstArg;
-	}
-
-	protected Node getWeightNodeSecongAgr() {
-		return weightNodeSecongAgr;
-	}
-
-	protected void setWeightNodeSecongAgr(Node weightNodeSecongAgr) {
-		this.weightNodeSecongAgr = weightNodeSecongAgr;
-	}
-
 
 }
