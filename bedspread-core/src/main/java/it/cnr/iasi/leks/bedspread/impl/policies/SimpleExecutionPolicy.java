@@ -25,16 +25,16 @@ import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
  * @author gulyx
  *
  */
-public class SimpleTerminationPolicy extends ExecutionPolicy {
+public class SimpleExecutionPolicy extends ExecutionPolicy {
 
 	private final int MAX_QUERIES_BEFORE_TRUE = 10;
 	private int nQueries;
 	
-	public SimpleTerminationPolicy(){
+	public SimpleExecutionPolicy(){
 		this.nQueries = MAX_QUERIES_BEFORE_TRUE;
 	}
 	
-	public SimpleTerminationPolicy(int i){
+	public SimpleExecutionPolicy(int i){
 		this.nQueries = i;
 	}
 

@@ -21,16 +21,16 @@ package it.cnr.iasi.leks.bedspread.impl.policies;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 
-public class TerminationPolicyFactory {
+public class ExecutionPolicyFactory {
 	
-	protected static TerminationPolicyFactory FACTORY = null;
+	protected static ExecutionPolicyFactory FACTORY = null;
 			
-	protected TerminationPolicyFactory(){		
+	protected ExecutionPolicyFactory(){		
 	}
 	
-	public static synchronized TerminationPolicyFactory getInstance(){
+	public static synchronized ExecutionPolicyFactory getInstance(){
 		if (FACTORY == null){
-			FACTORY = new TerminationPolicyFactory();
+			FACTORY = new ExecutionPolicyFactory();
 		}
 		return FACTORY;
 	}			
@@ -45,14 +45,14 @@ public class TerminationPolicyFactory {
 			ClassLoader loader = ClassLoader.getSystemClassLoader();
 			tp = (ExecutionPolicy) loader.loadClass(tpClassName).newInstance();			
 		}else{
-			tp = new SimpleTerminationPolicy();
+			tp = new SimpleExecutionPolicy();
 		}
 		
 		return tp;
 	}
 
 	public ExecutionPolicy getTerminationPolicy(int maxNumberOfIterations){		
-		ExecutionPolicy tp = new SimpleTerminationPolicy(maxNumberOfIterations);
+		ExecutionPolicy tp = new SimpleExecutionPolicy(maxNumberOfIterations);
 		return tp;
 	}
 
