@@ -139,7 +139,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 				this.currentlyActiveNodes.add(tmpNode);
 			}
 			
-			this.currentlyActiveNodes = this.filterSetOfNodes(this.currentlyActiveNodes);
+			this.filterCurrentlyActiveNodes();
 		}
 		synchronized (this.status) {
 			this.status = ComputationStatus.Completed;
@@ -185,14 +185,14 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 	
-	protected Set<Node> filterSetOfNodes(Set<Node> setOfNodes) {
+	private void filterCurrentlyActiveNodes() {
 		Set<Node> filteredSetOfNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
-		for (Node tmpNode : setOfNodes) {
+		for (Node tmpNode : this.currentlyActiveNodes) {
 			if (this.policy.isSpreadingEnabled(tmpNode)){
 				filteredSetOfNodes.add(tmpNode);
 			}	
 		}
-		return filteredSetOfNodes;
+		this.currentlyActiveNodes = filteredSetOfNodes;
 	}
 
 	public Set<Node> getExplorationLeaves(){
