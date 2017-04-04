@@ -40,7 +40,6 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
  */
 public abstract class AbstractSemanticSpread implements Runnable{
 	private Node origin;
-	private ExecutionPolicy policy;
 	private ComputationStatus status;
 	
 	private Set<Node> activatedNodes;
@@ -57,6 +56,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	private String optionalID;
 	
 	protected KnowledgeBase kb;
+	protected ExecutionPolicy policy;
 
 	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpread.class);
 	
@@ -110,7 +110,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			this.logger.info("--- NEW EXECUTION ---");
 		}
 		this.refreshInternalState();
-		while (!policy.terminationPolicyMet()){
+		while (!this.policy.terminationPolicyMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
 			for (Node node : currentlyActiveNodes) {
 				this.logger.info("{}", node.getResource().getResourceID());
