@@ -78,7 +78,7 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	@Override
-	protected Set<Node> filterCurrenltyActiveNode(Set<Node> setOfNodes) {
+	protected Set<Node> filterSetOfNodes(Set<Node> setOfNodes) {
 		return setOfNodes;		
 	}
 

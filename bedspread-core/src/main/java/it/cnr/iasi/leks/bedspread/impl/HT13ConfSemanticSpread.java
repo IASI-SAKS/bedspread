@@ -99,7 +99,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	@Override
-	protected Set<Node> filterCurrenltyActiveNode(Set<Node> setOfNodes) {
+	protected Set<Node> filterSetOfNodes(Set<Node> setOfNodes) {
 		Set<Node> filteredSetOfNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
 		for (Node tmpNode : setOfNodes) {
 			if (this.policy.isSpreadingEnabled(tmpNode)){
