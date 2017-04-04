@@ -18,42 +18,42 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.policies;
 
-import it.cnr.iasi.leks.bedspread.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 
-public class TerminationPolicyFactory {
+public class ExecutionPolicyFactory {
 	
-	protected static TerminationPolicyFactory FACTORY = null;
+	protected static ExecutionPolicyFactory FACTORY = null;
 			
-	protected TerminationPolicyFactory(){		
+	protected ExecutionPolicyFactory(){		
 	}
 	
-	public static synchronized TerminationPolicyFactory getInstance(){
+	public static synchronized ExecutionPolicyFactory getInstance(){
 		if (FACTORY == null){
-			FACTORY = new TerminationPolicyFactory();
+			FACTORY = new ExecutionPolicyFactory();
 		}
 		return FACTORY;
 	}			
 
-	public TerminationPolicy getTerminationPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException{		
-		TerminationPolicy tp = null;
+	public ExecutionPolicy getExecutionPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException{		
+		ExecutionPolicy policy = null;
 		
 		PropertyUtil prop = PropertyUtil.getInstance();
-		String tpClassName = prop.getProperty(PropertyUtil.TERMINATION_POLICY_LABEL);
+		String policyClassName = prop.getProperty(PropertyUtil.EXECUTION_POLICY_LABEL);
 		
-		if ( tpClassName != null ){
+		if ( policyClassName != null ){
 			ClassLoader loader = ClassLoader.getSystemClassLoader();
-			tp = (TerminationPolicy) loader.loadClass(tpClassName).newInstance();			
+			policy = (ExecutionPolicy) loader.loadClass(policyClassName).newInstance();			
 		}else{
-			tp = new SimpleTerminationPolicy();
+			policy = new SimpleExecutionPolicy();
 		}
 		
-		return tp;
+		return policy;
 	}
 
-	public TerminationPolicy getTerminationPolicy(int maxNumberOfIterations){		
-		TerminationPolicy tp = new SimpleTerminationPolicy(maxNumberOfIterations);
-		return tp;
+	public ExecutionPolicy getExecutionPolicy(int maxNumberOfIterations){		
+		ExecutionPolicy policy = new SimpleExecutionPolicy(maxNumberOfIterations);
+		return policy;
 	}
 
 }

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
-import it.cnr.iasi.leks.bedspread.impl.policies.TerminationPolicyFactory;
+import it.cnr.iasi.leks.bedspread.impl.policies.ExecutionPolicyFactory;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
@@ -40,7 +40,7 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
  */
 public abstract class AbstractSemanticSpread implements Runnable{
 	private Node origin;
-	private TerminationPolicy term;
+	private ExecutionPolicy policy;
 	private ComputationStatus status;
 	
 	private Set<Node> activatedNodes;
@@ -61,15 +61,15 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpread.class);
 	
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
-		this(origin, kb, TerminationPolicyFactory.getInstance().getTerminationPolicy());
+		this(origin, kb, ExecutionPolicyFactory.getInstance().getExecutionPolicy());
 	}
 		
-	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term){
+	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy){
 		this.origin = origin;
 		this.origin.updateScore(1);
 		
 		this.kb = kb;
-		this.term = term;
+		this.policy = policy;
 		this.status = ComputationStatus.NotStarted;
 		
 		this.setOfNodesFactory = SetOfNodesFactory.getInstance();		
@@ -110,7 +110,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			this.logger.info("--- NEW EXECUTION ---");
 		}
 		this.refreshInternalState();
-		while (!term.wasMet()){
+		while (!policy.terminationPolicyMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
 			for (Node node : currentlyActiveNodes) {
 				this.logger.info("{}", node.getResource().getResourceID());

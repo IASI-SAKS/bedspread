@@ -25,11 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread;
-import it.cnr.iasi.leks.bedspread.impl.policies.SimpleTerminationPolicy;
+import it.cnr.iasi.leks.bedspread.impl.policies.SimpleExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
@@ -52,13 +52,13 @@ private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovati
 		KnowledgeBase kb = DBpediaKB.getInstance();
 		Node resourceOrigin = this.extractTrivialOrigin();
 	
-		TerminationPolicy term = new SimpleTerminationPolicy(2);
+		ExecutionPolicy policy = new SimpleExecutionPolicy(2);
 		
 		String testPropertyFile = "configTestSemanticWeighting_IC_onDBpedia.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
-		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,policy);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("testHT13ConfSemanticSpread_onDBpedia_IC");

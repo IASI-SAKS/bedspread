@@ -23,7 +23,7 @@ package it.cnr.iasi.leks.bedspread;
  * @author gulyx
  *
  */
-public abstract class TerminationPolicy {
+public abstract class ExecutionPolicy {
 
-	public abstract boolean wasMet();
+	public abstract boolean terminationPolicyMet();
 }

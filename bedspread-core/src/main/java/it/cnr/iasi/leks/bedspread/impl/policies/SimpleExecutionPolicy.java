@@ -18,28 +18,28 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.policies;
 
-import it.cnr.iasi.leks.bedspread.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 
 /**
  * 
  * @author gulyx
  *
  */
-public class SimpleTerminationPolicy extends TerminationPolicy {
+public class SimpleExecutionPolicy extends ExecutionPolicy {
 
 	private final int MAX_QUERIES_BEFORE_TRUE = 10;
 	private int nQueries;
 	
-	public SimpleTerminationPolicy(){
+	public SimpleExecutionPolicy(){
 		this.nQueries = MAX_QUERIES_BEFORE_TRUE;
 	}
 	
-	public SimpleTerminationPolicy(int i){
+	public SimpleExecutionPolicy(int i){
 		this.nQueries = i;
 	}
 
 	@Override
-	public boolean wasMet() {
+	public boolean terminationPolicyMet() {
 		if (this.nQueries > 0){
 			this.nQueries --;
 			return false;
