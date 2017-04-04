@@ -19,6 +19,7 @@
 package it.cnr.iasi.leks.bedspread.impl.policies;
 
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
+import it.cnr.iasi.leks.bedspread.Node;
 
 /**
  * 
@@ -44,6 +45,15 @@ public class SimpleExecutionPolicy extends ExecutionPolicy {
 			this.nQueries --;
 			return false;
 		}	
+		return true;
+	}
+
+    /*
+     * 	In this simplified implementation, any Node can spread the signal.
+     * @see it.cnr.iasi.leks.bedspread.ExecutionPolicy#isActivable(it.cnr.iasi.leks.bedspread.Node)
+     */
+	@Override
+	public boolean isSpreadingEnabled(Node n) {
 		return true;
 	}
 

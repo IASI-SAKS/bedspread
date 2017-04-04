@@ -26,4 +26,6 @@ package it.cnr.iasi.leks.bedspread;
 public abstract class ExecutionPolicy {
 
 	public abstract boolean terminationPolicyMet();
+
+	public abstract boolean isSpreadingEnabled(Node n);
 }
