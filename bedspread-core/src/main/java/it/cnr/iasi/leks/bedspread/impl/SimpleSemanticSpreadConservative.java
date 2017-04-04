@@ -21,7 +21,7 @@ package it.cnr.iasi.leks.bedspread.impl;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.ExecutionPolicies;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
@@ -31,7 +31,7 @@ public class SimpleSemanticSpreadConservative extends SimpleSemanticSpread {
 		super(origin, kb);
 	}
 
-	public SimpleSemanticSpreadConservative(Node origin, KnowledgeBase kb, ExecutionPolicies term){
+	public SimpleSemanticSpreadConservative(Node origin, KnowledgeBase kb, ExecutionPolicy term){
 		super(origin, kb, term);
 	}
 

@@ -26,7 +26,7 @@ import com.opencsv.CSVWriter;
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.ExecutionPolicies;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
@@ -43,7 +43,7 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 		super(origin, kb);
 	}
 
-	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicies term) {
+	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy term) {
 		super(origin, kb, term);
 	}
 
