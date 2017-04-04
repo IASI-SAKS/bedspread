@@ -36,24 +36,24 @@ public class ExecutionPolicyFactory {
 	}			
 
 	public ExecutionPolicy getTerminationPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException{		
-		ExecutionPolicy tp = null;
+		ExecutionPolicy policy = null;
 		
 		PropertyUtil prop = PropertyUtil.getInstance();
-		String tpClassName = prop.getProperty(PropertyUtil.TERMINATION_POLICY_LABEL);
+		String policyClassName = prop.getProperty(PropertyUtil.TERMINATION_POLICY_LABEL);
 		
-		if ( tpClassName != null ){
+		if ( policyClassName != null ){
 			ClassLoader loader = ClassLoader.getSystemClassLoader();
-			tp = (ExecutionPolicy) loader.loadClass(tpClassName).newInstance();			
+			policy = (ExecutionPolicy) loader.loadClass(policyClassName).newInstance();			
 		}else{
-			tp = new SimpleExecutionPolicy();
+			policy = new SimpleExecutionPolicy();
 		}
 		
-		return tp;
+		return policy;
 	}
 
 	public ExecutionPolicy getTerminationPolicy(int maxNumberOfIterations){		
-		ExecutionPolicy tp = new SimpleExecutionPolicy(maxNumberOfIterations);
-		return tp;
+		ExecutionPolicy policy = new SimpleExecutionPolicy(maxNumberOfIterations);
+		return policy;
 	}
 
 }
