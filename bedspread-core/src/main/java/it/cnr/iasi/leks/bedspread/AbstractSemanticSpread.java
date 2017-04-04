@@ -112,7 +112,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.refreshInternalState();
 		while (!this.policy.terminationPolicyMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
-			for (Node node : currentlyActiveNodes) {
+			for (Node node : this.currentlyActiveNodes) {
 				this.logger.info("{}", node.getResource().getResourceID());
 				
 				this.extractForthcomingActiveNodes(node);
@@ -213,7 +213,6 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	
 	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
 	protected abstract Set<Node> filterSetOfNodes(Set<Node> setOfNodes);
-
 	
 	public abstract void flushData (Writer out) throws IOException, InteractionProtocolViolationException; 
 }
