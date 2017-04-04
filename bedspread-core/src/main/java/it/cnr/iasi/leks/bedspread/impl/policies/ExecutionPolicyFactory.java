@@ -35,7 +35,7 @@ public class ExecutionPolicyFactory {
 		return FACTORY;
 	}			
 
-	public ExecutionPolicy getTerminationPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException{		
+	public ExecutionPolicy getExecutionPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException{		
 		ExecutionPolicy policy = null;
 		
 		PropertyUtil prop = PropertyUtil.getInstance();
@@ -51,7 +51,7 @@ public class ExecutionPolicyFactory {
 		return policy;
 	}
 
-	public ExecutionPolicy getTerminationPolicy(int maxNumberOfIterations){		
+	public ExecutionPolicy getExecutionPolicy(int maxNumberOfIterations){		
 		ExecutionPolicy policy = new SimpleExecutionPolicy(maxNumberOfIterations);
 		return policy;
 	}
