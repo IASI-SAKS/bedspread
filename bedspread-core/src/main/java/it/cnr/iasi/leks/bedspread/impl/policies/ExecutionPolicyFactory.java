@@ -39,7 +39,7 @@ public class ExecutionPolicyFactory {
 		ExecutionPolicy policy = null;
 		
 		PropertyUtil prop = PropertyUtil.getInstance();
-		String policyClassName = prop.getProperty(PropertyUtil.TERMINATION_POLICY_LABEL);
+		String policyClassName = prop.getProperty(PropertyUtil.EXECUTION_POLICY_LABEL);
 		
 		if ( policyClassName != null ){
 			ClassLoader loader = ClassLoader.getSystemClassLoader();
