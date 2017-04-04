@@ -99,11 +99,6 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	@Override
-	protected void filterCurrenltyActiveNode() {
-		// TODO  IT DOES NOTHING FOR THE MOMENT!!
-	}
-
-	@Override
 	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException {
 		if (this.getStatus() != ComputationStatus.Completed){
 			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);

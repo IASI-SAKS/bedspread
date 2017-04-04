@@ -40,7 +40,6 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
  */
 public abstract class AbstractSemanticSpread implements Runnable{
 	private Node origin;
-	private ExecutionPolicy policy;
 	private ComputationStatus status;
 	
 	private Set<Node> activatedNodes;
@@ -50,13 +49,14 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	
 	private Set<Node> explorationLeaves; 
 	
-	private SetOfNodesFactory setOfNodesFactory;
+	protected SetOfNodesFactory setOfNodesFactory;
 	
 	private final Object callbackMutex = new Object();
 	private ComputationStatusCallback callback;
 	private String optionalID;
 	
 	protected KnowledgeBase kb;
+	protected ExecutionPolicy policy;
 
 	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpread.class);
 	
@@ -110,9 +110,9 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			this.logger.info("--- NEW EXECUTION ---");
 		}
 		this.refreshInternalState();
-		while (!policy.terminationPolicyMet()){
+		while (!this.policy.terminationPolicyMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
-			for (Node node : currentlyActiveNodes) {
+			for (Node node : this.currentlyActiveNodes) {
 				this.logger.info("{}", node.getResource().getResourceID());
 				
 				this.extractForthcomingActiveNodes(node);
@@ -138,7 +138,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			for (Node tmpNode : this.justProcessedForthcomingActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
 			}
-			this.filterCurrenltyActiveNode();
+			
+			this.filterCurrentlyActiveNodes();
 		}
 		synchronized (this.status) {
 			this.status = ComputationStatus.Completed;
@@ -184,6 +185,16 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 	
+	private void filterCurrentlyActiveNodes() {
+		Set<Node> filteredSetOfNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
+		for (Node tmpNode : this.currentlyActiveNodes) {
+			if (this.policy.isSpreadingEnabled(tmpNode)){
+				filteredSetOfNodes.add(tmpNode);
+			}	
+		}
+		this.currentlyActiveNodes = filteredSetOfNodes;
+	}
+
 	public Set<Node> getExplorationLeaves(){
 		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
 		n.addAll(this.explorationLeaves);
@@ -211,8 +222,6 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	}
 	
 	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
-	protected abstract void filterCurrenltyActiveNode();
-
 	
 	public abstract void flushData (Writer out) throws IOException, InteractionProtocolViolationException; 
 }

@@ -21,6 +21,7 @@ package it.cnr.iasi.leks.bedspread.impl;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 
 import com.opencsv.CSVWriter;
 
@@ -66,11 +67,6 @@ public class BasicSemanticSpread extends AbstractSemanticSpread {
 
 		score = score * this.weightingModule.weight(targetNode, spreadingNode);
 		return score;
-	}
-
-	@Override
-	protected void filterCurrenltyActiveNode() {
-		// TODO  IT DOES NOTHING FOR THE MOMENT!!
 	}
 
 	@Override

@@ -20,6 +20,7 @@ package it.cnr.iasi.leks.bedspread.impl;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Set;
 
 import com.opencsv.CSVWriter;
 
@@ -74,11 +75,6 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 	    }
 	     
 	    writer.close();		
-	}
-
-	@Override
-	protected void filterCurrenltyActiveNode() {
-		// TODO  IT DOES NOTHING FOR THE MOMENT!!		
 	}
 
 }
