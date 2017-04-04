@@ -18,7 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.policies;
 
-import it.cnr.iasi.leks.bedspread.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicies;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 
 public class TerminationPolicyFactory {
@@ -35,15 +35,15 @@ public class TerminationPolicyFactory {
 		return FACTORY;
 	}			
 
-	public TerminationPolicy getTerminationPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException{		
-		TerminationPolicy tp = null;
+	public ExecutionPolicies getTerminationPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException{		
+		ExecutionPolicies tp = null;
 		
 		PropertyUtil prop = PropertyUtil.getInstance();
 		String tpClassName = prop.getProperty(PropertyUtil.TERMINATION_POLICY_LABEL);
 		
 		if ( tpClassName != null ){
 			ClassLoader loader = ClassLoader.getSystemClassLoader();
-			tp = (TerminationPolicy) loader.loadClass(tpClassName).newInstance();			
+			tp = (ExecutionPolicies) loader.loadClass(tpClassName).newInstance();			
 		}else{
 			tp = new SimpleTerminationPolicy();
 		}
@@ -51,8 +51,8 @@ public class TerminationPolicyFactory {
 		return tp;
 	}
 
-	public TerminationPolicy getTerminationPolicy(int maxNumberOfIterations){		
-		TerminationPolicy tp = new SimpleTerminationPolicy(maxNumberOfIterations);
+	public ExecutionPolicies getTerminationPolicy(int maxNumberOfIterations){		
+		ExecutionPolicies tp = new SimpleTerminationPolicy(maxNumberOfIterations);
 		return tp;
 	}
 

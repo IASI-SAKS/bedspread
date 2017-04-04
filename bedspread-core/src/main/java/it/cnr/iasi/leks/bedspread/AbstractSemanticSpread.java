@@ -40,7 +40,7 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
  */
 public abstract class AbstractSemanticSpread implements Runnable{
 	private Node origin;
-	private TerminationPolicy term;
+	private ExecutionPolicies term;
 	private ComputationStatus status;
 	
 	private Set<Node> activatedNodes;
@@ -64,7 +64,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this(origin, kb, TerminationPolicyFactory.getInstance().getTerminationPolicy());
 	}
 		
-	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term){
+	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicies term){
 		this.origin = origin;
 		this.origin.updateScore(1);
 		

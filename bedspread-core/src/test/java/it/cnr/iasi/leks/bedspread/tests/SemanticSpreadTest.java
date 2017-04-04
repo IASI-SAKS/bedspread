@@ -26,7 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicies;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread;
@@ -58,7 +58,7 @@ public class SemanticSpreadTest extends AbstractTest{
 	public void firstMinimalTestDefault() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
-		TerminationPolicy term = new SimpleTerminationPolicy();
+		ExecutionPolicies term = new SimpleTerminationPolicy();
 		
 		PropertyUtilNoSingleton.getInstance();
  
@@ -76,7 +76,7 @@ public class SemanticSpreadTest extends AbstractTest{
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
-		TerminationPolicy term = new SimpleTerminationPolicy();
+		ExecutionPolicies term = new SimpleTerminationPolicy();
 		
 		String testPropertyFile = "configTest.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
@@ -103,7 +103,7 @@ public class SemanticSpreadTest extends AbstractTest{
 	public void testHT13ConfSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
-		TerminationPolicy term = new SimpleTerminationPolicy();
+		ExecutionPolicies term = new SimpleTerminationPolicy();
 		
 		String testPropertyFile = "config.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
@@ -150,7 +150,7 @@ public class SemanticSpreadTest extends AbstractTest{
 	public void actualTestByComparingOverllActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
-		TerminationPolicy term = new SimpleTerminationPolicy();
+		ExecutionPolicies term = new SimpleTerminationPolicy();
 		
 		String testPropertyFile = "configTestConservative.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);

@@ -18,14 +18,14 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.policies;
 
-import it.cnr.iasi.leks.bedspread.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicies;
 
 /**
  * 
  * @author gulyx
  *
  */
-public class SimpleTerminationPolicy extends TerminationPolicy {
+public class SimpleTerminationPolicy extends ExecutionPolicies {
 
 	private final int MAX_QUERIES_BEFORE_TRUE = 10;
 	private int nQueries;

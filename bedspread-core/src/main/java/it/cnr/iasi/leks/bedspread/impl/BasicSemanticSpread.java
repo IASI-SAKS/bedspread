@@ -27,7 +27,7 @@ import com.opencsv.CSVWriter;
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.TerminationPolicy;
+import it.cnr.iasi.leks.bedspread.ExecutionPolicies;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
@@ -55,7 +55,7 @@ public class BasicSemanticSpread extends AbstractSemanticSpread {
 		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);		
 	}
 
-	public BasicSemanticSpread(Node origin, KnowledgeBase kb, TerminationPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public BasicSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicies term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		super(origin, kb, term);
 		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);
 	}
