@@ -25,5 +25,5 @@ package it.cnr.iasi.leks.bedspread;
  */
 public abstract class ExecutionPolicy {
 
-	public abstract boolean wasMet();
+	public abstract boolean terminationPolicyMet();
 }

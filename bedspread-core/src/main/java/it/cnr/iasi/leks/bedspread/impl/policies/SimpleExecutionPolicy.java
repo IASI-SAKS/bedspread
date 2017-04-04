@@ -39,7 +39,7 @@ public class SimpleExecutionPolicy extends ExecutionPolicy {
 	}
 
 	@Override
-	public boolean wasMet() {
+	public boolean terminationPolicyMet() {
 		if (this.nQueries > 0){
 			this.nQueries --;
 			return false;

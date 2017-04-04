@@ -110,7 +110,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			this.logger.info("--- NEW EXECUTION ---");
 		}
 		this.refreshInternalState();
-		while (!policy.wasMet()){
+		while (!policy.terminationPolicyMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
 			for (Node node : currentlyActiveNodes) {
 				this.logger.info("{}", node.getResource().getResourceID());
