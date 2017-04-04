@@ -185,6 +185,16 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 	
+	protected Set<Node> filterSetOfNodes(Set<Node> setOfNodes) {
+		Set<Node> filteredSetOfNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
+		for (Node tmpNode : setOfNodes) {
+			if (this.policy.isSpreadingEnabled(tmpNode)){
+				filteredSetOfNodes.add(tmpNode);
+			}	
+		}
+		return filteredSetOfNodes;
+	}
+
 	public Set<Node> getExplorationLeaves(){
 		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
 		n.addAll(this.explorationLeaves);
@@ -212,7 +222,6 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	}
 	
 	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
-	protected abstract Set<Node> filterSetOfNodes(Set<Node> setOfNodes);
 	
 	public abstract void flushData (Writer out) throws IOException, InteractionProtocolViolationException; 
 }

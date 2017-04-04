@@ -77,9 +77,4 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 	    writer.close();		
 	}
 
-	@Override
-	protected Set<Node> filterSetOfNodes(Set<Node> setOfNodes) {
-		return setOfNodes;		
-	}
-
 }

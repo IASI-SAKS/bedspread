@@ -70,11 +70,6 @@ public class BasicSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	@Override
-	protected Set<Node> filterSetOfNodes(Set<Node> setOfNodes) {
-		return setOfNodes;		
-	}
-
-	@Override
 	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException {
 		if (this.getStatus() != ComputationStatus.Completed){
 			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);

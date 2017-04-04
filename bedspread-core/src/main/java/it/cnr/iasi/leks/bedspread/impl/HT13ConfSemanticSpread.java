@@ -99,17 +99,6 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	@Override
-	protected Set<Node> filterSetOfNodes(Set<Node> setOfNodes) {
-		Set<Node> filteredSetOfNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
-		for (Node tmpNode : setOfNodes) {
-			if (this.policy.isSpreadingEnabled(tmpNode)){
-				filteredSetOfNodes.add(tmpNode);
-			}	
-		}
-		return filteredSetOfNodes;
-	}
-
-	@Override
 	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException {
 		if (this.getStatus() != ComputationStatus.Completed){
 			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
