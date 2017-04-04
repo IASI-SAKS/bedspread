@@ -55,13 +55,13 @@ public class SemanticSpreadOnWhiteboardRDFGraph_modifiedTest extends AbstractTes
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
 	
-		ExecutionPolicy term = new SimpleTerminationPolicy(5);
+		ExecutionPolicy policy = new SimpleTerminationPolicy(5);
 		
 		String testPropertyFile = "configTestSemanticWeighting_IC_onLocalGraph.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
-		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,policy);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("testHT13ConfSemanticSpread_onWhiteboardRDFGraph_modified_IC");

@@ -31,8 +31,8 @@ public class SimpleSemanticSpreadConservative extends SimpleSemanticSpread {
 		super(origin, kb);
 	}
 
-	public SimpleSemanticSpreadConservative(Node origin, KnowledgeBase kb, ExecutionPolicy term){
-		super(origin, kb, term);
+	public SimpleSemanticSpreadConservative(Node origin, KnowledgeBase kb, ExecutionPolicy policy){
+		super(origin, kb, policy);
 	}
 
 	@Override

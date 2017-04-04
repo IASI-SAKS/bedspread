@@ -35,8 +35,8 @@ public class HT13ConfSemanticSpread_GreedyVariant extends HT13ConfSemanticSpread
 		super(origin, kb);
 	}
 
-	public HT13ConfSemanticSpread_GreedyVariant(Node origin, KnowledgeBase kb, ExecutionPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		super(origin, kb, term);
+	public HT13ConfSemanticSpread_GreedyVariant(Node origin, KnowledgeBase kb, ExecutionPolicy policy) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		super(origin, kb, policy);
 	}
 
 	@Override

@@ -52,13 +52,13 @@ private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovati
 		KnowledgeBase kb = DBpediaKB.getInstance();
 		Node resourceOrigin = this.extractTrivialOrigin();
 	
-		ExecutionPolicy term = new SimpleTerminationPolicy(2);
+		ExecutionPolicy policy = new SimpleTerminationPolicy(2);
 		
 		String testPropertyFile = "configTestSemanticWeighting_IC_onDBpedia.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
-		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,policy);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("testHT13ConfSemanticSpread_onDBpedia_IC");

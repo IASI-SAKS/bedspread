@@ -58,11 +58,11 @@ public class SemanticSpreadTest extends AbstractTest{
 	public void firstMinimalTestDefault() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
-		ExecutionPolicy term = new SimpleTerminationPolicy();
+		ExecutionPolicy policy = new SimpleTerminationPolicy();
 		
 		PropertyUtilNoSingleton.getInstance();
  
-		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,policy);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("firstMinimalTestDefault");
@@ -76,13 +76,13 @@ public class SemanticSpreadTest extends AbstractTest{
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
-		ExecutionPolicy term = new SimpleTerminationPolicy();
+		ExecutionPolicy policy = new SimpleTerminationPolicy();
 		
 		String testPropertyFile = "configTest.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
-		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,policy);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("firstMinimalTestConf");
@@ -103,13 +103,13 @@ public class SemanticSpreadTest extends AbstractTest{
 	public void testHT13ConfSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
-		ExecutionPolicy term = new SimpleTerminationPolicy();
+		ExecutionPolicy policy = new SimpleTerminationPolicy();
 		
 		String testPropertyFile = "config.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
-		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,policy);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("testHT13ConfSemanticSpread");
@@ -150,13 +150,13 @@ public class SemanticSpreadTest extends AbstractTest{
 	public void actualTestByComparingOverllActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InteractionProtocolViolationException{
 		KnowledgeBase kb = this.loadMinimalKB();
 		Node resourceOrigin = this.extractTrivialOrigin();
-		ExecutionPolicy term = new SimpleTerminationPolicy();
+		ExecutionPolicy policy = new SimpleTerminationPolicy();
 		
 		String testPropertyFile = "configTestConservative.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
-		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,term);
+		AbstractSemanticSpread ss = SemanticSpreadFactory.getInstance().getSemanticSpread(resourceOrigin,kb,policy);
 		ss.run();
 		
 		String fileName = this.getFlushFileName("actualTestByComparingOverllActivationSpreadConf");

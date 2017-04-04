@@ -43,8 +43,8 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 		super(origin, kb);
 	}
 
-	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy term) {
-		super(origin, kb, term);
+	public SimpleSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy) {
+		super(origin, kb, policy);
 	}
 
 	@Override

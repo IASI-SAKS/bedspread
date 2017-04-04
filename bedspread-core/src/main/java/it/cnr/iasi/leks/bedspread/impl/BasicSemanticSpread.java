@@ -55,8 +55,8 @@ public class BasicSemanticSpread extends AbstractSemanticSpread {
 		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);		
 	}
 
-	public BasicSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy term) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		super(origin, kb, term);
+	public BasicSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		super(origin, kb, policy);
 		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);
 	}
 
