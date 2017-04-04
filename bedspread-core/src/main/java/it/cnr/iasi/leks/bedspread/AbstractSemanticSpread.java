@@ -49,7 +49,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	
 	private Set<Node> explorationLeaves; 
 	
-	private SetOfNodesFactory setOfNodesFactory;
+	protected SetOfNodesFactory setOfNodesFactory;
 	
 	private final Object callbackMutex = new Object();
 	private ComputationStatusCallback callback;
@@ -138,7 +138,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			for (Node tmpNode : this.justProcessedForthcomingActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
 			}
-			this.filterCurrenltyActiveNode();
+			
+			this.currentlyActiveNodes = this.filterCurrenltyActiveNode(this.currentlyActiveNodes);
 		}
 		synchronized (this.status) {
 			this.status = ComputationStatus.Completed;
@@ -211,7 +212,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	}
 	
 	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
-	protected abstract void filterCurrenltyActiveNode();
+	protected abstract Set<Node> filterCurrenltyActiveNode(Set<Node> setOfNodes);
 
 	
 	public abstract void flushData (Writer out) throws IOException, InteractionProtocolViolationException; 
