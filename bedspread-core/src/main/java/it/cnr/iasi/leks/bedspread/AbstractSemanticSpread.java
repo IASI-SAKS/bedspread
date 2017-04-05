@@ -112,22 +112,25 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.refreshInternalState();
 		while (!this.policy.terminationPolicyMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
+			int i = 0;
 			for (Node node : this.currentlyActiveNodes) {
-				this.logger.info("{}", node.getResource().getResourceID());
+				i++;
+				this.logger.info("{}", "+++ "+i+" "+node.getResource().getResourceID()+": "+kb.getNeighborhood(node.getResource()).size());
 				
 				this.extractForthcomingActiveNodes(node);
 				
 				if ((this.forthcomingActiveNodes == null) || this.forthcomingActiveNodes.isEmpty()){
 					this.explorationLeaves.add(node);
 				}
-				
+				int j = 0;
 				for (Node newNode : this.forthcomingActiveNodes) {
+					j++;
 					Double newScore = this.computeScore(node, newNode);
 					newNode.updateScore(newScore);
 // Note that elements already present are not doubled in "tempActiveNodes" according to : java.util.Set				
 					this.justProcessedForthcomingActiveNodes.add(newNode);
 
-					this.logger.info("{} --> {}, {}", node.getResource().getResourceID(),newNode.getResource().getResourceID(),newNode.getScore());
+					this.logger.info("{} --> {}, {}", "*** "+j+" "+node.getResource().getResourceID(),newNode.getResource().getResourceID(),newNode.getScore());
 				}
 			}
 			
