@@ -52,20 +52,39 @@ public class Node {
 		}
 	}
 	
+	/*
+	 * Note that this method changed.
+	 * Now the implementation strictly relay on the override of "equals" that any implementation
+	 * of AnyResource must provide.
+	 * 
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.URIImpl
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.BlankNodeImpl
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.LiteralImpl
+	 * 
+	 */
 	@Override
 	public boolean equals (Object obj){
 		if (obj instanceof Node) {
 			Node node = (Node) obj;
-			String nodeID = node.getResource().getResourceID();
-			String currentID = this.resource.getResourceID();
-			return currentID.equalsIgnoreCase(nodeID);
+			AnyResource resource = node.getResource();
+			
+			return this.getResource().equals(resource); 
 		}	
 		return false;		
 	}
 	
+	/*
+	 * Note that this method changed.
+	 * Now the implementation strictly relay on the override of "hashCode" that any implementation
+	 * of AnyResource must provide.
+	 * 
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.URIImpl
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.BlankNodeImpl
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.LiteralImpl
+	 * 
+	 */
 	@Override
 	public int hashCode(){
-		return this.resource.getResourceID().hashCode();
-//		return this.resource.hashCode();
+		return this.resource.hashCode();
 	}
 }
