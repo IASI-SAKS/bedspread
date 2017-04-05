@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
+import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
 
 /*
  * @author gulyx

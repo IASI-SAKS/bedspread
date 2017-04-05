@@ -28,7 +28,7 @@ import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.impl.weights.DefaultWeightingFunction;
 import it.cnr.iasi.leks.bedspread.impl.weights.SemanticWeightingFunction;
 import it.cnr.iasi.leks.bedspread.impl.weights.WeightingFunctionFactory;
-import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
+import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
 import junit.framework.Assert;
 
 /**
