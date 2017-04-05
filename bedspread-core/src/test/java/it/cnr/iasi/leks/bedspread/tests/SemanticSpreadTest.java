@@ -37,7 +37,7 @@ import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
-import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
+import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
 
 import org.junit.Assert;
 import org.junit.Test;

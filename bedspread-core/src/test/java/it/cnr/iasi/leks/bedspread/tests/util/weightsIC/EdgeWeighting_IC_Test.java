@@ -16,31 +16,31 @@
  *	 You should have received a copy of the GNU General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.debspread.tests.util.weightsIC;
+package it.cnr.iasi.leks.bedspread.tests.util.weightsIC;
 
-import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_CombIC;
+import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_IC;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
 /**
  *  This class has been conceived strictly for testing purposes.
  *  NEVER RELY on it.
- *  
+ *
  * @author gulyx
  *
  */
-public class EdgeWeighting_CombIC_Test extends EdgeWeighting_CombIC{
+public class EdgeWeighting_IC_Test extends EdgeWeighting_IC{
 
-	public EdgeWeighting_CombIC_Test(KnowledgeBase kb) {
+	public EdgeWeighting_IC_Test(KnowledgeBase kb) {
 		super(kb);
 	}
+
+	public double predicateProbability(AnyResource resource) {
+		return super.predicateProbability(resource);
+	}  
 		
-	public double nodeProbability(AnyResource resource) {
-		return super.nodeProbability(resource);
+	public double predicate_IC(AnyResource resource) {
+		return super.predicate_IC(resource);
 	}
 
-	public double node_IC(AnyResource resource) {
-		return super.node_IC(resource);
-	}
-		
 }
