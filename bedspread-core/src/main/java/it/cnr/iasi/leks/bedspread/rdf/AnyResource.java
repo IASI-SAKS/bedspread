@@ -22,8 +22,17 @@ package it.cnr.iasi.leks.bedspread.rdf;
  * 
  * @author gulyx
  *
+ * Note that the contract we envisioned for this interface is that any 
+ * implementation strictly MUST the override both of "equals" and "hashCode".
+ * 
+ * @see	it.cnr.iasi.leks.bedspread.rdf.URIImpl
+ * @see	it.cnr.iasi.leks.bedspread.rdf.BlankNodeImpl
+ * @see	it.cnr.iasi.leks.bedspread.rdf.LiteralImpl
+ * 
  */
+
 public interface AnyResource {
 
 	public String getResourceID();
+	
 }

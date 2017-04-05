@@ -50,14 +50,36 @@ public class RDFTriple {
 	public AnyResource getTripleObject() {
 		return this.tripleObject;
 	}
-	
+
+/*
+ * Note that this method changed.
+ * Now the implementation strictly relay on the override of "equals" that any implementation
+ * of AnyResource must provide.
+ * 
+ * @see	it.cnr.iasi.leks.bedspread.rdf.URIImpl
+ * @see	it.cnr.iasi.leks.bedspread.rdf.BlankNodeImpl
+ * @see	it.cnr.iasi.leks.bedspread.rdf.LiteralImpl
+ * 
+ */
 	public boolean equals (RDFTriple t){
-		boolean sameSubject = (this.tripleSubject.getResourceID().equalsIgnoreCase(t.tripleSubject.getResourceID())); 
-		boolean sameObject = (this.tripleObject.getResourceID().equalsIgnoreCase(t.tripleObject.getResourceID())); 
-		boolean samePredicate = (this.triplePredicate.getResourceID().equalsIgnoreCase(t.triplePredicate.getResourceID())); 
+
+		boolean sameSubject = (this.tripleSubject.equals(t.tripleSubject)); 
+		boolean sameObject = (this.tripleObject.equals(t.tripleObject)); 
+		boolean samePredicate = (this.triplePredicate.equals(t.triplePredicate)); 
+
 		return ( sameSubject && sameObject && samePredicate );
 	}
 	
+	/*
+	 * Note that this method changed.
+	 * Now the implementation strictly relay on the override of "equals" that any implementation
+	 * of AnyResource must provide.
+	 * 
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.URIImpl
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.BlankNodeImpl
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.LiteralImpl
+	 * 
+	 */
 	@Override
 	public boolean equals (Object obj){
 		if (obj instanceof RDFTriple) {
@@ -67,9 +89,20 @@ public class RDFTriple {
 		return false;		
 	}
 	
+	/*
+	 * Note that this method changed.
+	 * Now the implementation strictly relay on the override of "hashCode" that any implementation
+	 * of AnyResource must provide.
+	 * 
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.URIImpl
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.BlankNodeImpl
+	 * @see	it.cnr.iasi.leks.bedspread.rdf.LiteralImpl
+	 * 
+	 */
 	@Override
-	public int hashCode(){
-		int newHash = this.tripleSubject.getResourceID().hashCode() + this.tripleObject.getResourceID().hashCode() + this.triplePredicate.getResourceID().hashCode(); 
+	public int hashCode(){		
+		int newHash = this.tripleSubject.hashCode() + this.tripleObject.hashCode() + this.triplePredicate.hashCode(); 
+		
 		return newHash;
 	}
 
