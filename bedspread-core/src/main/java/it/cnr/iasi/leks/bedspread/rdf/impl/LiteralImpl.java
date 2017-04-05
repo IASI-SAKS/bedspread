@@ -37,4 +37,20 @@ public class LiteralImpl implements Literal {
 		return this.id;
 	}
 
+	@Override
+	public boolean equals (Object obj){
+		if (obj instanceof LiteralImpl) {
+			LiteralImpl literal = (LiteralImpl) obj;
+			String literalID = literal.getResourceID();
+			String currentID = this.getResourceID();
+			return currentID.equalsIgnoreCase(literalID);
+		}	
+		return false;		
+	}
+	
+	@Override
+	public int hashCode(){
+		return this.getResourceID().hashCode();
+	}
+	
 }

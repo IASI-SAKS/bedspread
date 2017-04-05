@@ -48,5 +48,22 @@ public class BlankNodeImpl implements BlankNode {
     	SecureRandom random = new SecureRandom();
     	return new BigInteger(130, random).toString(32);
     }
+    
+	@Override
+	public boolean equals (Object obj){
+		if (obj instanceof BlankNodeImpl) {
+			BlankNodeImpl blankNode = (BlankNodeImpl) obj;
+			String blanckNodeID = blankNode.getResourceID();
+			String currentID = this.getResourceID();
+			return currentID.equalsIgnoreCase(blanckNodeID);
+		}	
+		return false;		
+	}
+	
+	@Override
+	public int hashCode(){
+		return this.getResourceID().hashCode();
+	}
+
 
 }
