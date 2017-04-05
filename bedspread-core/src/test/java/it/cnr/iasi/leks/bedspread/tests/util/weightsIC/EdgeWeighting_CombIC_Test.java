@@ -29,6 +29,7 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * @author gulyx
  *
  */
+
 public class EdgeWeighting_CombIC_Test extends EdgeWeighting_CombIC{
 
 	public EdgeWeighting_CombIC_Test(KnowledgeBase kb) {
