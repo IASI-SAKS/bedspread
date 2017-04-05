@@ -36,5 +36,21 @@ public class URIImpl implements URI {
 	public String getResourceID() {
 		return this.id;
 	}
-
+	
+	@Override
+	public boolean equals (Object obj){
+		if (obj instanceof URIImpl) {
+			URIImpl uri = (URIImpl) obj;
+			String uriID = uri.getResourceID();
+			String currentID = this.getResourceID();
+			return currentID.equalsIgnoreCase(uriID);
+		}	
+		return false;		
+	}
+	
+	@Override
+	public int hashCode(){
+		return this.getResourceID().hashCode();
+	}
+	
 }
