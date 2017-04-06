@@ -29,7 +29,6 @@ import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.BasicSemanticSpread;
-import it.cnr.iasi.leks.bedspread.impl.policies.SimpleExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.impl.policies.SpreadingBound;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -38,6 +37,7 @@ import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 import it.cnr.iasi.leks.debspread.tests.util.PropertyUtilNoSingleton;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /*
@@ -46,9 +46,10 @@ import org.junit.Test;
 public class BasicSemanticSpreadOnDBpediaTest extends AbstractTest{
 
 	//private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovation";
-	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Mosul_offensive_(2015)";
-	//private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
+	//private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Mosul_offensive_(2015)";
+	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
 
+	@Ignore
 	@Test
 	public void testBasicSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		KnowledgeBase kb = DBpediaKB.getInstance();

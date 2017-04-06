@@ -75,7 +75,8 @@ public class SPARQLEndpointConnector {
 			this.logger.error("{}", queryString +"\n"+ex.getMessage());
 		}
 		finally {
-			qexec.close();
+			if(qexec!=null)
+				qexec.close();
 		}
 		return qss;
 	}

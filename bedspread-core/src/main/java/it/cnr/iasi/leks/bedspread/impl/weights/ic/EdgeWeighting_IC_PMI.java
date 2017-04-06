@@ -33,9 +33,19 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  */
 public class EdgeWeighting_IC_PMI extends EdgeWeighting_UnconditionedJointIC{
 
+	private static EdgeWeighting_IC_PMI instance = null;
+	
 	public EdgeWeighting_IC_PMI(KnowledgeBase kb) {
 		super(kb);
+		computeMaxWeight();
 	}
+	
+	public synchronized static EdgeWeighting_IC_PMI getInstance(KnowledgeBase kb){
+    	if (instance == null){
+    		instance = new EdgeWeighting_IC_PMI(kb);
+    	}
+    	return instance;
+    }		
 	
 	/**
 	 * Compute the frequence of the triples having node as the object or as the predicate and pred as the predicate with respect to all the triples in the kb 
@@ -80,5 +90,9 @@ public class EdgeWeighting_IC_PMI extends EdgeWeighting_UnconditionedJointIC{
 		result = predicate_IC(edge.getTriplePredicate()) + pmi(edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
 	}
-	
+
+	// TO BE IMPLEMENTED
+	@Override
+	protected void computeMaxWeight() {
+	}
 }

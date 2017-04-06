@@ -18,6 +18,13 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 
@@ -32,9 +39,20 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  */
 public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 
+	private static EdgeWeighting_IC instance = null;
+	
 	public EdgeWeighting_IC(KnowledgeBase kb) {
 		super(kb);
+		computeMaxWeight();
+		//max_weight = 19.801538998683533d;
 	}
+	
+	public synchronized static EdgeWeighting_IC getInstance(KnowledgeBase kb){
+    	if (instance == null){
+    		instance = new EdgeWeighting_IC(kb);
+    	}
+    	return instance;
+    }
 
 	/**
 	 * Compute the information content of an edge, which is identified by a triple
@@ -48,7 +66,19 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 	public double computeEdgeWeight(RDFTriple edge) {
 		double result = 0.0;
 		result = this.predicate_IC(edge.getTriplePredicate());
-		return result;
+		return result/max_weight;
+	}
+	
+	@Override
+	protected void computeMaxWeight() {
+		double result = 0.0d;
+		Set<AnyResource> allPredicates = this.kb.getAllPredicates();
+		for(AnyResource p:allPredicates) {
+			double w = this.predicate_IC(p);
+			if(w>result)
+				result = w;
+		}
+		this.max_weight = result;
 	}
 	
 }

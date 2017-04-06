@@ -37,7 +37,7 @@ public abstract class EdgeWeighting_UnconditionedJointIC extends Abstract_EdgeWe
 	}
 
 	/**
-	 * Compute the frequence of the triples having node as the subject or as the object, with respect to all the triples in the kb 	
+	 * Compute the frequency of the triples having node as the subject or as the object, with respect to all the triples in the kb 	
 	 *
 	 * @param resource
 	 * @return

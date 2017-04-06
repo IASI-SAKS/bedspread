@@ -256,6 +256,12 @@ public class DBpediaKB implements KnowledgeBase {
 		result = SPARQLQueryCollector.getPredicatesBySubjectAndObject(this, r1, r2);
 		return result;
 	}
+
+	public Set<AnyResource> getAllPredicates() {
+		Set<AnyResource> result = new HashSet<AnyResource>();
+		result = SPARQLQueryCollector.getAllPredicates(this);
+		return result;
+	}
 	
 	public Vector<AnyResource> getIncomingPredicates(AnyResource resource) {
 		return SPARQLQueryCollector.getIncomingPredicates(this, resource);

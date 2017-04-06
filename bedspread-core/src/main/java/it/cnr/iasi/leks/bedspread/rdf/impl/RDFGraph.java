@@ -232,5 +232,13 @@ public class RDFGraph implements KnowledgeBase {
 					result ++;
 		
 		return result;
-	}	
+	}
+	
+	@Override
+	public Set<AnyResource> getAllPredicates() {
+		Set<AnyResource> result = new HashSet<AnyResource>();
+		for(String id:predicatesMap.keySet())
+			result.add(RDFFactory.getInstance().createURI(id));
+		return result;
+	}
 }

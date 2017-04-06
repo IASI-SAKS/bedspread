@@ -112,6 +112,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.refreshInternalState();
 		while (!this.policy.terminationPolicyMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
+			this.filterCurrentlyActiveNodes();
 			int i = 0;
 			for (Node node : this.currentlyActiveNodes) {
 				i++;
@@ -141,8 +142,6 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			for (Node tmpNode : this.justProcessedForthcomingActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
 			}
-			
-			this.filterCurrentlyActiveNodes();
 		}
 		synchronized (this.status) {
 			this.status = ComputationStatus.Completed;
@@ -193,6 +192,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		for (Node tmpNode : this.currentlyActiveNodes) {
 			if (this.policy.isSpreadingEnabled(tmpNode)){
 				filteredSetOfNodes.add(tmpNode);
+			} else {
+				this.activatedNodes.add(tmpNode);
 			}	
 		}
 		this.currentlyActiveNodes = filteredSetOfNodes;

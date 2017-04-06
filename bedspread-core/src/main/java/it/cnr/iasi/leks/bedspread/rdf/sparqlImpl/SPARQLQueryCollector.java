@@ -152,11 +152,17 @@ public class SPARQLQueryCollector {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
-		String queryString = "SELECT DISTINCT ?x FROM <"+kb.getGraph()+"> WHERE {"
+		String queryString = "";
+		if(resource instanceof URIImpl) 
+			queryString = "SELECT DISTINCT ?x FROM <"+kb.getGraph()+"> WHERE {"
 				+ "{?x ?p "+adjustObject(resource)+" } " 
 				+ "UNION "
 				+ "{<"+resource.getResourceID()+"> ?p ?x} "
 				+ "}";
+		else
+			queryString = "SELECT DISTINCT ?x FROM <"+kb.getGraph()+"> WHERE {"
+					+ "?x ?p "+adjustObject(resource)
+					+"}";
 		
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
 		
@@ -418,6 +424,24 @@ public class SPARQLQueryCollector {
 		
 		return result;
 	}
+
+	public static Set<AnyResource> getAllPredicates(DBpediaKB kb) {
+		Set<AnyResource> result = new HashSet<AnyResource>();
+
+			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+	
+			Vector<QuerySolution> query_results;
+			String queryString = "SELECT DISTINCT ?p FROM <"+kb.getGraph()+"> WHERE { "
+					+ "?s ?p ?o"
+					+ "}";
+			
+			query_results = sec.execQuery(queryString);
+			
+			for(QuerySolution qs:query_results)
+				result.add(RDFFactory.getInstance().createURI(qs.getResource("p").getURI().toString()));
+		return result;
+	}
+	
 	
 	private static String adjustObject(AnyResource resource) {
 		String result = "";

@@ -33,6 +33,7 @@ public interface KnowledgeBase {
 	public Set<AnyResource> getNeighborhood (AnyResource resource);
 	
 	public Set<AnyResource> getPredicatesBySubjectAndObject(AnyResource r1, AnyResource r2);
+	public Set<AnyResource> getAllPredicates();
 	public int countAllTriples();
 	public int countTriplesByPredicate(AnyResource r);
 	public int countTriplesBySubjectOrObject(AnyResource r);
