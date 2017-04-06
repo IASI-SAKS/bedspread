@@ -33,19 +33,18 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  */
 public class EdgeWeighting_CombIC extends EdgeWeighting_UnconditionedJointIC{
 
-	private static EdgeWeighting_CombIC instance = null;
+	private static final Object MUTEX = new Object();
+	private static boolean MAX_WEIGHT_COMPUTED = false;
 	
 	public EdgeWeighting_CombIC(KnowledgeBase kb) {
 		super(kb);
-		computeMaxWeight();
+		synchronized (MUTEX) {
+			if (!MAX_WEIGHT_COMPUTED){
+				this.computeMaxWeight();
+				MAX_WEIGHT_COMPUTED = true;
+			}			
+		}
 	}
-	
-	public synchronized static EdgeWeighting_CombIC getInstance(KnowledgeBase kb){
-    	if (instance == null){
-    		instance = new EdgeWeighting_CombIC(kb);
-    	}
-    	return instance;
-    }		
 	
 	/**
 	 * Compute the Information Content of a node 
@@ -74,9 +73,8 @@ public class EdgeWeighting_CombIC extends EdgeWeighting_UnconditionedJointIC{
 		return result;
 	}
 
-	// TO BE IMPLEMENTED
 	@Override
-	protected void computeMaxWeight() {
-		
+	protected synchronized void computeMaxWeight() {
+		//TODO TO BE IMPLEMENTED		
 	}
 }

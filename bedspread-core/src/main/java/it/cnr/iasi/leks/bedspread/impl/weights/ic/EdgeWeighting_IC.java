@@ -39,21 +39,20 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  */
 public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 
-	private static EdgeWeighting_IC instance = null;
+	private static boolean MAX_WEIGHT_COMPUTED = false;
+	private static final Object MUTEX = new Object();
 	
 	public EdgeWeighting_IC(KnowledgeBase kb) {
 		super(kb);
-		computeMaxWeight();
-		//max_weight = 19.801538998683533d;
+		synchronized (MUTEX) {
+			if (!MAX_WEIGHT_COMPUTED){
+				this.computeMaxWeight();
+				//max_weight = 19.801538998683533d;
+				MAX_WEIGHT_COMPUTED = true;
+			}			
+		}
 	}
 	
-	public synchronized static EdgeWeighting_IC getInstance(KnowledgeBase kb){
-    	if (instance == null){
-    		instance = new EdgeWeighting_IC(kb);
-    	}
-    	return instance;
-    }
-
 	/**
 	 * Compute the information content of an edge, which is identified by a triple
 	 * 
@@ -66,11 +65,11 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 	public double computeEdgeWeight(RDFTriple edge) {
 		double result = 0.0;
 		result = this.predicate_IC(edge.getTriplePredicate());
-		return result/max_weight;
+		return result/this.getMax_weight();
 	}
 	
 	@Override
-	protected void computeMaxWeight() {
+	protected synchronized void computeMaxWeight() {
 		double result = 0.0d;
 		Set<AnyResource> allPredicates = this.kb.getAllPredicates();
 		for(AnyResource p:allPredicates) {
@@ -78,7 +77,7 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 			if(w>result)
 				result = w;
 		}
-		this.max_weight = result;
+		this.setMax_weight(result);
 	}
 	
 }
