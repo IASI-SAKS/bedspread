@@ -19,6 +19,7 @@
 package it.cnr.iasi.leks.bedspread.tests;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.Node;
@@ -34,7 +35,7 @@ public class SemanticWeighting_ICTest {
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA = "http://dbpedia.org/resource/Barack_Obama";
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_JOE_BIDEN = "http://dbpedia.org/resource/Joe_Biden";
 	
-	
+	@Ignore
 	@Test
 	public void weight() {
 		DBpediaKB kb = DBpediaKB.getInstance();
