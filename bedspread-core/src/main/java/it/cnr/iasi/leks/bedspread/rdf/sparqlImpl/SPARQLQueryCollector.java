@@ -308,17 +308,26 @@ public class SPARQLQueryCollector {
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
 		Vector<QuerySolution> query_results;
+		String queryString = "";
 		if(resource instanceof URIImpl) {
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "<"+resource.getResourceID()+"> ?p ?o "
+			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
+					+ "SELECT ?s ?p ?o WHERE {"
+					+ 	"{<"+resource.getResourceID()+"> ?p ?o} "
+					+	"UNION "
+					+ 	"{?s ?p "+adjustObject(resource)+"} "
+					+	"}"
 					+ "}";
+					
+										
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
 				result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
 		}		
-		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
+		else 
+			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
 				+ "?s ?p "+adjustObject(resource)
 				+ "}";
+		
 		query_results = sec.execQuery(queryString);
 		if(query_results.size()>0)
 			result = result + query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
