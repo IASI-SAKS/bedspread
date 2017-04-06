@@ -16,7 +16,7 @@
  *	 You should have received a copy of the GNU General Public License
  *	 along with this source.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.iasi.leks.debspread.tests.util.weightsIC;
+package it.cnr.iasi.leks.bedspread.tests.util.weightsIC;
 
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_IC_PMI;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;

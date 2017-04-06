@@ -30,10 +30,10 @@ import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_JointIC;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
-import it.cnr.iasi.leks.debspread.tests.util.weightsIC.EdgeWeighting_CombIC_Test;
-import it.cnr.iasi.leks.debspread.tests.util.weightsIC.EdgeWeighting_IC_PMI_Test;
-import it.cnr.iasi.leks.debspread.tests.util.weightsIC.EdgeWeighting_IC_Test;
-import it.cnr.iasi.leks.debspread.tests.util.weightsIC.EdgeWeighting_JointIC_Test;
+import it.cnr.iasi.leks.bedspread.tests.util.weightsIC.EdgeWeighting_CombIC_Test;
+import it.cnr.iasi.leks.bedspread.tests.util.weightsIC.EdgeWeighting_IC_PMI_Test;
+import it.cnr.iasi.leks.bedspread.tests.util.weightsIC.EdgeWeighting_IC_Test;
+import it.cnr.iasi.leks.bedspread.tests.util.weightsIC.EdgeWeighting_JointIC_Test;
 
 public class EdgeWeighting_ICTest {
 
