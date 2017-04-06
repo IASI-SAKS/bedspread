@@ -34,9 +34,15 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 public abstract class Abstract_EdgeWeighting_IC{
 
 	protected KnowledgeBase kb;
+	private double max_weight = 0.0d;
 	
 	public Abstract_EdgeWeighting_IC(KnowledgeBase kb) {
+		this(kb, 0.0d);
+	}
+
+	public Abstract_EdgeWeighting_IC(KnowledgeBase kb, double max_weight) {
 		this.kb = kb;
+		this.max_weight = max_weight;
 	}
 
 	/**
@@ -61,8 +67,17 @@ public abstract class Abstract_EdgeWeighting_IC{
 		double result = 0.0;
 		result = - Math.log(predicateProbability(resource));
 		return result;
+	}	
+	
+	protected void setMax_weight(double max_weight) {
+		this.max_weight = max_weight;
 	}
-		
+
+	public double getMax_weight() {
+		return max_weight;
+	}
+
 	public abstract double computeEdgeWeight(RDFTriple edge);
 	
+	protected abstract void computeMaxWeight();
 }

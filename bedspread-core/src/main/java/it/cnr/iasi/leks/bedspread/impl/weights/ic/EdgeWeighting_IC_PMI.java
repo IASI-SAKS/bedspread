@@ -33,8 +33,17 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  */
 public class EdgeWeighting_IC_PMI extends EdgeWeighting_UnconditionedJointIC{
 
+	private static final Object MUTEX = new Object();
+	private static boolean MAX_WEIGHT_COMPUTED = false;
+	
 	public EdgeWeighting_IC_PMI(KnowledgeBase kb) {
 		super(kb);
+		synchronized (MUTEX) {
+			if (!MAX_WEIGHT_COMPUTED){
+				this.computeMaxWeight();
+				MAX_WEIGHT_COMPUTED = true;
+			}			
+		}
 	}
 	
 	/**
@@ -80,5 +89,9 @@ public class EdgeWeighting_IC_PMI extends EdgeWeighting_UnconditionedJointIC{
 		result = predicate_IC(edge.getTriplePredicate()) + pmi(edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
 	}
-	
+
+	@Override
+	protected synchronized void computeMaxWeight() {
+		//TODO TO BE IMPLEMENTED
+	}
 }

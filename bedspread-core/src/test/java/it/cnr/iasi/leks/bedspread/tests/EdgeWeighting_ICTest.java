@@ -20,6 +20,7 @@ package it.cnr.iasi.leks.bedspread.tests;
 
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeightingFactory;
@@ -46,6 +47,7 @@ public class EdgeWeighting_ICTest {
 					RDFFactory.getInstance().createURI("http://dbpedia.org/resource/Washington,_D.C.")
 					);
 
+	@Ignore
 	@Test
 	public void edgeWeight_IC() {		
 		EdgeWeighting_IC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_IC(kb);
@@ -54,6 +56,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 
+	@Ignore
 	@Test
 	public void edgeWeight_jointIC(){
 		EdgeWeighting_JointIC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_JointIC(kb);
@@ -62,6 +65,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 
+	@Ignore
 	@Test
 	public void edgeWeight_CombIC() {
 		EdgeWeighting_CombIC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_CombIC(kb);
@@ -70,6 +74,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 	
+	@Ignore
 	@Test
 	public void edgeWeight_ICplusPMI(){
 		EdgeWeighting_IC_PMI ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_IC_PMI(kb);
@@ -78,6 +83,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 	
+	@Ignore
 	@Test
 	public void predicateProbability() {
 		EdgeWeighting_IC_Test ew = new EdgeWeighting_IC_Test(kb);
@@ -86,6 +92,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 	
+	@Ignore
 	@Test
 	public void nodeProbability() {
 		EdgeWeighting_CombIC_Test ew = new EdgeWeighting_CombIC_Test(kb);
@@ -94,6 +101,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 
+	@Ignore
 	@Test
 	public void nodeProbabilityConditionalToPredicate() {
 		EdgeWeighting_JointIC_Test ew = new EdgeWeighting_JointIC_Test(kb);
@@ -102,6 +110,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 
+	@Ignore
 	@Test
 	public void nodeAndPredicateProbability() {
 		EdgeWeighting_IC_PMI_Test ew = new EdgeWeighting_IC_PMI_Test(kb);
@@ -110,6 +119,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 	
+	@Ignore
 	@Test
 	public void node_IC() {
 		EdgeWeighting_CombIC_Test ew = new EdgeWeighting_CombIC_Test(kb);
@@ -118,6 +128,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 	
+	@Ignore
 	@Test
 	public void nodeConditionalToPredicate_IC() {
 		EdgeWeighting_JointIC_Test ew = new EdgeWeighting_JointIC_Test(kb);
@@ -126,6 +137,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 
+	@Ignore
 	@Test
 	public void pmi() {
 		EdgeWeighting_IC_PMI_Test ew = new EdgeWeighting_IC_PMI_Test(kb);
@@ -134,6 +146,7 @@ public class EdgeWeighting_ICTest {
 		Assert.assertTrue(result>0);
 	}
 	
+	@Ignore
 	@Test
 	public void predicate_IC() {
 		EdgeWeighting_IC_Test ew = new EdgeWeighting_IC_Test(kb);

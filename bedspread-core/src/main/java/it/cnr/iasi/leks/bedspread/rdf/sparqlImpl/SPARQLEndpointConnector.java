@@ -26,6 +26,10 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 
 /**
  * 
@@ -34,6 +38,8 @@ import org.apache.jena.query.ResultSet;
  */
 public class SPARQLEndpointConnector {
 	private String endpointUrl = "";
+	
+	protected final Logger logger = LoggerFactory.getLogger(SPARQLEndpointConnector.class);
 	
 	public SPARQLEndpointConnector(String endpointUrl) {
 		super();
@@ -55,19 +61,22 @@ public class SPARQLEndpointConnector {
 	 * @return Vector<QuerySolution> 
 	 */	
 	public Vector<QuerySolution> execQuery(String queryString) {	
-		Vector<QuerySolution> qss = new Vector<QuerySolution>(); 
-		Query query = QueryFactory.create(queryString);        
-		QueryExecution qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
-		try {
+		Vector<QuerySolution> qss = new Vector<QuerySolution>();
+		//queryString = queryString.replaceAll("\n", "\\u000D");
+		QueryExecution qexec = null;
+		try {	
+			Query query = QueryFactory.create(queryString);        
+			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
 			ResultSet r = qexec.execSelect();
 			while(r.hasNext())
 				qss.add(r.next());
 		}
 		catch(Exception ex) {
-			ex.printStackTrace();
+			this.logger.error("{}", queryString +"\n"+ex.getMessage());
 		}
 		finally {
-			qexec.close();
+			if(qexec!=null)
+				qexec.close();
 		}
 		return qss;
 	}

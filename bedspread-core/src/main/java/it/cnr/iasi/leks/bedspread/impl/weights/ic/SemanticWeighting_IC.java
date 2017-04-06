@@ -36,8 +36,6 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  *
  */
 public class SemanticWeighting_IC implements WeightingFunction {
-
-	final static double MAX_WEIGHT = 50.0d;
 	
 	protected KnowledgeBase kb; 
 	protected Abstract_EdgeWeighting_IC edgeWeightingIC;
@@ -103,7 +101,7 @@ public class SemanticWeighting_IC implements WeightingFunction {
 			}
 		}
 
-		return result / MAX_WEIGHT;
+		return result;
 	}
 
 	public KnowledgeBase getKb() {
@@ -113,4 +111,5 @@ public class SemanticWeighting_IC implements WeightingFunction {
 	public void setKb(KnowledgeBase kb) {
 		this.kb = kb;
 	}
+	
 }

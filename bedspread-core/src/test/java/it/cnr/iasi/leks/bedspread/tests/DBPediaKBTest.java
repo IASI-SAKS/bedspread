@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
@@ -36,6 +37,7 @@ public class DBPediaKBTest {
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_REIGATE = "http://dbpedia.org/resource/Reigate";
 	private static final String HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR = "http://dbpedia.org/ontology/Actor";
 
+	@Ignore
 	@Test
 	public void getIncomingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -51,6 +53,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue(nodes.size()>0);
 	}
 
+	@Ignore
 	@Test
 	public void getOutgoingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -114,6 +117,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue(degree>0);
 	}
 	
+	@Ignore
 	@Test
 	public void countAllTriples() {
 		int result = 0;

@@ -88,12 +88,7 @@ public class DBpediaKB implements KnowledgeBase {
 	 */
 	@Override
 	public int degree(AnyResource resource) {
-		int result = 0; 	
-		Vector<AnyResource> incoming_predicates = getIncomingPredicates(resource);
-		Vector<AnyResource> outgoing_predicates = getOutgoingPredicates(resource);
-
-		result = incoming_predicates.size() + outgoing_predicates.size(); 
-		
+		int result =  SPARQLQueryCollector.getDegree(this, resource);
 		return result;
 	}
 
@@ -127,8 +122,7 @@ public class DBpediaKB implements KnowledgeBase {
 	 */
 	@Override
 	public Set<AnyResource> getNeighborhood(AnyResource resource) {
-		Set<AnyResource> result = getIncomingNeighborhood(resource);
-		result.addAll(getOutgoingNeighborhood(resource));
+		Set<AnyResource> result = SPARQLQueryCollector.getNeighborhood(this, resource); 
 		return result;
 	}
 	
@@ -260,6 +254,12 @@ public class DBpediaKB implements KnowledgeBase {
 	public Set<AnyResource> getPredicatesBySubjectAndObject(AnyResource r1, AnyResource r2) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 		result = SPARQLQueryCollector.getPredicatesBySubjectAndObject(this, r1, r2);
+		return result;
+	}
+
+	public Set<AnyResource> getAllPredicates() {
+		Set<AnyResource> result = new HashSet<AnyResource>();
+		result = SPARQLQueryCollector.getAllPredicates(this);
 		return result;
 	}
 	
