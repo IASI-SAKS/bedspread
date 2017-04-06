@@ -37,6 +37,7 @@ import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -47,6 +48,7 @@ public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 
 private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovation";
 
+	@Ignore
 	@Test
 	public void testHT13ConfSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		KnowledgeBase kb = DBpediaKB.getInstance();
