@@ -112,7 +112,9 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.refreshInternalState();
 		while (!this.policy.terminationPolicyMet()){
 			this.justProcessedForthcomingActiveNodes.clear();
+			
 			this.filterCurrentlyActiveNodes();
+			
 			int i = 0;
 			for (Node node : this.currentlyActiveNodes) {
 				i++;
