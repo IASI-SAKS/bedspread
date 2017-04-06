@@ -1,0 +1,11 @@
+origin,predicate,n1
+origin,predicate,n2
+origin,predicate,n3
+n1,predicate,n11
+n1,predicate,n12
+n12,predicate,n121
+n2,predicate,n21
+n2,predicate,n5
+n2,predicate,n4
+n5,predicate,n12
+n4,predicate,n121
