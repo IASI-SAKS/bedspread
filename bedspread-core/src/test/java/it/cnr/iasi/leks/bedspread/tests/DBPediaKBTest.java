@@ -76,7 +76,6 @@ public class DBPediaKBTest {
 		Assert.assertTrue(nodes.size()>0);
 	}
 	
-	@Ignore
 	@Test
 	public void getNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
