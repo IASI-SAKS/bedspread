@@ -33,16 +33,18 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  */
 public class EdgeWeighting_IC_PMI extends EdgeWeighting_UnconditionedJointIC{
 
+	private static int KB_HASHCODE=0;
 	private static final Object MUTEX = new Object();
-	private static boolean MAX_WEIGHT_COMPUTED = false;
+	private static double CASHED_MAX_WEIGHT = 0.0d;
 	
 	public EdgeWeighting_IC_PMI(KnowledgeBase kb) {
 		super(kb);
 		synchronized (MUTEX) {
-			if (!MAX_WEIGHT_COMPUTED){
-				this.computeMaxWeight();
-				MAX_WEIGHT_COMPUTED = true;
-			}			
+			int hashCurrentKB = this.kb.hashCode();
+			if (hashCurrentKB != KB_HASHCODE){
+				KB_HASHCODE = hashCurrentKB;
+				CASHED_MAX_WEIGHT = this.computeMaxWeight();
+			}				
 		}
 	}
 	
@@ -90,8 +92,25 @@ public class EdgeWeighting_IC_PMI extends EdgeWeighting_UnconditionedJointIC{
 		return result;
 	}
 
-	@Override
-	protected synchronized void computeMaxWeight() {
-		//TODO TO BE IMPLEMENTED
+	private double doTheComputation() {
+// TODO		
+		return 0.0d;	
 	}
+
+	@Override
+	protected synchronized double computeMaxWeight() {
+		double result;
+		synchronized (MUTEX) {
+			int hashCurrentKB = this.kb.hashCode();			
+			if (hashCurrentKB != KB_HASHCODE){
+				KB_HASHCODE = hashCurrentKB;
+				result = this.doTheComputation();
+			}else{
+				result = CASHED_MAX_WEIGHT;
+			}	
+		}
+
+		return result;
+	}
+	
 }

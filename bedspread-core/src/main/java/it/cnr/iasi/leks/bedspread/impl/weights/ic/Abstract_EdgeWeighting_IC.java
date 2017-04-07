@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
+import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
@@ -34,15 +35,9 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 public abstract class Abstract_EdgeWeighting_IC{
 
 	protected KnowledgeBase kb;
-	private double max_weight = 0.0d;
 	
 	public Abstract_EdgeWeighting_IC(KnowledgeBase kb) {
-		this(kb, 0.0d);
-	}
-
-	public Abstract_EdgeWeighting_IC(KnowledgeBase kb, double max_weight) {
 		this.kb = kb;
-		this.max_weight = max_weight;
 	}
 
 	/**
@@ -69,15 +64,17 @@ public abstract class Abstract_EdgeWeighting_IC{
 		return result;
 	}	
 	
-	protected void setMax_weight(double max_weight) {
-		this.max_weight = max_weight;
+	public double computeNormalizedEdgeWeight(RDFTriple edge) throws UnexpectedValueException{
+		double max = this.computeMaxWeight();
+		if (max <= 0){
+			throw new UnexpectedValueException("Unexpected Value from Abstract_EdgeWeighting_IC.getMax_weight(): " + max);
+		}
+		double edgeWeight = this.computeEdgeWeight(edge);
+		double norm = edgeWeight / max;
+		return norm;
 	}
-
-	public double getMax_weight() {
-		return max_weight;
-	}
-
-	public abstract double computeEdgeWeight(RDFTriple edge);
 	
-	protected abstract void computeMaxWeight();
+	public abstract double computeEdgeWeight(RDFTriple edge);	
+	protected abstract double computeMaxWeight();
+	
 }

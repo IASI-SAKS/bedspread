@@ -24,30 +24,32 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 
 /**
  * The Implementation of this class refers to the following publication
- * Schuhumacher M., Ponzetto S.P. 
- * Knowledge-based Graph Document Modeling
+ * Schuhumacher M., Ponzetto S.P. Knowledge-based Graph Document Modeling
  * WSDM'14 February 24-28, 2014, New York, New York, USA.
- *  
+ * 
  * @author ftaglino
  *
  */
 public class EdgeWeighting_JointIC extends Abstract_EdgeWeighting_IC {
 
+	private static int KB_HASHCODE=0;
 	private static final Object MUTEX = new Object();
-	private static boolean MAX_WEIGHT_COMPUTED = false;
+	private static double CASHED_MAX_WEIGHT = 0.0d;
 	
 	public EdgeWeighting_JointIC(KnowledgeBase kb) {
 		super(kb);
 		synchronized (MUTEX) {
-			if (!MAX_WEIGHT_COMPUTED){
-				this.computeMaxWeight();
-				MAX_WEIGHT_COMPUTED = true;
-			}			
+			int hashCurrentKB = this.kb.hashCode();
+			if (hashCurrentKB != KB_HASHCODE){
+				KB_HASHCODE = hashCurrentKB;
+				CASHED_MAX_WEIGHT = this.computeMaxWeight();
+			}				
 		}
 	}
-	
+
 	/**
-	 * Compute the frequence of the triples having node as the subject or as the object with respect to those triples having pred as the predicate 
+	 * Compute the frequence of the triples having node as the subject or as the
+	 * object with respect to those triples having pred as the predicate
 	 *
 	 * @param pred
 	 * @param node
@@ -57,12 +59,12 @@ public class EdgeWeighting_JointIC extends Abstract_EdgeWeighting_IC {
 		double result = 0.0;
 		double total_triple_by_predicate = kb.countTriplesByPredicate(pred);
 		double total_triple_by_predicate_and_node = kb.countTriplesByPredicateAndSubjectOrObject(pred, node);
-		result = total_triple_by_predicate_and_node/total_triple_by_predicate;
+		result = total_triple_by_predicate_and_node / total_triple_by_predicate;
 		return result;
 	}
 
 	/**
-	 * Compute the Information Content of a node knowing the predicate 
+	 * Compute the Information Content of a node knowing the predicate
 	 * 
 	 * @param pred
 	 * @param node
@@ -70,12 +72,13 @@ public class EdgeWeighting_JointIC extends Abstract_EdgeWeighting_IC {
 	 */
 	protected double nodeConditionalToPredicate_IC(AnyResource pred, AnyResource node) {
 		double result = 0.0;
-		result = - Math.log(nodeProbabilityConditionalToPredicate(pred, node));
+		result = -Math.log(nodeProbabilityConditionalToPredicate(pred, node));
 		return result;
 	}
-	
+
 	/**
-	 * Compute the Joint Information Content (jointIC) of an edge, which is identified by a triple 
+	 * Compute the Joint Information Content (jointIC) of an edge, which is
+	 * identified by a triple
 	 * 
 	 * edgeWeight_jointIC
 	 * 
@@ -85,13 +88,29 @@ public class EdgeWeighting_JointIC extends Abstract_EdgeWeighting_IC {
 	@Override
 	public double computeEdgeWeight(RDFTriple edge) {
 		double result = 0.0;
-		result = predicate_IC(edge.getTriplePredicate()) +  nodeConditionalToPredicate_IC(edge.getTriplePredicate(), edge.getTripleObject());
+		result = predicate_IC(edge.getTriplePredicate())
+				+ nodeConditionalToPredicate_IC(edge.getTriplePredicate(), edge.getTripleObject());
 		return result;
 	}
 
-	@Override
-	protected synchronized void computeMaxWeight() {
-		// TODO TO BE IMPLEMENTED
+	private double doTheComputation() {
+		// TODO
+		return 0.0d;
 	}
 
+	@Override
+	protected synchronized double computeMaxWeight() {
+		double result;
+		synchronized (MUTEX) {
+			int hashCurrentKB = this.kb.hashCode();
+			if (hashCurrentKB != KB_HASHCODE) {
+				KB_HASHCODE = hashCurrentKB;
+				result = this.doTheComputation();
+			} else {
+				result = CASHED_MAX_WEIGHT;
+			}
+		}
+
+		return result;
+	}
 }
