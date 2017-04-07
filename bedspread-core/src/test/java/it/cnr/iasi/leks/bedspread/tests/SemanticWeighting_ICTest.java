@@ -23,6 +23,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.Abstract_EdgeWeighting_IC;
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeightingFactory;
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.SemanticWeighting_IC;
@@ -49,7 +50,11 @@ public class SemanticWeighting_ICTest {
 		Abstract_EdgeWeighting_IC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_IC(kb);
 		
 		SemanticWeighting_IC sw = new SemanticWeighting_IC(kb,ew);
-		double w = sw.weight(n1, n2);
+		double w=0;
+		try {
+			w = sw.weight(n1, n2);
+		} catch (UnexpectedValueException e) {
+		}
 		
 		System.out.println("SemanticWeighting_IC.weight(="+r1.getResourceID()+", "+r2.getResourceID()+")="+w);
 				
