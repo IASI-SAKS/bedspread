@@ -31,7 +31,9 @@ import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.impl.weights.WeightingFunctionFactory;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -92,8 +94,18 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 			neighborhoodScore += (neighborNode.getScore()/degree);
 		}
 		
-		double weight = this.weightingModule.weight(this.weightNodeFirstArg, this.weightNodeSecongArg);
-		double score = this.stimulus(targetNode) + (weight * neighborhoodScore);
+		double weight;
+		double score; 
+		try {
+			weight = this.weightingModule.weight(this.weightNodeFirstArg, this.weightNodeSecongArg);
+			score = this.stimulus(targetNode) + (weight * neighborhoodScore);
+		} catch (UnexpectedValueException e) {
+			this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
+			score = 0;
+		}catch (AbstractBedspreadException e) {
+			this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
+			score = 0;
+		}
 		
 		return score;
 	}

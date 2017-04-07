@@ -23,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
+import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.impl.weights.WeightingFunctionFactory;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -58,8 +60,17 @@ public class SimpleSemanticWeightedSpread extends SimpleSemanticSpread {
 		int n = this.kb.getNeighborhood(resource).size();
 		double score = spreadingNode.getScore();
 		if (n != 0){
-			double weight = this.weightingModule.weight(targetNode, this.getOrigin());
-			score = weight * score/n;
+			double weight;
+			try {
+				weight = this.weightingModule.weight(targetNode, this.getOrigin());
+				score = weight * score/n;
+			} catch (UnexpectedValueException e) {
+				this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
+				score = 0;
+			}catch (AbstractBedspreadException e) {
+				this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
+				score = 0;
+			}
 		}
 		return score;
 	}
