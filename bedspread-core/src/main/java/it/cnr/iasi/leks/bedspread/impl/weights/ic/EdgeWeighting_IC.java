@@ -36,18 +36,10 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 
 	private static int KB_HASHCODE=0;
-	private static final Object MUTEX = new Object();
 	private static double CASHED_MAX_WEIGHT = 0.0d;
 		
 	public EdgeWeighting_IC(KnowledgeBase kb) {
 		super(kb);
-		synchronized (MUTEX) {
-			int hashCurrentKB = this.kb.hashCode();
-			if (hashCurrentKB != KB_HASHCODE){
-				KB_HASHCODE = hashCurrentKB;
-				CASHED_MAX_WEIGHT = this.computeMaxWeight();
-			}				
-		}
 	}
 	
 	/**
@@ -80,14 +72,13 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 	@Override
 	protected synchronized double computeMaxWeight() {
 		double result;
-		synchronized (MUTEX) {
-			int hashCurrentKB = this.kb.hashCode();			
-			if (hashCurrentKB != KB_HASHCODE){
-				KB_HASHCODE = hashCurrentKB;
-				result = this.doTheComputation();
-			}else{
-				result = CASHED_MAX_WEIGHT;
-			}	
+		int hashCurrentKB = this.kb.hashCode();
+		if (hashCurrentKB != KB_HASHCODE) {
+			KB_HASHCODE = hashCurrentKB;
+			result = this.doTheComputation();
+			CASHED_MAX_WEIGHT = result;
+		} else {
+			result = CASHED_MAX_WEIGHT;
 		}
 
 		return result;
