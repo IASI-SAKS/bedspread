@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -71,7 +72,7 @@ public abstract class Abstract_EdgeWeighting_IC{
 	}	
 	
 	public double computeNormalizedEdgeWeight(RDFTriple edge) throws UnexpectedValueException{
-		double max = this.computeMaxWeight();
+		double max = this.getMaxWeight();
 		if (max <= 0){
 			throw new UnexpectedValueException("Unexpected Value from Abstract_EdgeWeighting_IC.getMax_weight(): " + max);
 		}
@@ -83,4 +84,15 @@ public abstract class Abstract_EdgeWeighting_IC{
 	public abstract double computeEdgeWeight(RDFTriple edge);	
 	protected abstract double computeMaxWeight();
 	
+	private double getMaxWeight(){
+		double max;
+		String notDefined = "Undefined";
+		String value = PropertyUtil.getInstance().getProperty(PropertyUtil.EDGE_WEIGHTING_IC_MAX_WEIGHT_LABEL,notDefined);
+		if (value.equalsIgnoreCase(notDefined)){
+			max = this.computeMaxWeight();			
+		}else{
+			max = Double.parseDouble(value);
+		}
+		return max;
+	}
 }
