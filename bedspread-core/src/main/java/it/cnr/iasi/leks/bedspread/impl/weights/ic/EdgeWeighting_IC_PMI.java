@@ -94,9 +94,11 @@ public class EdgeWeighting_IC_PMI extends EdgeWeighting_UnconditionedJointIC{
 		double result;
 		int hashCurrentKB = this.kb.hashCode();
 		if (hashCurrentKB != KB_HASHCODE) {
+			this.logger.info("MaxWeight Must be Computed Again (this activity may cost time ... )");
 			KB_HASHCODE = hashCurrentKB;
 			result = this.doTheComputation();
 			CASHED_MAX_WEIGHT = result;
+			this.logger.info("MaxWeight Computed");
 		} else {
 			result = CASHED_MAX_WEIGHT;
 		}
