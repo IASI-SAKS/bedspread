@@ -61,7 +61,10 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 	private double doTheComputation(){		
 		double result = 0.0d;
 		Set<AnyResource> allPredicates = this.kb.getAllPredicates();
+		int size = allPredicates.size();
 		for(AnyResource p:allPredicates) {
+			this.reportSomeInfoOnTheLog(size);
+			size --;
 			double w = this.predicate_IC(p);
 			if(w>result)
 				result = w;
@@ -74,9 +77,11 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 		double result;
 		int hashCurrentKB = this.kb.hashCode();
 		if (hashCurrentKB != KB_HASHCODE) {
+			this.logger.info("MaxWeight Must be Computed Again (this activity may cost time ... )");
 			KB_HASHCODE = hashCurrentKB;
 			result = this.doTheComputation();
 			CASHED_MAX_WEIGHT = result;
+			this.logger.info("MaxWeight Computed");
 		} else {
 			result = CASHED_MAX_WEIGHT;
 		}
@@ -84,4 +89,10 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 		return result;
 	}
 
+	private void reportSomeInfoOnTheLog(int missingIterations){
+		if (missingIterations % 100 == 0){
+			String message = "Missing Entries to Process: " + missingIterations; 
+			this.logger.info(message);
+		}	
+	}
 }
