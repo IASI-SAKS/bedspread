@@ -29,7 +29,9 @@ import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread;
+import it.cnr.iasi.leks.bedspread.impl.HT13ConfSemanticSpread_GreedyVariant;
 import it.cnr.iasi.leks.bedspread.impl.policies.SimpleExecutionPolicy;
+import it.cnr.iasi.leks.bedspread.impl.policies.SpreadingBound;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
@@ -46,7 +48,8 @@ import org.junit.Test;
  */
 public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 
-private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovation";
+//	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovation";
+	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
 
 	@Ignore
 	@Test
@@ -71,9 +74,34 @@ private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovati
 
 		Assert.assertTrue(true);		
 	}
+	
+	@Ignore
+	@Test
+	public void testHT13GreedyConfSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		KnowledgeBase kb = DBpediaKB.getInstance();
+		Node resourceOrigin = this.extractTrivialOrigin();
+	
+//		ExecutionPolicy policy = new SimpleExecutionPolicy(2);
+		ExecutionPolicy policy = new SpreadingBound(kb, 2);
 		
+		String testPropertyFile = "configTestSemanticWeighting_IC_onDBpedia.properties";
+		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
+		PropertyUtilNoSingleton.getInstance();
+		
+		AbstractSemanticSpread ss = new HT13ConfSemanticSpread_GreedyVariant(resourceOrigin,kb,policy);
+		ss.run();
+		
+		String fileName = this.getFlushFileName("testHT13ConfSemanticSpread_GreedyVariant_onDBpedia_IC");
+		Writer out = new FileWriter(fileName);
+		ss.flushData(out);
+				
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+
+		Assert.assertTrue(true);		
+	}
+
 	private Node extractTrivialOrigin() {
-		AnyResource resource = RDFFactory.getInstance().createBlankNode(ORIGIN_LABEL);
+		AnyResource resource = RDFFactory.getInstance().createURI(ORIGIN_LABEL);
 		Node n = new Node(resource);
 		return n;
 	}
