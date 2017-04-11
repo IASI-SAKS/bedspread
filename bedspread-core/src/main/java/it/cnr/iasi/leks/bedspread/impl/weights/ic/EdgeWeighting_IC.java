@@ -20,10 +20,6 @@ package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
@@ -39,18 +35,11 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
  */
 public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 
-	private static boolean MAX_WEIGHT_COMPUTED = false;
-	private static final Object MUTEX = new Object();
-	
+	private static int KB_HASHCODE=0;
+	private static double CASHED_MAX_WEIGHT = 0.0d;
+		
 	public EdgeWeighting_IC(KnowledgeBase kb) {
 		super(kb);
-		synchronized (MUTEX) {
-			if (!MAX_WEIGHT_COMPUTED){
-				this.computeMaxWeight();
-				//max_weight = 19.801538998683533d;
-				MAX_WEIGHT_COMPUTED = true;
-			}			
-		}
 	}
 	
 	/**
@@ -65,19 +54,45 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 	public double computeEdgeWeight(RDFTriple edge) {
 		double result = 0.0;
 		result = this.predicate_IC(edge.getTriplePredicate());
-		return result/this.getMax_weight();
+		return result;
 	}
 	
-	@Override
-	protected synchronized void computeMaxWeight() {
+
+	private double doTheComputation(){		
 		double result = 0.0d;
 		Set<AnyResource> allPredicates = this.kb.getAllPredicates();
+		int size = allPredicates.size();
 		for(AnyResource p:allPredicates) {
+			this.reportSomeInfoOnTheLog(size);
+			size --;
 			double w = this.predicate_IC(p);
 			if(w>result)
 				result = w;
 		}
-		this.setMax_weight(result);
+		return result;			
 	}
 	
+	@Override
+	protected synchronized double computeMaxWeight() {
+		double result;
+		int hashCurrentKB = this.kb.hashCode();
+		if (hashCurrentKB != KB_HASHCODE) {
+			this.logger.info("MaxWeight Must be Computed Again (this activity may cost time ... )");
+			KB_HASHCODE = hashCurrentKB;
+			result = this.doTheComputation();
+			CASHED_MAX_WEIGHT = result;
+			this.logger.info("MaxWeight Computed");
+		} else {
+			result = CASHED_MAX_WEIGHT;
+		}
+
+		return result;
+	}
+
+	private void reportSomeInfoOnTheLog(int missingIterations){
+		if (missingIterations % 100 == 0){
+			String message = "Missing Entries to Process: " + missingIterations; 
+			this.logger.info(message);
+		}	
+	}
 }

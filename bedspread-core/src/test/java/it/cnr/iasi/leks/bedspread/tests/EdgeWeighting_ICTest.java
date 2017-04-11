@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeightingFactory;
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_CombIC;
 import it.cnr.iasi.leks.bedspread.impl.weights.ic.EdgeWeighting_IC;
@@ -49,37 +50,37 @@ public class EdgeWeighting_ICTest {
 
 	@Ignore
 	@Test
-	public void edgeWeight_IC() {		
+	public void edgeWeight_IC() throws UnexpectedValueException {		
 		EdgeWeighting_IC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_IC(kb);
-		double result = ew.computeEdgeWeight(edge_noLiterals); 
-		System.out.println("EdgeWeighting_IC.computeEdgeWeight="+result);
+		double result = ew.computeNormalizedEdgeWeight(edge_noLiterals); 
+		System.out.println("EdgeWeighting_IC.computeNormalizedEdgeWeight="+result);
 		Assert.assertTrue(result>0);
 	}
 
 	@Ignore
 	@Test
-	public void edgeWeight_jointIC(){
+	public void edgeWeight_jointIC() throws UnexpectedValueException{
 		EdgeWeighting_JointIC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_JointIC(kb);
-		double result = ew.computeEdgeWeight(edge_noLiterals); 
-		System.out.println("EdgeWeighting_JointIC.computeEdgeWeight="+result);
+		double result = ew.computeNormalizedEdgeWeight(edge_noLiterals); 
+		System.out.println("EdgeWeighting_JointIC.computeNormalizedEdgeWeight="+result);
 		Assert.assertTrue(result>0);
 	}
 
 	@Ignore
 	@Test
-	public void edgeWeight_CombIC() {
+	public void edgeWeight_CombIC() throws UnexpectedValueException {
 		EdgeWeighting_CombIC ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_CombIC(kb);
-		double result = ew.computeEdgeWeight(edge_noLiterals); 
-		System.out.println("EdgeWeighting_CombIC.computeEdgeWeight="+result);
+		double result = ew.computeNormalizedEdgeWeight(edge_noLiterals); 
+		System.out.println("EdgeWeighting_CombIC.computeNormalizedEdgeWeight="+result);
 		Assert.assertTrue(result>0);
 	}
 	
 	@Ignore
 	@Test
-	public void edgeWeight_ICplusPMI(){
+	public void edgeWeight_ICplusPMI() throws UnexpectedValueException{
 		EdgeWeighting_IC_PMI ew = EdgeWeightingFactory.getInstance().getEdgeWeighting_IC_PMI(kb);
-		double result = ew.computeEdgeWeight(edge_noLiterals); 
-		System.out.println("EdgeWeighting_IC_PMI.computeEdgeWeight="+result);
+		double result = ew.computeNormalizedEdgeWeight(edge_noLiterals); 
+		System.out.println("EdgeWeighting_IC_PMI.computeNormalizedEdgeWeight="+result);
 		Assert.assertTrue(result>0);
 	}
 	

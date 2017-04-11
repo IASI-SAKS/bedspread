@@ -51,6 +51,7 @@ public class PropertyUtil {
 	public static final String EXECUTION_POLICY_LABEL =  "bedspread.executionpolicy.class";
 	public static final String WEIGHTING_FUNCTION_LABEL =  "bedspread.weightingfunction.class";
 	public static final String EDGE_WEIGHTING_IC_LABEL = "bedspread.edgeweightingic.class";
+	public static final String EDGE_WEIGHTING_IC_MAX_WEIGHT_LABEL = "bedspread.edgeweightingic.maxweight";
 	public static final String POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL = "bedspread.policentricsemanticspread.sleeptime";
 
 	private Properties properties;

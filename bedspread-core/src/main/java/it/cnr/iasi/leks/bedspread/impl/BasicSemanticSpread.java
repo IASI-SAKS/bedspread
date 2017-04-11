@@ -31,7 +31,9 @@ import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.impl.weights.WeightingFunctionFactory;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
@@ -65,7 +67,15 @@ public class BasicSemanticSpread extends AbstractSemanticSpread {
 	protected double computeScore(Node spreadingNode, Node targetNode) {		
 		double score = spreadingNode.getScore();
 
-		score = score * this.weightingModule.weight(targetNode, spreadingNode);
+		try {
+			score = score * this.weightingModule.weight(targetNode, spreadingNode);
+		} catch (UnexpectedValueException e) {
+			this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
+			score = 0;
+		}catch (AbstractBedspreadException e) {
+			this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
+			score = 0;
+		}
 		return score;
 	}
 

@@ -24,6 +24,7 @@ import java.util.Set;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.UndefinedPropertyException;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -59,9 +60,10 @@ public class SemanticWeighting_IC implements WeightingFunction {
 	 * param n1
 	 * param n2
 	 * return
+	 * @throws UnexpectedValueException 
 	 */
 	@Override
-	public double weight(Node n1, Node n2) {
+	public double weight(Node n1, Node n2) throws UnexpectedValueException {
 		double result = 0.0; 
 		
 		// Find predicates linking n1 and n2 
@@ -78,7 +80,8 @@ public class SemanticWeighting_IC implements WeightingFunction {
 				RDFTriple edge = new RDFTriple(s, p, o);
 //				double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
 //				double w = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge);
-				double w = this.edgeWeightingIC.computeEdgeWeight(edge);
+//				double w = this.edgeWeightingIC.computeEdgeWeight(edge);
+				double w = this.edgeWeightingIC.computeNormalizedEdgeWeight(edge);
 				if(w>result)
 					result = w;
 			}
@@ -95,7 +98,7 @@ public class SemanticWeighting_IC implements WeightingFunction {
 				RDFTriple edge = new RDFTriple(s, p, o);
 //				double w = EdgeWeighting_IC.edgeWeight_IC(kb, edge);
 //				double w = EdgeWeighting_IC.edgeWeight_CombIC(kb, edge);
-				double w = this.edgeWeightingIC.computeEdgeWeight(edge);
+				double w = this.edgeWeightingIC.computeNormalizedEdgeWeight(edge);
 				if(w>result)
 					result = w;
 			}

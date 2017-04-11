@@ -18,6 +18,8 @@
  */
 package it.cnr.iasi.leks.bedspread;
 
+import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
+
 /**
  * 
  * @author gulyx
@@ -25,6 +27,6 @@ package it.cnr.iasi.leks.bedspread;
  */
 public interface WeightingFunction {
 	
-	public double weight (Node n1, Node n2);
+	public double weight (Node n1, Node n2) throws AbstractBedspreadException;
 	
 }
