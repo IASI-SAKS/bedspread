@@ -88,10 +88,14 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		Set<AnyResource> neighborhood = this.kb.getNeighborhood(targetNode.getResource());
 		double neighborhoodScore = 0;
 		for (AnyResource neighborResource : neighborhood) {
-			int degree = this.kb.degree(neighborResource);
+			if (neighborResource.getResourceID().endsWith("Donta_Jones"))
+				logger.info("foo");
 			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
+			if (neighborNode.getScore() != 0){
+				int degree = this.kb.degree(neighborResource);
 						
-			neighborhoodScore += (neighborNode.getScore()/degree);
+				neighborhoodScore += (neighborNode.getScore()/degree);
+			}	
 		}
 		
 		double weight;
@@ -130,13 +134,16 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	private Node backtrackToNode(AnyResource neighborResource, AnyResource targetResource) {		
-		for (Node node : this.getAllActiveNodes()) {
-			if (node.getResource().getResourceID().equalsIgnoreCase(neighborResource.getResourceID())){
-				return node;
-			}	
-		}
-
 		Node node = new Node(neighborResource);
+		Set<Node> allActiveNodes = this.getAllActiveNodes();
+		
+		if (allActiveNodes.contains(node)){
+			for (Node n : this.getAllActiveNodes()) {
+				if (node.getResource().getResourceID().equalsIgnoreCase(neighborResource.getResourceID())){
+					return n;
+				}	
+			}			
+		}
 		return node;
 	}
 	
