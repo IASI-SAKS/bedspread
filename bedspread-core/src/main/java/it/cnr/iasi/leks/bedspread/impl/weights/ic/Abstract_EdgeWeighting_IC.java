@@ -88,7 +88,7 @@ public abstract class Abstract_EdgeWeighting_IC{
 		double max;
 		String notDefined = "Undefined";
 		String value = PropertyUtil.getInstance().getProperty(PropertyUtil.EDGE_WEIGHTING_IC_MAX_WEIGHT_LABEL,notDefined);
-		if (value.equalsIgnoreCase(notDefined)){
+		if (value.equals(notDefined)){
 			max = this.computeMaxWeight();			
 		}else{
 			max = Double.parseDouble(value);
