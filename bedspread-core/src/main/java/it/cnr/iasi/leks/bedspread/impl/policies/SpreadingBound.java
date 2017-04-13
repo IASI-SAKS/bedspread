@@ -36,7 +36,7 @@ public class SpreadingBound extends ExecutionPolicy {
 	private final int MAX_QUERIES_BEFORE_TRUE = 10;
 	private int nQueries;
 	private KnowledgeBase kb;
-	private final int NODE_DEGREE_BOUND = 2600;
+	private final int NODE_DEGREE_BOUND = 3000;
 	private final double SCORE_THRESHOLD = 0.6d;
 
 	protected final Logger logger = LoggerFactory.getLogger(SpreadingBound.class);
