@@ -33,7 +33,7 @@ import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 
 public class DBPediaKBTest {
 
-	private static final String HTTP_DBPEDIA_ORG_RESOURCE_CNR = "http://dbpedia.org/page/National_Research_Council_(Italy)";
+	private static final String HTTP_DBPEDIA_ORG_RESOURCE_CNR = "http://dbpedia.org/resource/National_Research_Council_(Italy)";
 
 	@Ignore
 	@Test
