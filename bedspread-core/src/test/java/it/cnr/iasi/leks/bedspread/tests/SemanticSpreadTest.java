@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
@@ -68,8 +69,9 @@ public class SemanticSpreadTest extends AbstractTest{
 		String fileName = this.getFlushFileName("firstMinimalTestDefault");
 		Writer out = new FileWriter(fileName);
 		ss.flushData(out);
-		
-		Assert.assertTrue(ss instanceof SimpleSemanticSpread);		
+
+		boolean condition = (ss instanceof SimpleSemanticSpread) && (this.isAlwaysScoreLessThanOrigin(ss));
+		Assert.assertTrue(condition);		
 	}
 	
 	@Test
@@ -91,7 +93,7 @@ public class SemanticSpreadTest extends AbstractTest{
 		
 		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
 //		System.out.println(ss.getClass().getTypeName() + ", " + ss.getClass().getName() +", "+ss.getClass().getCanonicalName());
-		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
+		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName)) && this.isAlwaysScoreLessThanOrigin(ss);
 		
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
 
@@ -117,8 +119,10 @@ public class SemanticSpreadTest extends AbstractTest{
 		ss.flushData(out);
 				
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
-
-		Assert.assertTrue(true);		
+		
+		boolean condition = this.isAlwaysScoreLessThanOrigin(ss);
+		
+		Assert.assertTrue(condition);		
 	}
 	
 	@Test
@@ -139,7 +143,7 @@ public class SemanticSpreadTest extends AbstractTest{
 		
 		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
 //		System.out.println(ss.getClass().getTypeName() + ", " + ss.getClass().getName() +", "+ss.getClass().getCanonicalName());
-		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
+		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName)) && this.isAlwaysScoreLessThanOrigin(ss);
 		
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
 
@@ -165,13 +169,26 @@ public class SemanticSpreadTest extends AbstractTest{
 		
 		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
 //		System.out.println(ss.getClass().getTypeName() + ", " + ss.getClass().getName() +", "+ss.getClass().getCanonicalName());
-		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
+		boolean condition = ( semantiSpreadClassName != null ) && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName)) && this.isAlwaysScoreLessThanOrigin(ss);
 		
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
 
 		Assert.assertTrue(condition);		
 	}	
 	
+	
+	private boolean isAlwaysScoreLessThanOrigin(AbstractSemanticSpread ss) throws InteractionProtocolViolationException {
+		Node resourceOrigin = ss.getOrigin();
+		boolean status = true;
+		for (Iterator iterator = ss.getSemanticSpreadForNode().iterator(); (iterator.hasNext()) && (status);) {
+			Node n = (Node) iterator.next();
+			if (! n.equals(resourceOrigin) ){
+				status = n.getScore() < resourceOrigin.getScore();
+			}			
+		}
+		return status;
+	}
+
 	private Node extractTrivialOrigin() {
 		AnyResource resource = RDFFactory.getInstance().createBlankNode(ORIGIN_LABEL);
 		Node n = new Node(resource);
