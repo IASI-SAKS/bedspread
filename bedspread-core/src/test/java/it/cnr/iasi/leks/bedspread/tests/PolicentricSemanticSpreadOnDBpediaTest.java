@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
@@ -55,6 +56,7 @@ public class PolicentricSemanticSpreadOnDBpediaTest extends AbstractTest{
 	
 	private static final String OUT_FILENAME_PREFIX = "firstMinimalTestConf_PolicentricDBpedia";
 	
+	@Ignore
 	@Test
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
 		KnowledgeBase kb = DBpediaKB.getInstance();
