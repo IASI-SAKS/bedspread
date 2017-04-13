@@ -26,6 +26,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.RDFNode;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
@@ -37,17 +38,25 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
  */
 public class SPARQLQueryCollector {
 
-	public static int getDegree(DBpediaKB kb, AnyResource resource) {
+	public static int getDegree(DBpediaKB kb, AnyResource resource, Filters filter) {
 		int result = 0;
 		
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+
+		String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
 		
-		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-							+ "{<"+resource+"> ?p ?o} "
-							+ "UNION "
-							+ "{?s ?p "+adjustObject(resource) +"}"
-							+"}";
-		
+		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+				+ "{"
+				+ 	"{"
+				+ 		"<"+resource.getResourceID()+"> ?p ?o "+filterOutLiterals+filterOutPredicates
+				+	"} "
+				+ 	"UNION "
+				+ 	"{"
+				+ 		"?s ?p "+adjustObject(resource)+filterOutPredicates 
+				+ 	"}"
+				+ "}";
+				
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
 		if(query_results.size()>0)
 			result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
@@ -56,14 +65,17 @@ public class SPARQLQueryCollector {
 	} 
 	
 	
-	public static Vector<AnyResource> getIncomingPredicates(DBpediaKB kb, AnyResource resource) {
+	public static Vector<AnyResource> getIncomingPredicates(DBpediaKB kb, AnyResource resource, Filters filter) {
 		Vector<AnyResource> result = new Vector<AnyResource>(); 
 		
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+		
 		// Search for incoming predicates
-		String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE {"
-						+ "?s ?p "+adjustObject(resource)
+		String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE "
+						+ "{"
+						+ 	"?s ?p "+adjustObject(resource)+filterOutPredicates
 						+ "}";
 		
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
@@ -73,16 +85,20 @@ public class SPARQLQueryCollector {
 	}
 
 	
-	public static Vector<AnyResource> getOutgoingPredicates(DBpediaKB kb, AnyResource resource) {
+	public static Vector<AnyResource> getOutgoingPredicates(DBpediaKB kb, AnyResource resource, Filters filter) {
 		Vector<AnyResource> result = new Vector<AnyResource>(); 
 		
 		if(resource instanceof URIImpl) {
 			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 			
+			String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+			String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+			
 			// Search for outgoing predicates
-			String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE {"
-						+ "<"+resource.getResourceID()+"> ?p ?o"
-						+ "}";
+			String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE "
+					+ "{"
+					+ 	"<"+resource.getResourceID()+"> ?p ?o "+filterOutLiterals+filterOutPredicates 
+					+ "}";
 			
 			Vector<QuerySolution> query_results = sec.execQuery(queryString);
 			for(QuerySolution qs:query_results)
@@ -91,14 +107,18 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static boolean isPredicate(DBpediaKB kb, AnyResource resource) {
+	public static boolean isPredicate(DBpediaKB kb, AnyResource resource, Filters filter) {
 		boolean result = false;
 
 		if(resource instanceof URIImpl) {
 			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+			
+			String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+			
 			Vector<QuerySolution> query_results;
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "?s <"+resource.getResourceID()+"> ?o"
+			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+					+ "{"
+					+ 	"?s <"+resource.getResourceID()+"> ?o "+filterOutLiterals
 					+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
@@ -115,15 +135,20 @@ public class SPARQLQueryCollector {
 	 * @param resource
 	 * @return 
 	 */
-	public static boolean isSubjectOrObject(DBpediaKB kb, AnyResource resource) {
+	public static boolean isSubjectOrObject(DBpediaKB kb, AnyResource resource, Filters filter) {
 		boolean result = false;
 
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+
+		String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+
 		Vector<QuerySolution> query_results;
 		String queryString = "";
 		if(resource instanceof URIImpl) { 
-			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-				+ "<"+resource.getResourceID()+"> ?p ?o"
+			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+				+ "{"
+				+ 	"<"+resource.getResourceID()+"> ?p ?o "+filterOutLiterals+filterOutPredicates
 				+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
@@ -131,8 +156,9 @@ public class SPARQLQueryCollector {
 					result = true;
 		}
 		if(result == false)
-			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "?s ?p "+adjustObject(resource)
+			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+					+ "{"
+					+ 	"?s ?p "+adjustObject(resource)+filterOutPredicates
 					+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
@@ -148,20 +174,29 @@ public class SPARQLQueryCollector {
 	 * @param resource
 	 * @return 
 	 */
-	public static Set<AnyResource> getNeighborhood(DBpediaKB kb, AnyResource resource) {
+	public static Set<AnyResource> getNeighborhood(DBpediaKB kb, AnyResource resource, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
 		String queryString = "";
+		String filterOutLiterals = generateFilterOut_Literals(filter, "x");
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+		
 		if(resource instanceof URIImpl) 
-			queryString = "SELECT DISTINCT ?x FROM <"+kb.getGraph()+"> WHERE {"
-				+ "{?x ?p "+adjustObject(resource)+" } " 
-				+ "UNION "
-				+ "{<"+resource.getResourceID()+"> ?p ?x} "
+			queryString = "SELECT DISTINCT ?x FROM <"+kb.getGraph()+"> WHERE "
+				+ "{"
+				+ 	"{"
+				+ 		"?x ?p "+adjustObject(resource)
+				+	"} " 
+				+ 	"UNION "
+				+ 	"{"
+				+ 		"<"+resource.getResourceID()+"> ?p ?x "+filterOutLiterals+filterOutPredicates
+				+ 	"} "
 				+ "}";
 		else
-			queryString = "SELECT DISTINCT ?x FROM <"+kb.getGraph()+"> WHERE {"
-					+ "?x ?p "+adjustObject(resource)
+			queryString = "SELECT DISTINCT ?x FROM <"+kb.getGraph()+"> WHERE "
+					+ "{"
+					+ 	"?x ?p "+adjustObject(resource)+filterOutPredicates
 					+"}";
 		
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
@@ -186,12 +221,15 @@ public class SPARQLQueryCollector {
 	 * @param resource
 	 * @return 
 	 */
-	public static Set<AnyResource> getIncomingNeighborhood(DBpediaKB kb, AnyResource resource) {
+	public static Set<AnyResource> getIncomingNeighborhood(DBpediaKB kb, AnyResource resource, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
 		
-		String queryString = "SELECT DISTINCT ?s FROM <"+kb.getGraph()+"> WHERE {"
-				+ "?s ?p "+adjustObject(resource)
+		String queryString = "SELECT DISTINCT ?s FROM <"+kb.getGraph()+"> WHERE "
+				+ "{"
+				+ 	"?s ?p "+adjustObject(resource)+filterOutPredicates
 				+ "}";
 		
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
@@ -205,14 +243,18 @@ public class SPARQLQueryCollector {
 	}
 	
 	
-	public static Set<AnyResource> getOutgoingNeighborhood(DBpediaKB kb, AnyResource resource) {
+	public static Set<AnyResource> getOutgoingNeighborhood(DBpediaKB kb, AnyResource resource, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 		
 		if(resource instanceof URIImpl) {
 			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 			
-			String queryString = "SELECT DISTINCT ?o FROM <"+kb.getGraph()+"> WHERE {"
-					+ "<"+resource.getResourceID()+"> ?p ?o "
+			String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+			String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+			
+			String queryString = "SELECT DISTINCT ?o FROM <"+kb.getGraph()+"> WHERE "
+					+ "{"
+					+ 	"<"+resource.getResourceID()+"> ?p ?o "+filterOutLiterals+filterOutPredicates
 					+ "}";
 			
 			Vector<QuerySolution> query_results = sec.execQuery(queryString);
@@ -232,13 +274,17 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static int countTotalTriples(DBpediaKB kb) {
+	public static int countTotalTriples(DBpediaKB kb, Filters filter) {
 		int result = 0;
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
+		String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+
 		Vector<QuerySolution> query_results;
-		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-				+ "?s ?p ?o"
+		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+				+ "{"
+				+ 	"?s ?p ?o "+filterOutLiterals+filterOutPredicates 
 				+ "}";
 		query_results = sec.execQuery(queryString);
 		if(query_results.size()>0)
@@ -248,14 +294,17 @@ public class SPARQLQueryCollector {
 		
 	}
 	
-	public static int countTriplesByPredicate(DBpediaKB kb, AnyResource resource) {
+	public static int countTriplesByPredicate(DBpediaKB kb, AnyResource resource, Filters filter) {
 		int result = 0;
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 		
+		String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+
 		Vector<QuerySolution> query_results;
 		if(resource instanceof URIImpl) {
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "?s <"+resource.getResourceID()+"> ?o"
+			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+					+ "{"
+					+ 	"?s <"+resource.getResourceID()+"> ?o "+filterOutLiterals
 					+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
@@ -265,16 +314,20 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 		
-	public static int countTriplesBySubject(DBpediaKB kb, AnyResource resource) {
+	public static int countTriplesBySubject(DBpediaKB kb, AnyResource resource, Filters filter) {
 		int result = 0;
 		
 		if(resource instanceof URIImpl) {
 			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-			
+	
+			String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+			String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+
 			Vector<QuerySolution> query_results;
 			if(resource instanceof URIImpl) {
-				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-						+ "<"+resource.getResourceID()+"> ?p ?o"
+				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+						+ "{"
+						+ 	"<"+resource.getResourceID()+"> ?p ?o "+filterOutLiterals+filterOutPredicates
 						+ "}";
 				query_results = sec.execQuery(queryString);
 				if(query_results.size()>0)
@@ -286,46 +339,56 @@ public class SPARQLQueryCollector {
 	}
 	
 	
-	public static int countTriplesByObject(DBpediaKB kb, AnyResource resource) {
+	public static int countTriplesByObject(DBpediaKB kb, AnyResource resource, Filters filter) {
 		int result = 0;
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
 		
 		Vector<QuerySolution> query_results;
-		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-				+ "?s ?p "+adjustObject(resource)
+		String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+				+ "{"
+				+ 	"?s ?p "+adjustObject(resource)+filterOutPredicates
 				+ "}";
 			
 		query_results = sec.execQuery(queryString);
 		if(query_results.size()>0)
 			result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
-			
-		
 		return result;
 	}
 
-	public static int countTriplesBySubjectOrObject(DBpediaKB kb, AnyResource resource) {
+	public static int countTriplesBySubjectOrObject(DBpediaKB kb, AnyResource resource, Filters filter) {
 		int result = 0;
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-		
+
+		String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+
 		Vector<QuerySolution> query_results;
 		String queryString = "";
 		if(resource instanceof URIImpl) {
-			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "SELECT ?s ?p ?o WHERE {"
-					+ 	"{<"+resource.getResourceID()+"> ?p ?o} "
-					+	"UNION "
-					+ 	"{?s ?p "+adjustObject(resource)+"} "
-					+	"}"
+			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+					+ "{"
+					+ 	"SELECT ?s ?p ?o WHERE "
+					+ 		"{"
+					+ 			"{"
+					+ 				"<"+resource.getResourceID()+"> ?p ?o"+filterOutLiterals+filterOutPredicates
+					+ 			"} "
+					+			"UNION "
+					+ 			"{"
+					+ 				"?s ?p "+adjustObject(resource)+filterOutPredicates
+					+			"} "
+					+		"} "
 					+ "}";
 					
-										
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
 				result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
 		}		
 		else 
-			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-				+ "?s ?p "+adjustObject(resource)
+			queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+				+ "{"
+				+ 	"?s ?p "+adjustObject(resource)+filterOutPredicates
 				+ "}";
 		
 		query_results = sec.execQuery(queryString);
@@ -339,11 +402,12 @@ public class SPARQLQueryCollector {
 		int result = 0;
 
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-
+				
 		Vector<QuerySolution> query_results;
 		if(predicate instanceof URIImpl) {			
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE { "
-					+ "?s <"+predicate.getResourceID()+"> "+adjustObject(resource)
+			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+					+ "{ "
+					+ 	"?s <"+predicate.getResourceID()+"> "+adjustObject(resource)
 					+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
@@ -353,15 +417,18 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static int countTriplesByPredicateAndSubject(DBpediaKB kb, AnyResource predicate, AnyResource resource) {
+	public static int countTriplesByPredicateAndSubject(DBpediaKB kb, AnyResource predicate, AnyResource resource, Filters filter) {
 		int result = 0;
 
 		if(resource instanceof URIImpl && predicate instanceof URIImpl) {
 			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
 
+			String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+
 			Vector<QuerySolution> query_results;
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE { "
-					+ "?s <"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> "
+			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+					+ "{ "
+					+ 	"<"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> ?o "+filterOutLiterals
 					+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
@@ -371,22 +438,26 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static int countTriplesByPredicateAndSubjectOrObject(DBpediaKB kb, AnyResource predicate, AnyResource resource) {
+	public static int countTriplesByPredicateAndSubjectOrObject(DBpediaKB kb, AnyResource predicate, AnyResource resource, Filters filter) {
 		int result = 0;
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
+
+		String filterOutLiterals = generateFilterOut_Literals(filter, "o");
 		
 		Vector<QuerySolution> query_results;
 		if(predicate instanceof URIImpl) {
 			if(resource instanceof URIImpl) {
-				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-						+ "<"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> ?o "
+				String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+						+ "{"
+						+ 	"<"+resource.getResourceID()+"> <"+predicate.getResourceID()+"> ?o "+filterOutLiterals
 						+ "}";
 				query_results = sec.execQuery(queryString);
 				if(query_results.size()>0)
 					result = query_results.elementAt(0).getLiteral("count").asLiteral().getInt();
 			}
-			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE {"
-					+ "?s <"+predicate.getResourceID()+"> "+adjustObject(resource)
+			String queryString = "SELECT (COUNT(*) AS ?count) FROM <"+kb.getGraph()+"> WHERE "
+					+ "{"
+					+ 	"?s <"+predicate.getResourceID()+"> "+adjustObject(resource)
 					+ "}";
 			query_results = sec.execQuery(queryString);
 			if(query_results.size()>0)
@@ -396,16 +467,18 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static Set<AnyResource> getPredicatesBySubjectAndObject(DBpediaKB kb, AnyResource s, AnyResource o) {
+	public static Set<AnyResource> getPredicatesBySubjectAndObject(DBpediaKB kb, AnyResource s, AnyResource o, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 
 		if(s instanceof URIImpl) {
 		
 			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-	
+			String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+			
 			Vector<QuerySolution> query_results;
-			String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE { "
-					+ "<"+s.getResourceID()+"> ?p "+adjustObject(o)
+			String queryString = "SELECT ?p FROM <"+kb.getGraph()+"> WHERE "
+					+ "{ "
+					+ 	"<"+s.getResourceID()+"> ?p "+adjustObject(o)+filterOutPredicates
 					+ "}";
 			
 			query_results = sec.execQuery(queryString);
@@ -417,14 +490,16 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 	
-	public static Set<AnyResource> getBow(DBpediaKB kb) {
+	public static Set<AnyResource> getBow(DBpediaKB kb, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 
 		SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-
+		String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+		
 		Vector<QuerySolution> query_results;
-		String queryString = "SELECT ?x FROM <"+kb.getGraph()+"> WHERE { "
-				+ "?x ?p ?x"
+		String queryString = "SELECT ?x FROM <"+kb.getGraph()+"> WHERE "
+				+ "{"
+				+ 	"?x ?p ?x"+filterOutPredicates
 				+ "}";
 		query_results = sec.execQuery(queryString);
 		
@@ -434,14 +509,18 @@ public class SPARQLQueryCollector {
 		return result;
 	}
 
-	public static Set<AnyResource> getAllPredicates(DBpediaKB kb) {
+	public static Set<AnyResource> getAllPredicates(DBpediaKB kb, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 
 			SPARQLEndpointConnector sec = new SPARQLEndpointConnector(kb.getEndpoint());
-	
+			String filterOutLiterals = generateFilterOut_Literals(filter, "o");
+			String filterOutPredicates = generateFilterOut_Predicates(filter, "p", kb.getPredicatesBlackList());
+
+			
 			Vector<QuerySolution> query_results;
-			String queryString = "SELECT DISTINCT ?p FROM <"+kb.getGraph()+"> WHERE { "
-					+ "?s ?p ?o"
+			String queryString = "SELECT DISTINCT ?p FROM <"+kb.getGraph()+"> WHERE "
+					+ "{ "
+					+ 	"?s ?p ?o"+filterOutLiterals+filterOutPredicates
 					+ "}";
 			
 			query_results = sec.execQuery(queryString);
@@ -468,4 +547,20 @@ public class SPARQLQueryCollector {
 		
 		return result+" ";
 	}
+
+	public static String generateFilterOut_Literals(Filters filter, String var) {
+		String result = "";
+		if((filter == Filters.FILTER_OUT_ALL) || filter == Filters.FILTER_OUT_LITERALS)
+			result = " . FILTER (isLiteral(?"+var+") != true) ";
+		return result;
+	}
+	
+	public static String generateFilterOut_Predicates(Filters filter, String var, Set<AnyURI> blackList) {
+		String result = "";
+		if((filter == Filters.FILTER_OUT_ALL) || filter == Filters.FILTER_OUT_BLACKLIST_PREDICATES)
+			for(AnyURI pred:blackList)
+				result = result + " . FILTER (?"+var+" != <"+pred.getResourceID()+">) ";
+		return result;
+	}
+
 }

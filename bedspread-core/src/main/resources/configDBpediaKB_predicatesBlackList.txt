@@ -1,0 +1,2 @@
+http://dbpedia.org/ontology/thumbnail
+http://dbpedia.org/ontology/wikiPageRedirects

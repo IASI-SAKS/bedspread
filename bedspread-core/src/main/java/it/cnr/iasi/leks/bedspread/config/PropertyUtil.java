@@ -37,7 +37,10 @@ public class PropertyUtil {
 	private static final String DEFAULT_CONFIG_FILE = "config.properties";
 
 	public static final String KB_ENDPOINT_DEFAULT = "http://dbpedia.org/sparql";
-	public static final String KB_ENDPOINT_GRAPH_DEFAULT = "http://dbpedia.org";
+	public static final String KB_ENDPOINT_GRAPH_DEFAULT = "http://dbpedia.org";	
+	public static final String DEFAULT_KB_PREDICATES_BLACKLIST_FILE = "configDBpediaKB_predicatesBlackList.txt";
+	
+	public static final String KB_PREDICATES_BLACKLIST_FILE = "dbpedia.predicates.blackList";
 	
 	public static final String INTERACTION_PROTOCOL_ERROR_MESSAGE = "Error : Processing was not completed yet!!";
 	
@@ -53,6 +56,7 @@ public class PropertyUtil {
 	public static final String EDGE_WEIGHTING_IC_LABEL = "bedspread.edgeweightingic.class";
 	public static final String EDGE_WEIGHTING_IC_MAX_WEIGHT_LABEL = "bedspread.edgeweightingic.maxweight";
 	public static final String POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL = "bedspread.policentricsemanticspread.sleeptime";
+		
 
 	private Properties properties;
 	
