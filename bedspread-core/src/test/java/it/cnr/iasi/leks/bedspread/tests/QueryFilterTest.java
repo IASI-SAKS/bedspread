@@ -18,29 +18,25 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
-import it.cnr.iasi.leks.bedspread.rdf.Literal;
-import it.cnr.iasi.leks.bedspread.rdf.URI;
-import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.Filters;
-import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.SPARQLQueryCollector;
 
 public class QueryFilterTest {
 
-	private static final String HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION = "http://dbpedia.org/resource/Innovation";
-	private static final String HTTP_DBPEDIA_ORG_RESOURCE_REIGATE = "http://dbpedia.org/resource/Reigate";
-	private static final String HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR = "http://dbpedia.org/ontology/Actor";
-	private static final String HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA = "http://dbpedia.org/resource/Barack_Obama";
+
+	private static final String HTTP_DBPEDIA_ORG_RESOURCE_CNR = "http://dbpedia.org/resource/National_Research_Council_(Italy)";
+	
+	protected final Logger logger = LoggerFactory.getLogger(QueryFilterTest.class);
 	
 	@Test
 	public void generateFilterOutLiterals() {
@@ -48,15 +44,15 @@ public class QueryFilterTest {
 		
 		DBpediaKB kb = DBpediaKB.getInstance();
 		
-		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_CNR;
 		
 		int degree = kb.degree(new URIImpl(resource), Filters.FILTER_NO);
-		System.out.println("degree("+resource+", FILTER_NO)="+degree);
+		logger.info("{}", "degree("+resource+", FILTER_NO)="+degree);
 		
-		degree = kb.degree(new URIImpl(resource), Filters.FILTER_OUT_LITERALS);
-		System.out.println("degree("+resource+", FILTER_OUT_LITERALS)="+degree);
+		int degree_filtered = kb.degree(new URIImpl(resource), Filters.FILTER_OUT_LITERALS);
+		logger.info("{}", "degree("+resource+", FILTER_OUT_LITERALS)="+degree_filtered);
 		
-		Assert.assertTrue(true);
+		Assert.assertTrue(degree_filtered<=degree);
 	}
 	
 	@Test
@@ -65,15 +61,15 @@ public class QueryFilterTest {
 		
 		DBpediaKB kb = DBpediaKB.getInstance();
 		
-		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_CNR;
 		
 		int degree = kb.degree(new URIImpl(resource), Filters.FILTER_NO);
-		System.out.println("degree("+resource+", FILTER_NO)="+degree);
+		logger.info("{}", "degree("+resource+", FILTER_NO)="+degree);
 		
-		degree = kb.degree(new URIImpl(resource), Filters.FILTER_OUT_BLACKLIST_PREDICATES);
-		System.out.println("degree("+resource+", FILTER_OUT_BLACKLIST_PREDICATES)="+degree);
+		int degree_filtered = kb.degree(new URIImpl(resource), Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+		logger.info("{}", "degree("+resource+", FILTER_OUT_BLACKLIST_PREDICATES)="+degree_filtered);
 		
-		Assert.assertTrue(true);
+		Assert.assertTrue(degree_filtered<=degree);
 	}
 	
 	@Test
@@ -82,15 +78,15 @@ public class QueryFilterTest {
 		
 		DBpediaKB kb = DBpediaKB.getInstance();
 		
-		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_CNR;
 		
 		int degree = kb.degree(new URIImpl(resource), Filters.FILTER_NO);
-		System.out.println("degree("+resource+", FILTER_NO)="+degree);
+		logger.info("{}", "degree("+resource+", FILTER_NO)="+degree);
 		
-		degree = kb.degree(new URIImpl(resource), Filters.FILTER_OUT_ALL);
-		System.out.println("degree("+resource+", FILTER_OUT_ALL)="+degree);
+		int degree_filtered = kb.degree(new URIImpl(resource), Filters.FILTER_OUT_ALL);
+		logger.info("{}", "degree("+resource+", FILTER_OUT_ALL)="+degree_filtered);
 		
-		Assert.assertTrue(true);
+		Assert.assertTrue(degree_filtered<=degree);
 	}
 
 	
@@ -100,15 +96,15 @@ public class QueryFilterTest {
 		
 		DBpediaKB kb = DBpediaKB.getInstance();
 		
-		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_CNR;
 		
 		Set<AnyResource> neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_NO);
-		System.out.println("neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
+		logger.info("{}", "neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
 		
-		neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_LITERALS);
-		System.out.println("neighborhood("+resource+", FILTER_OUT_LITERALS)="+neighborhood.size());
+		Set<AnyResource> neighborhood_filtered = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_LITERALS);
+		logger.info("{}", "neighborhood("+resource+", FILTER_OUT_LITERALS)="+neighborhood_filtered.size());
 		
-		Assert.assertTrue(true);
+		Assert.assertTrue(neighborhood_filtered.size()<=neighborhood.size());
 	}
 	
 	@Test
@@ -117,15 +113,15 @@ public class QueryFilterTest {
 		
 		DBpediaKB kb = DBpediaKB.getInstance();
 		
-		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_CNR;
 		
 		Set<AnyResource> neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_NO);
-		System.out.println("neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
+		logger.info("{}", "neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
 		
-		neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_BLACKLIST_PREDICATES);
-		System.out.println("neighborhood("+resource+", FILTER_OUT_BLACKLIST_PREDICATES)="+neighborhood.size());
+		Set<AnyResource> neighborhood_filtered = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+		logger.info("{}", "neighborhood("+resource+", FILTER_OUT_BLACKLIST_PREDICATES)="+neighborhood_filtered.size());
 		
-		Assert.assertTrue(true);
+		Assert.assertTrue(neighborhood_filtered.size()<=neighborhood.size());
 	}
 	
 	@Test
@@ -134,14 +130,14 @@ public class QueryFilterTest {
 		
 		DBpediaKB kb = DBpediaKB.getInstance();
 		
-		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_CNR;
 		
 		Set<AnyResource> neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_NO);
-		System.out.println("neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
+		logger.info("{}", "neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
 		
-		neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_ALL);
-		System.out.println("neighborhood("+resource+", FILTER_OUT_ALL)="+neighborhood.size());
+		Set<AnyResource> neighborhood_filtered = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_ALL);
+		logger.info("{}", "neighborhood("+resource+", FILTER_OUT_ALL)="+neighborhood_filtered.size());
 		
-		Assert.assertTrue(true);
+		Assert.assertTrue(neighborhood_filtered.size()<=neighborhood.size());
 	}
 }
