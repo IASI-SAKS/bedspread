@@ -49,7 +49,7 @@ public class BasicSemanticSpreadOnDBpediaTest extends AbstractTest{
 	//private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Mosul_offensive_(2015)";
 	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
 
-//	@Ignore
+	@Ignore
 	@Test
 	public void testBasicSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		KnowledgeBase kb = DBpediaKB.getInstance();

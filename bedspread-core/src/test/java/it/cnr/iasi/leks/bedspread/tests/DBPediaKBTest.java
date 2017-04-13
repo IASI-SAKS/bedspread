@@ -33,15 +33,13 @@ import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 
 public class DBPediaKBTest {
 
-	private static final String HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION = "http://dbpedia.org/resource/Innovation";
-	private static final String HTTP_DBPEDIA_ORG_RESOURCE_REIGATE = "http://dbpedia.org/resource/Reigate";
-	private static final String HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR = "http://dbpedia.org/ontology/Actor";
+	private static final String HTTP_DBPEDIA_ORG_RESOURCE_CNR = "http://dbpedia.org/page/National_Research_Council_(Italy)";
 
 	@Ignore
 	@Test
 	public void getIncomingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_CNR); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
 		Set<URI> uris = new HashSet<URI>();
 		for(AnyResource n:nodes) {
@@ -57,7 +55,7 @@ public class DBPediaKBTest {
 	@Test
 	public void getOutgoingNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_CNR); 
 		Set<AnyResource> nodes = kb.getOutgoingNeighborhood(node);
 		Set<URI> uris = new HashSet<URI>();
 		Set<Literal> lits = new HashSet<Literal>();
@@ -79,7 +77,7 @@ public class DBPediaKBTest {
 	@Test
 	public void getNeighborhood() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_ONTOLOGY_ACTOR); 
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_CNR); 
 		Set<AnyResource> nodes = kb.getIncomingNeighborhood(node);
 		nodes.addAll(kb.getOutgoingNeighborhood(node));
 
@@ -103,7 +101,7 @@ public class DBPediaKBTest {
 	@Test
 	public void isMemberOf() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION);
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_CNR);
 		boolean membership = kb.isMemberof(node);
 		Assert.assertTrue(membership == true);
 	}
@@ -111,7 +109,7 @@ public class DBPediaKBTest {
 	@Test
 	public void degree() {
 		DBpediaKB kb = DBpediaKB.getInstance();
-		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_INNOVATION);
+		URI node = RDFFactory.getInstance().createURI(HTTP_DBPEDIA_ORG_RESOURCE_CNR);
 		int degree = kb.degree(node);
 		System.out.println("degree="+degree);
 		Assert.assertTrue(degree>0);
