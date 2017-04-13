@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.rdf.impl;
 
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.Literal;
 
 /**
@@ -39,11 +40,20 @@ public class LiteralImpl implements Literal {
 
 	@Override
 	public boolean equals (Object obj){
-		if (obj instanceof LiteralImpl) {
-			LiteralImpl literal = (LiteralImpl) obj;
+		if (obj instanceof AnyResource) {
+			AnyResource r = (AnyResource) obj;
+			return this.equals(r);
+		}	
+		return false;		
+	}
+
+	@Override
+	public boolean equals (AnyResource r){
+		if (r instanceof LiteralImpl) {
+			LiteralImpl literal = (LiteralImpl) r;
 			String literalID = literal.getResourceID();
 			String currentID = this.getResourceID();
-			return currentID.equalsIgnoreCase(literalID);
+			return currentID.equals(literalID);
 		}	
 		return false;		
 	}

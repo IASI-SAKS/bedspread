@@ -35,4 +35,7 @@ public interface AnyResource {
 
 	public String getResourceID();
 	
+	public boolean equals(AnyResource r);
+	public int hashCode();
+	
 }

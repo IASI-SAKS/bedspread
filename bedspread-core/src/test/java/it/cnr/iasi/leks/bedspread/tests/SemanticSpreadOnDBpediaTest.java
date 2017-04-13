@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
@@ -50,6 +51,8 @@ public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 
 //	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovation";
 	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
+//    private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Gioia_dei_Marsi";
+//    private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/L'Aquila";
 
 	@Ignore
 	@Test
@@ -91,13 +94,28 @@ public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 		AbstractSemanticSpread ss = new HT13ConfSemanticSpread_GreedyVariant(resourceOrigin,kb,policy);
 		ss.run();
 		
+		
 		String fileName = this.getFlushFileName("testHT13ConfSemanticSpread_GreedyVariant_onDBpedia_IC");
 		Writer out = new FileWriter(fileName);
 		ss.flushData(out);
-				
+		
+		boolean status = isAlwaysScoreLessThanOrigin(ss);
+		
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
 
-		Assert.assertTrue(true);		
+		Assert.assertTrue(status);		
+	}
+
+	private boolean isAlwaysScoreLessThanOrigin(AbstractSemanticSpread ss) throws InteractionProtocolViolationException {
+		Node resourceOrigin = ss.getOrigin();
+		boolean status = true;
+		for (Iterator iterator = ss.getSemanticSpreadForNode().iterator(); (iterator.hasNext()) && (status);) {
+			Node n = (Node) iterator.next();
+			if (! n.equals(resourceOrigin) ){
+				status = n.getScore() < resourceOrigin.getScore();
+			}			
+		}
+		return status;
 	}
 
 	private Node extractTrivialOrigin() {

@@ -60,13 +60,15 @@ public abstract class AbstractSemanticSpread implements Runnable{
 
 	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpread.class);
 	
+	private final double INITIAL_STIMULUS = 1;
+	
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
 		this(origin, kb, ExecutionPolicyFactory.getInstance().getExecutionPolicy());
 	}
 		
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy){
 		this.origin = origin;
-		this.origin.updateScore(1);
+		this.origin.updateScore(INITIAL_STIMULUS);
 		
 		this.kb = kb;
 		this.policy = policy;

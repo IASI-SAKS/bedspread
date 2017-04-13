@@ -88,10 +88,14 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		Set<AnyResource> neighborhood = this.kb.getNeighborhood(targetNode.getResource());
 		double neighborhoodScore = 0;
 		for (AnyResource neighborResource : neighborhood) {
-			int degree = this.kb.degree(neighborResource);
+//			if ((neighborResource.getResourceID().endsWith("Donta_Jones"))||(neighborResource.getResourceID().matches(".*ioia.*arsi")))
+//				logger.info("foo");
 			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
+			if (neighborNode.getScore() != 0){
+				int degree = this.kb.degree(neighborResource);
 						
-			neighborhoodScore += (neighborNode.getScore()/degree);
+				neighborhoodScore += (neighborNode.getScore()/degree);
+			}	
 		}
 		
 		double weight;
@@ -130,13 +134,23 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	private Node backtrackToNode(AnyResource neighborResource, AnyResource targetResource) {		
-		for (Node node : this.getAllActiveNodes()) {
-			if (node.getResource().getResourceID().equalsIgnoreCase(neighborResource.getResourceID())){
-				return node;
-			}	
-		}
-
+/*
+ * new instantiation of node has the score set to 0
+ */
 		Node node = new Node(neighborResource);
+		Set<Node> allActiveNodes = this.getAllActiveNodes();
+		
+		
+		if (allActiveNodes.contains(node)){
+			/*
+			 * if an instantiation the node already exists we must return the value previoussly computed
+			 */
+			for (Node n : this.getAllActiveNodes()) {
+				if (n.equals(node)){
+					return n;
+				}	
+			}			
+		}
 		return node;
 	}
 	
