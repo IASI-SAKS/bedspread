@@ -368,10 +368,7 @@ public class DBpediaKB implements KnowledgeBase {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-				
-		for(AnyURI uri:this.getPredicatesBlackList())
-			System.out.println(uri.getResourceID());
+		}				
 	}
 		
 	public Set<AnyURI> getPredicatesBlackList() {

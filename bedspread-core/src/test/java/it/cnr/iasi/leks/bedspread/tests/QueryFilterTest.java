@@ -93,4 +93,55 @@ public class QueryFilterTest {
 		Assert.assertTrue(true);
 	}
 
+	
+	@Test
+	public void generateFilterOutLiterals_neighbor() {
+		System.out.println("- generateFilterOutLiterals");
+		
+		DBpediaKB kb = DBpediaKB.getInstance();
+		
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		
+		Set<AnyResource> neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_NO);
+		System.out.println("neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
+		
+		neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_LITERALS);
+		System.out.println("neighborhood("+resource+", FILTER_OUT_LITERALS)="+neighborhood.size());
+		
+		Assert.assertTrue(true);
+	}
+	
+	@Test
+	public void generateFilterOutAll_neighbor() {
+		System.out.println("- generateFilterOutAll");
+		
+		DBpediaKB kb = DBpediaKB.getInstance();
+		
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		
+		Set<AnyResource> neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_NO);
+		System.out.println("neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
+		
+		neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+		System.out.println("neighborhood("+resource+", FILTER_OUT_BLACKLIST_PREDICATES)="+neighborhood.size());
+		
+		Assert.assertTrue(true);
+	}
+	
+	@Test
+	public void generateFilterOutPredicates_neighbor() {
+		System.out.println("- generateFilterOutPredicates");
+		
+		DBpediaKB kb = DBpediaKB.getInstance();
+		
+		String resource = HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA;
+		
+		Set<AnyResource> neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_NO);
+		System.out.println("neighborhood("+resource+", FILTER_NO)="+neighborhood.size());
+		
+		neighborhood = kb.getNeighborhood(new URIImpl(resource), Filters.FILTER_OUT_ALL);
+		System.out.println("neighborhood("+resource+", FILTER_OUT_ALL)="+neighborhood.size());
+		
+		Assert.assertTrue(true);
+	}
 }
