@@ -21,13 +21,20 @@ package it.cnr.iasi.leks.bedspread.rdf.sparqlImpl;
  * 
  */
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import com.opencsv.CSVReader;
+
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 
 /**
  * 
@@ -40,6 +47,8 @@ public class DBpediaKB implements KnowledgeBase {
 	private String graph;
 	
 	DBpediaKBCache cache = new DBpediaKBCache();
+
+	private Set<AnyURI> predicatesBlackList = new HashSet<AnyURI>();
 	
 	private static DBpediaKB instance = null;
 	 
@@ -50,6 +59,7 @@ public class DBpediaKB implements KnowledgeBase {
 		PropertyUtil p = PropertyUtil.getInstance();
 		this.endpoint = p.getProperty(PropertyUtil.KB_ENDPOINT_LABEL, PropertyUtil.KB_ENDPOINT_DEFAULT);
 		this.graph = p.getProperty(PropertyUtil.KB_ENDPOINT_GRAPH_LABEL, PropertyUtil.KB_ENDPOINT_GRAPH_DEFAULT);
+		initPredicatesBlackList(p.getProperty(PropertyUtil.KB_PREDICATES_BLACKLIST_FILE, PropertyUtil.DEFAULT_KB_PREDICATES_BLACKLIST_FILE));
 	}
 	
     public String getEndpoint() {
@@ -88,7 +98,12 @@ public class DBpediaKB implements KnowledgeBase {
 	 */
 	@Override
 	public int degree(AnyResource resource) {
-		int result =  SPARQLQueryCollector.getDegree(this, resource);
+		return this.degree(resource, Filters.FILTER_OUT_ALL);  
+	}
+	
+	public int degree(AnyResource resource, Filters filter) {
+		int result = 0; 
+		result =  SPARQLQueryCollector.getDegree(this, resource, filter);
 		return result;
 	}
 
@@ -106,73 +121,101 @@ public class DBpediaKB implements KnowledgeBase {
 	 */
 	@Override
 	public boolean isMemberof(AnyResource resource) {
+		return  this.isMemberof(resource, Filters.FILTER_OUT_ALL);
+	}
+
+	public boolean isMemberof(AnyResource resource, Filters filter) {
 		boolean result = false;
 
-		boolean isPredicate = SPARQLQueryCollector.isPredicate(this, resource);
-		boolean isSubjectOrObject = SPARQLQueryCollector.isSubjectOrObject(this, resource);
+		boolean isPredicate = SPARQLQueryCollector.isPredicate(this, resource, filter);
+		boolean isSubjectOrObject = SPARQLQueryCollector.isSubjectOrObject(this, resource, filter);
 		
 		if(isPredicate || isSubjectOrObject )
 			result = true;
 		
 		return result;
 	}
-
 	/* (non-Javadoc)
 	 * @see it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase#getNeighborhood(it.cnr.iasi.leks.bedspread.rdf.AnyResource)
 	 */
 	@Override
 	public Set<AnyResource> getNeighborhood(AnyResource resource) {
-		Set<AnyResource> result = SPARQLQueryCollector.getNeighborhood(this, resource); 
+		return this.getNeighborhood(resource, Filters.FILTER_OUT_ALL);
+	}
+	
+	public Set<AnyResource> getNeighborhood(AnyResource resource, Filters filter) {
+		Set<AnyResource> result = new HashSet<AnyResource>();
+		result = SPARQLQueryCollector.getNeighborhood(this, resource, filter); 
 		return result;
 	}
 	
 	public Set<AnyResource> getIncomingNeighborhood(AnyResource resource) {
+		return this.getIncomingNeighborhood(resource, Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+	}
+	
+	public Set<AnyResource> getIncomingNeighborhood(AnyResource resource, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		result = SPARQLQueryCollector.getIncomingNeighborhood(this, resource);
+		result = SPARQLQueryCollector.getIncomingNeighborhood(this, resource, filter);
 		return result;
 	}
 	
 	public Set<AnyResource> getOutgoingNeighborhood(AnyResource resource) {
+		return  this.getOutgoingNeighborhood(resource, Filters.FILTER_OUT_ALL);
+	}
+	
+	public Set<AnyResource> getOutgoingNeighborhood(AnyResource resource, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		result = SPARQLQueryCollector.getOutgoingNeighborhood(this, resource);
+		result = SPARQLQueryCollector.getOutgoingNeighborhood(this, resource, filter);
 		return result;
 	}
 	
-	
 	public int countAllTriples() {
+		return this.countAllTriples(Filters.FILTER_OUT_ALL);
+	}
+	
+	public int countAllTriples(Filters filter) {
 		int result = 0;
 		
 		if(this.cache.num_total_triple!=0)
 			result = this.cache.num_total_triple;
 		else {
-			result = SPARQLQueryCollector.countTotalTriples(this);
+			result = SPARQLQueryCollector.countTotalTriples(this, filter);
 			this.cache.num_total_triple = result;
 		}
 		
 		return result;
 	}
 	
-	
 	public int countTriplesByPredicate(AnyResource resource) {
+		return this.countTriplesByPredicate(resource, Filters.FILTER_OUT_LITERALS);
+	}
+	
+	public int countTriplesByPredicate(AnyResource resource, Filters filter) {
 		int result = 0;
 		
 		if(this.cache.num_triples_by_predicate.containsKey(resource.getResourceID()))
 			result = this.cache.num_triples_by_predicate.get(resource.getResourceID());
 		else {
-			result = SPARQLQueryCollector.countTriplesByPredicate(this, resource);
+			result = SPARQLQueryCollector.countTriplesByPredicate(this, resource, filter);
 			this.cache.num_triples_by_predicate.put(resource.getResourceID(), result);
 		}
 			
 		return result;
 	}
 
+
 	public int countTriplesBySubject(AnyResource resource) {
+		return this.countTriplesBySubject(resource, Filters.FILTER_OUT_ALL);
+	}
+
+	
+	public int countTriplesBySubject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
 		if(this.cache.num_triples_by_subject.containsKey(resource.getResourceID()))
 			result = this.cache.num_triples_by_subject.get(resource.getResourceID());
 		else {
-			result = SPARQLQueryCollector.countTriplesBySubject(this, resource);
+			result = SPARQLQueryCollector.countTriplesBySubject(this, resource, filter);
 			this.cache.num_triples_by_subject.put(resource.getResourceID(), result);
 		}
 
@@ -180,12 +223,16 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public int countTriplesByObject(AnyResource resource) {
+		return this.countTriplesByObject(resource, Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+	}
+	
+	public int countTriplesByObject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
 		if(this.cache.num_triples_by_object.containsKey(resource.getResourceID()))
 			result = this.cache.num_triples_by_object.get(resource.getResourceID());
 		else {
-			result = SPARQLQueryCollector.countTriplesByObject(this, resource);
+			result = SPARQLQueryCollector.countTriplesByObject(this, resource, filter);
 			this.cache.num_triples_by_object.put(resource.getResourceID(), result);
 		}
 		
@@ -193,17 +240,22 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public int countTriplesBySubjectOrObject(AnyResource resource) {
+		return this.countTriplesBySubjectOrObject(resource, Filters.FILTER_OUT_ALL);
+	}
+	
+	public int countTriplesBySubjectOrObject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
 		if(this.cache.num_triples_by_subject_or_object.containsKey(resource.getResourceID()))
 			result = this.cache.num_triples_by_subject_or_object.get(resource.getResourceID());
 		else {
-			result = SPARQLQueryCollector.countTriplesBySubjectOrObject(this, resource);
+			result = SPARQLQueryCollector.countTriplesBySubjectOrObject(this, resource, filter);
 			this.cache.num_triples_by_subject_or_object.put(resource.getResourceID(), result);
 		}
 		
 		return result;
 	}
+	
 	
 	public int countTriplesByPredicateAndObject(AnyResource predicate, AnyResource resource) {
 		int result = 0;
@@ -219,8 +271,13 @@ public class DBpediaKB implements KnowledgeBase {
 		
 		return result;
 	}
-	
+
 	public int countTriplesByPredicateAndSubject(AnyResource predicate, AnyResource resource) {
+		return this.countTriplesByPredicateAndSubject(predicate, resource, Filters.FILTER_OUT_LITERALS);
+	}
+
+	
+	public int countTriplesByPredicateAndSubject(AnyResource predicate, AnyResource resource, Filters filter) {
 		int result = 0;
 		Vector<String> pair = new Vector<String>();
 		pair.add(predicate.getResourceID());
@@ -228,7 +285,7 @@ public class DBpediaKB implements KnowledgeBase {
 		if(this.cache.num_triples_by_predicate_and_subject.containsKey(pair))
 			result = this.cache.num_triples_by_predicate_and_subject.get(pair);
 		else {
-			result = SPARQLQueryCollector.countTriplesByPredicateAndSubject(this, predicate, resource);
+			result = SPARQLQueryCollector.countTriplesByPredicateAndSubject(this, predicate, resource, filter);
 			this.cache.num_triples_by_predicate_and_subject.put(pair, result);
 		}
 		
@@ -236,6 +293,10 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public int countTriplesByPredicateAndSubjectOrObject(AnyResource predicate, AnyResource resource) {
+		return this.countTriplesByPredicateAndSubjectOrObject(predicate, resource, Filters.FILTER_OUT_LITERALS);
+	}
+	
+	public int countTriplesByPredicateAndSubjectOrObject(AnyResource predicate, AnyResource resource, Filters filter) {
 		int result = 0;
 		Vector<String> pair = new Vector<String>();
 		pair.add(predicate.getResourceID());
@@ -243,7 +304,7 @@ public class DBpediaKB implements KnowledgeBase {
 		if(this.cache.num_triples_by_predicate_and_subject_or_object.containsKey(pair))
 			result = this.cache.num_triples_by_predicate_and_subject_or_object.get(pair);
 		else {
-			result = SPARQLQueryCollector.countTriplesByPredicateAndSubjectOrObject(this, predicate, resource);
+			result = SPARQLQueryCollector.countTriplesByPredicateAndSubjectOrObject(this, predicate, resource, filter);
 			this.cache.num_triples_by_predicate_and_subject_or_object.put(pair, result);
 		}
 		
@@ -252,31 +313,70 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public Set<AnyResource> getPredicatesBySubjectAndObject(AnyResource r1, AnyResource r2) {
+		return this.getPredicatesBySubjectAndObject(r1, r2, Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+	}
+	
+	public Set<AnyResource> getPredicatesBySubjectAndObject(AnyResource r1, AnyResource r2, Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		result = SPARQLQueryCollector.getPredicatesBySubjectAndObject(this, r1, r2);
+		result = SPARQLQueryCollector.getPredicatesBySubjectAndObject(this, r1, r2, filter);
 		return result;
 	}
 
 	public Set<AnyResource> getAllPredicates() {
+		return this.getAllPredicates(Filters.FILTER_OUT_ALL);
+	}
+	
+	public Set<AnyResource> getAllPredicates(Filters filter) {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		result = SPARQLQueryCollector.getAllPredicates(this);
+		result = SPARQLQueryCollector.getAllPredicates(this, filter);
 		return result;
 	}
 	
 	public Vector<AnyResource> getIncomingPredicates(AnyResource resource) {
-		return SPARQLQueryCollector.getIncomingPredicates(this, resource);
+		return this.getIncomingPredicates(resource, Filters.FILTER_OUT_ALL);
+	}
+	
+	public Vector<AnyResource> getIncomingPredicates(AnyResource resource, Filters filter) {
+		return SPARQLQueryCollector.getIncomingPredicates(this, resource, filter);
 	} 
 
 	public Vector<AnyResource> getOutgoingPredicates(AnyResource resource) {
+		return this.getOutgoingPredicates(resource, Filters.FILTER_OUT_ALL);
+
+	}
+	
+	public Vector<AnyResource> getOutgoingPredicates(AnyResource resource, Filters filter) {
 		Vector<AnyResource> result = new Vector<AnyResource>();
-		if(isUri(resource.getResourceID()))
-			SPARQLQueryCollector.getOutgoingPredicates(this, resource);
+		if(resource instanceof URIImpl)
+			SPARQLQueryCollector.getOutgoingPredicates(this, resource, filter);
 		return result;
 	} 	
 	
-	private boolean isUri(String s) {
-		if(s.startsWith("http"))
-			return true;
-		else return false;
+	private void initPredicatesBlackList(String predicatesBlackList_filename) {
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream s = classloader.getResourceAsStream(predicatesBlackList_filename);
+		InputStreamReader isr = new InputStreamReader(s); 
+		
+		CSVReader reader = new CSVReader(isr);
+
+		String [] nextLine;
+	    try {
+			while ((nextLine = reader.readNext()) != null) {
+				// nextLine[] is an array of values from the line
+			    this.getPredicatesBlackList().add(new URIImpl(nextLine[0]));
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		for(AnyURI uri:this.getPredicatesBlackList())
+			System.out.println(uri.getResourceID());
 	}
+		
+	public Set<AnyURI> getPredicatesBlackList() {
+		return predicatesBlackList;
+	}
+
+
 }

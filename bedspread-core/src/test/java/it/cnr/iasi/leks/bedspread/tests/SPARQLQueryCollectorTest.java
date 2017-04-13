@@ -28,6 +28,7 @@ import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.Filters;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.SPARQLQueryCollector;
 
 public class SPARQLQueryCollectorTest {
@@ -41,7 +42,7 @@ public class SPARQLQueryCollectorTest {
 	public void getPredicatesBySubjectAndObject() {
 		Set<AnyResource> result = new HashSet<AnyResource>();
 		
-		result = SPARQLQueryCollector.getPredicatesBySubjectAndObject(kb, r1, r2);
+		result = SPARQLQueryCollector.getPredicatesBySubjectAndObject(kb, r1, r2, Filters.FILTER_OUT_BLACKLIST_PREDICATES);
 		
 		for(AnyResource p:result)
 			System.out.println("pred="+p.getResourceID());
@@ -52,7 +53,7 @@ public class SPARQLQueryCollectorTest {
 	//@Test
 	public void getBow() {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		result = SPARQLQueryCollector.getBow(kb);
+		result = SPARQLQueryCollector.getBow(kb, Filters.FILTER_OUT_ALL);
 		
 		for(AnyResource n:result)
 			System.out.println("node="+n.getResourceID());
