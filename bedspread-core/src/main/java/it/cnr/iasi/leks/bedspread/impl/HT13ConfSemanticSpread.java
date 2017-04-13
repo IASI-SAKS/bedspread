@@ -88,8 +88,8 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		Set<AnyResource> neighborhood = this.kb.getNeighborhood(targetNode.getResource());
 		double neighborhoodScore = 0;
 		for (AnyResource neighborResource : neighborhood) {
-			if ((neighborResource.getResourceID().endsWith("Donta_Jones"))||(neighborResource.getResourceID().matches(".*ioia.*arsi")))
-				logger.info("foo");
+//			if ((neighborResource.getResourceID().endsWith("Donta_Jones"))||(neighborResource.getResourceID().matches(".*ioia.*arsi")))
+//				logger.info("foo");
 			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
 			if (neighborNode.getScore() != 0){
 				int degree = this.kb.degree(neighborResource);
