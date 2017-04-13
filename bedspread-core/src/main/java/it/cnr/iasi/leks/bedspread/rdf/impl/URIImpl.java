@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.rdf.impl;
 
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.URI;
 
 /**
@@ -39,11 +40,20 @@ public class URIImpl implements URI {
 	
 	@Override
 	public boolean equals (Object obj){
-		if (obj instanceof URIImpl) {
-			URIImpl uri = (URIImpl) obj;
+		if (obj instanceof AnyResource) {
+			AnyResource r = (AnyResource) obj;
+			return this.equals(r);
+		}	
+		return false;		
+	}
+
+	@Override
+	public boolean equals (AnyResource r){
+		if (r instanceof URIImpl) {
+			URIImpl uri = (URIImpl) r;
 			String uriID = uri.getResourceID();
 			String currentID = this.getResourceID();
-			return currentID.equalsIgnoreCase(uriID);
+			return currentID.equals(uriID);
 		}	
 		return false;		
 	}

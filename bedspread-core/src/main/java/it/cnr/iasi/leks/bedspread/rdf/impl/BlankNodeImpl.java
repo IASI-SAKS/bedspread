@@ -21,6 +21,7 @@ package it.cnr.iasi.leks.bedspread.rdf.impl;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.BlankNode;
 
 /**
@@ -51,11 +52,20 @@ public class BlankNodeImpl implements BlankNode {
     
 	@Override
 	public boolean equals (Object obj){
-		if (obj instanceof BlankNodeImpl) {
-			BlankNodeImpl blankNode = (BlankNodeImpl) obj;
+		if (obj instanceof AnyResource) {
+			AnyResource r = (AnyResource) obj;
+			return this.equals(r);
+		}	
+		return false;		
+	}
+
+	@Override
+	public boolean equals (AnyResource r){
+		if (r instanceof BlankNodeImpl) {
+			BlankNodeImpl blankNode = (BlankNodeImpl) r;
 			String blanckNodeID = blankNode.getResourceID();
 			String currentID = this.getResourceID();
-			return currentID.equalsIgnoreCase(blanckNodeID);
+			return currentID.equals(blanckNodeID);
 		}	
 		return false;		
 	}
