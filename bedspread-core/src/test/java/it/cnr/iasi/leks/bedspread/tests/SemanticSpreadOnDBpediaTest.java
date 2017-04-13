@@ -50,8 +50,9 @@ import org.junit.Test;
 public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 
 //	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovation";
-//	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
-    private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Gioia_dei_Marsi";
+	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
+//    private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Gioia_dei_Marsi";
+//    private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/L'Aquila";
 
 	@Ignore
 	@Test

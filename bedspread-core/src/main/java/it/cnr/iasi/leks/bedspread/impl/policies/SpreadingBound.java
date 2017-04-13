@@ -21,7 +21,6 @@ package it.cnr.iasi.leks.bedspread.impl.policies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -38,6 +37,7 @@ public class SpreadingBound extends ExecutionPolicy {
 	private KnowledgeBase kb;
 	private final int NODE_DEGREE_BOUND = 2600;
 	private final double SCORE_THRESHOLD = 0.6d;
+//	private final double SCORE_THRESHOLD = 0.0001d;
 
 	protected final Logger logger = LoggerFactory.getLogger(SpreadingBound.class);
 	
