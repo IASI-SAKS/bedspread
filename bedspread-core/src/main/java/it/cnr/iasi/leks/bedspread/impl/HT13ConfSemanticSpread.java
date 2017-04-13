@@ -88,7 +88,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		Set<AnyResource> neighborhood = this.kb.getNeighborhood(targetNode.getResource());
 		double neighborhoodScore = 0;
 		for (AnyResource neighborResource : neighborhood) {
-			if (neighborResource.getResourceID().endsWith("Donta_Jones"))
+			if ((neighborResource.getResourceID().endsWith("Donta_Jones"))||(neighborResource.getResourceID().matches(".*ioia.*arsi")))
 				logger.info("foo");
 			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
 			if (neighborNode.getScore() != 0){
@@ -134,12 +134,19 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 	}
 
 	private Node backtrackToNode(AnyResource neighborResource, AnyResource targetResource) {		
+/*
+ * new instantiation of node has the score set to 0
+ */
 		Node node = new Node(neighborResource);
 		Set<Node> allActiveNodes = this.getAllActiveNodes();
 		
+		
 		if (allActiveNodes.contains(node)){
+			/*
+			 * if an instantiation the node already exists we must return the value previoussly computed
+			 */
 			for (Node n : this.getAllActiveNodes()) {
-				if (node.getResource().equals(neighborResource)){
+				if (n.equals(node)){
 					return n;
 				}	
 			}			
