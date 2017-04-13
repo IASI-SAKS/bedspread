@@ -151,7 +151,7 @@ public class RDFGraph implements KnowledgeBase {
 		
 		if (this.subjectsMap.containsKey(id)){
 			for (RDFTriple triple : this.subjectsMap.get(id)) {
-				if (! triple.getTriplePredicate().getResourceID().equalsIgnoreCase(TYPE_PREDICATE)){
+				if (! triple.getTriplePredicate().getResourceID().equals(TYPE_PREDICATE)){
 					outputSet.add(triple.getTripleObject());
 				}
 			}
@@ -159,7 +159,7 @@ public class RDFGraph implements KnowledgeBase {
 		
 		if (this.objectsMap.containsKey(id)){
 			for (RDFTriple triple : this.objectsMap.get(id)) {
-				if (! triple.getTriplePredicate().getResourceID().equalsIgnoreCase(TYPE_PREDICATE)){
+				if (! triple.getTriplePredicate().getResourceID().equals(TYPE_PREDICATE)){
 					outputSet.add(triple.getTripleSubject());
 				}
 			}
