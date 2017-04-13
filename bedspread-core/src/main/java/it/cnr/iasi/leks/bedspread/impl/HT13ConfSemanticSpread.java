@@ -139,7 +139,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		
 		if (allActiveNodes.contains(node)){
 			for (Node n : this.getAllActiveNodes()) {
-				if (node.getResource().getResourceID().equalsIgnoreCase(neighborResource.getResourceID())){
+				if (node.getResource().equals(neighborResource)){
 					return n;
 				}	
 			}			
