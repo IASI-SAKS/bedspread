@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
@@ -45,6 +48,8 @@ public abstract class PolicentricSemanticSpread implements ComputationStatusCall
 
 	private volatile Map<String, AbstractSemanticSpread> semanticSpreadMap;
 	private volatile Map<String, ComputationStatus> semanticSpreadStatusMap;
+	
+	protected final Logger logger = LoggerFactory.getLogger(PolicentricSemanticSpread.class);
 	
 	protected KnowledgeBase kb;
 	
