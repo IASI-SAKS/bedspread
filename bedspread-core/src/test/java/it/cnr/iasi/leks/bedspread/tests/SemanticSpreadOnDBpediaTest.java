@@ -50,8 +50,8 @@ import org.junit.Test;
 public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 
 //	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Innovation";
-	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
-//    private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Gioia_dei_Marsi";
+//	private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Barack_Obama";
+    private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/Gioia_dei_Marsi";
 //    private static final String ORIGIN_LABEL = "http://dbpedia.org/resource/L'Aquila";
 
 	@Ignore
@@ -84,12 +84,12 @@ public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 		KnowledgeBase kb = DBpediaKB.getInstance();
 		Node resourceOrigin = this.extractTrivialOrigin();
 	
-//		ExecutionPolicy policy = new SimpleExecutionPolicy(2);
-		ExecutionPolicy policy = new SpreadingBound(kb, 2);
-		
 		String testPropertyFile = "configTestSemanticWeighting_IC_onDBpedia.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
+		
+//		ExecutionPolicy policy = new SimpleExecutionPolicy(2);
+		ExecutionPolicy policy = new SpreadingBound(kb, 2);
 		
 		AbstractSemanticSpread ss = new HT13ConfSemanticSpread_GreedyVariant(resourceOrigin,kb,policy);
 		ss.run();
