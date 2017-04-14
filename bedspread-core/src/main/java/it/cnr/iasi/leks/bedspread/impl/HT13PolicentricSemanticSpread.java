@@ -58,7 +58,7 @@ public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 		List<AbstractSemanticSpread> completedList = this.getCompletedSemanticSpreadList();
 		int size = completedList.size();
 		for (AbstractSemanticSpread semSpread : completedList) {
-			this.logger.info("XXX AbstractSemanticSpread to be merged {}", size);
+			this.logger.info("XMerge-1X AbstractSemanticSpread to be merged {}", size);
 			for (Node node : semSpread.getSemanticSpreadForNode()) {
 				String key = node.getResource().getResourceID();
 				Node n = nodeMap.get(key);
@@ -76,7 +76,7 @@ public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 		
 		size = nodeMap.size();
 		for (Node node : nodeMap.values()) {
-			this.logger.info("XXX Node to be Updating before end : {}", size);
+			this.logger.info("XMerge-2X Node to be Updated in this Loop : {}", size);
 			int degree = this.kb.degree(node.getResource());
 // Note that the original implementation for this computation foresees "Math.log(degree)"
 // Here we added "+1" because we would like to avoid division by 0 ... even
