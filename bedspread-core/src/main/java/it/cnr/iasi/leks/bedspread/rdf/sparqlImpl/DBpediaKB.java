@@ -52,7 +52,7 @@ public class DBpediaKB implements KnowledgeBase {
 	
 	private static DBpediaKB instance = null;
 
-	private final boolean caching = false;
+	private final boolean caching = true;
 	/**
 	 * 
 	 */
