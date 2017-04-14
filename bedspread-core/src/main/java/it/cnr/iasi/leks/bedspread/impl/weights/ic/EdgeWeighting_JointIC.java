@@ -34,7 +34,9 @@ public class EdgeWeighting_JointIC extends Abstract_EdgeWeighting_IC {
 
 	private static int KB_HASHCODE=0;
 	private static double CASHED_MAX_WEIGHT = 0.0d;
-	
+
+	private static final Object MUTEX = new Object();
+
 	public EdgeWeighting_JointIC(KnowledgeBase kb) {
 		super(kb);
 	}
@@ -94,16 +96,27 @@ public class EdgeWeighting_JointIC extends Abstract_EdgeWeighting_IC {
 	protected synchronized double computeMaxWeight() {
 		double result;
 		int hashCurrentKB = this.kb.hashCode();
-		if (hashCurrentKB != KB_HASHCODE) {
-			this.logger.info("MaxWeight Must be Computed Again (this activity may cost time ... )");
-			KB_HASHCODE = hashCurrentKB;
-			result = this.doTheComputation();
-			CASHED_MAX_WEIGHT = result;
-			this.logger.info("MaxWeight Computed");
-		} else {
-			result = CASHED_MAX_WEIGHT;
-		}
 
+		/*
+		 * This synchronized block is needed because : 
+		 * 
+		 * 1. the "synchronized" keyword on the method is only active at instance level, since the
+		 * method is not static;
+		 * 
+		 * 2. the method cannot be static because it uses data that depend
+		 * on the instance ad that may be (or may be not) shared among all the instances
+		 */
+		synchronized (MUTEX) {			
+			if (hashCurrentKB != KB_HASHCODE) {
+				this.logger.info("MaxWeight Must be Computed Again (this activity may cost time ... )");
+				KB_HASHCODE = hashCurrentKB;
+				result = this.doTheComputation();
+				CASHED_MAX_WEIGHT = result;
+				this.logger.info("MaxWeight Computed");
+			} else {
+				result = CASHED_MAX_WEIGHT;
+			}
+		}
 		return result;
 	}
 }
