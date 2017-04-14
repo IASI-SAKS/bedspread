@@ -18,36 +18,57 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.policies;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.Node;
+import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.KBFactory;
 
 /**
  * 
  * @author ftaglino
  *
  */
-public class SpreadingBound extends ExecutionPolicy {
+public class SpreadingBound implements ExecutionPolicy {
 
-	private final int MAX_QUERIES_BEFORE_TRUE = 10;
+	private final int DEFAULT_MAX_QUERIES_BEFORE_TRUE = 10;
+	private final int DEFAULT_NODE_DEGREE_BOUND = 3000;
+	private final double DEFAULT_SCORE_THRESHOLD = 0.6d;
+//	private final double DEFAULT_SCORE_THRESHOLD = 0.0001d;
+
 	private int nQueries;
+	private int nodeDegreeBound;
+	private double scoreThreshold;
+	
 	private KnowledgeBase kb;
-	private final int NODE_DEGREE_BOUND = 3000;
-	private final double SCORE_THRESHOLD = 0.6d;
-//	private final double SCORE_THRESHOLD = 0.0001d;
 
 	protected final Logger logger = LoggerFactory.getLogger(SpreadingBound.class);
-	
-	public SpreadingBound(KnowledgeBase kb){
-		this.kb = kb;
-		this.nQueries = MAX_QUERIES_BEFORE_TRUE;
+		
+	public SpreadingBound() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException{
+		this(null);
 	}
 	
-	public SpreadingBound(KnowledgeBase kb, int i){
-		this.kb = kb;
+	public SpreadingBound(KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException{
+		PropertyUtil prop = PropertyUtil.getInstance();
+		
+		if (kb!=null){
+			this.kb = kb;
+		}else{
+			this.kb = KBFactory.getInstance().getKnowledgeBase(prop);
+		}
+		
+		this.nQueries = prop.getProperty(PropertyUtil.EXECUTION_POLICY_NQUERIES_LABEL, DEFAULT_MAX_QUERIES_BEFORE_TRUE);
+		this.nodeDegreeBound = prop.getProperty(PropertyUtil.EXECUTION_POLICY_NODE_DEGREE_BOUND_LABEL, DEFAULT_NODE_DEGREE_BOUND);
+		this.scoreThreshold = prop.getProperty(PropertyUtil.EXECUTION_POLICY_SCORE_THRESHOLD_LABEL, DEFAULT_SCORE_THRESHOLD);
+	}
+
+	public SpreadingBound(KnowledgeBase kb, int i) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException{
+		this(kb);		
 		this.nQueries = i;
 	}
 
@@ -67,11 +88,11 @@ public class SpreadingBound extends ExecutionPolicy {
 	@Override
 	public boolean isSpreadingEnabled(Node n) {
 		int degree = kb.degree(n.getResource()); 
-		if(degree > NODE_DEGREE_BOUND) {
+		if(degree > this.nodeDegreeBound) {
 			logger.info("{}", "FILTERED NODE(degree="+degree+"): "+ n.getResource().getResourceID());
 			return false;
 		}
-		else if(n.getScore()<SCORE_THRESHOLD) {
+		else if(n.getScore() < this.scoreThreshold) {
 			logger.info("{}", "FILTERED NODE(score="+n.getScore()+"): "+ n.getResource().getResourceID());
 			return false;
 		}

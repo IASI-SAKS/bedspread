@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.impl;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import it.cnr.iasi.leks.bedspread.Node;
@@ -38,7 +39,7 @@ public class SimpleSemanticWeightedSpread extends SimpleSemanticSpread {
 
 	private WeightingFunction weightingModule; 
 	
-	public SimpleSemanticWeightedSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
+	public SimpleSemanticWeightedSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException, IOException {
 		super(origin, kb);
 
 		this.weightingModule = WeightingFunctionFactory.getInstance().getWeightingFunction(this.kb);

@@ -26,25 +26,16 @@ import it.cnr.iasi.leks.bedspread.Node;
  * @author gulyx
  *
  */
-public class SimpleExecutionPolicy implements ExecutionPolicy {
+public class DefaultExecutionPolicy implements ExecutionPolicy {
 
-	private final int MAX_QUERIES_BEFORE_TRUE = 10;
-	private int nQueries;
-	
-	public SimpleExecutionPolicy(){
-		this.nQueries = MAX_QUERIES_BEFORE_TRUE;
+	public DefaultExecutionPolicy(){
 	}
 	
-	public SimpleExecutionPolicy(int i){
-		this.nQueries = i;
-	}
-
+    /*
+     * 	In this simplified implementation, termination policy is met at anytime.
+     */
 	@Override
 	public boolean terminationPolicyMet() {
-		if (this.nQueries > 0){
-			this.nQueries --;
-			return false;
-		}	
 		return true;
 	}
 

@@ -18,16 +18,14 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.weights;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import it.cnr.iasi.leks.bedspread.WeightingFunction;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
-import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
+import it.cnr.iasi.leks.bedspread.rdf.impl.KBFactory;
 
 /**
  * 
@@ -91,21 +89,8 @@ public class WeightingFunctionFactory {
 	}
 	
 	private KnowledgeBase configureKB(PropertyUtil prop) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		KnowledgeBase localKB = null; 
-		
-		String kbFileName = prop.getProperty(PropertyUtil.KB_FILE_LABEL);
-		String kbClassName = prop.getProperty(PropertyUtil.KB_LABEL);
-		if (kbClassName != null){
-			ClassLoader loader = ClassLoader.getSystemClassLoader();
-			localKB = (KnowledgeBase) loader.loadClass(kbClassName).newInstance();
-			
-		}else{
-			if (kbFileName != null){
-				Reader kbReader;
-					kbReader = new FileReader(kbFileName);
-					localKB = new RDFGraph(kbReader);
-			}
-		}
+		KnowledgeBase localKB = KBFactory.getInstance().getKnowledgeBase(prop); 
+	
 		return localKB;
 	}
 

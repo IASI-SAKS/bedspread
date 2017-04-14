@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.impl;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -47,29 +48,29 @@ public class SemanticSpreadFactory {
 		return FACTORY;
 	}
 
-	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy, String id, ComputationStatusCallback callback) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy, String id, ComputationStatusCallback callback) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException{
 		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, policy);
 		semSpread.setCallback(id, callback);
 		return semSpread;
 	}
 
-	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException{
 		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, null);
 		return semSpread;
 	}
 
-	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, String id, ComputationStatusCallback callback) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, String id, ComputationStatusCallback callback) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException{
 		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, null);
 		semSpread.setCallback(id, callback);
 		return semSpread;
 	}
 
-	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public AbstractSemanticSpread getSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException{
 		AbstractSemanticSpread semSpread = this.configureSemanticSpread(origin, kb, policy);
 		return semSpread;
 	}
 
-	private AbstractSemanticSpread configureSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private AbstractSemanticSpread configureSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		AbstractSemanticSpread semSpread = null; 
 		
 		String semSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);

@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.impl;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import it.cnr.iasi.leks.bedspread.Node;
@@ -31,7 +32,7 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  */
 public class HT13ConfSemanticSpread_GreedyVariant extends HT13ConfSemanticSpread {
 
-	public HT13ConfSemanticSpread_GreedyVariant(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
+	public HT13ConfSemanticSpread_GreedyVariant(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException, IOException {
 		super(origin, kb);
 	}
 

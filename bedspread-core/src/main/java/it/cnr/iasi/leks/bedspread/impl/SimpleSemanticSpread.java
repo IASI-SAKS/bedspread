@@ -20,7 +20,7 @@ package it.cnr.iasi.leks.bedspread.impl;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
 
 import com.opencsv.CSVWriter;
 
@@ -40,7 +40,7 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  */
 public class SimpleSemanticSpread extends AbstractSemanticSpread {
 
-	public SimpleSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public SimpleSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
 		super(origin, kb);
 	}
 

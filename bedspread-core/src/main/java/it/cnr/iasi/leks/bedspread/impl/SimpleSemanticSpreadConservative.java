@@ -18,6 +18,8 @@
  */
 package it.cnr.iasi.leks.bedspread.impl;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import it.cnr.iasi.leks.bedspread.Node;
@@ -27,7 +29,7 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 
 public class SimpleSemanticSpreadConservative extends SimpleSemanticSpread {
 
-	public SimpleSemanticSpreadConservative(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public SimpleSemanticSpreadConservative(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
 		super(origin, kb);
 	}
 
