@@ -41,7 +41,7 @@ public class DBPediaKBTest {
 	
 	protected final Logger logger = LoggerFactory.getLogger(DBPediaKBTest.class);
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void degree() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -61,7 +61,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==38)&&(result_filterOutLiterals==34)&&(result_filterOutPredicates==30)&&(result_filterOutAll==27));
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void countAllTriples() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -81,7 +81,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==397831457)&&(result_filterOutLiterals==264585515)&&(result_filterOutPredicates==393627614)&&(result_filterOutAll==261749431));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void countTriplesByObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -101,7 +101,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==25)&&(result_filterOutLiterals==25)&&(result_filterOutPredicates==23)&&(result_filterOutAll==23));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void countTriplesByPredicate() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -121,7 +121,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==1367759)&&(result_filterOutLiterals==0)&&(result_filterOutPredicates==1367759)&&(result_filterOutAll==0));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void countTriplesByPredicateAndObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -132,7 +132,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==2));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void countTriplesByPredicateAndSubject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -152,7 +152,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==5)&&(result_filterOutLiterals==5)&&(result_filterOutPredicates==5)&&(result_filterOutAll==5));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void countTriplesByPredicateAndSubjectOrObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -172,7 +172,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==7)&&(result_filterOutLiterals==7)&&(result_filterOutPredicates==7)&&(result_filterOutAll==7));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void countTriplesBySubject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -192,7 +192,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==13)&&(result_filterOutLiterals==9)&&(result_filterOutPredicates==7)&&(result_filterOutAll==4));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void countTriplesBySubjectOrObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -212,7 +212,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result==38)&&(result_filterOutLiterals==34)&&(result_filterOutPredicates==30)&&(result_filterOutAll==27));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void getAllPredicates() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -232,7 +232,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result.size()==3555)&&(result_filterOutLiterals.size()==1943)&&(result_filterOutPredicates.size()==3553)&&(result_filterOutAll.size()==1942));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void getIncomingNeighborhood() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -252,7 +252,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result.size()==25)&&(result_filterOutLiterals.size()==25)&&(result_filterOutPredicates.size()==23)&&(result_filterOutAll.size()==23));
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void getIncomingPredicates() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -272,7 +272,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result.size()==2)&&(result_filterOutLiterals.size()==2)&&(result_filterOutPredicates.size()==1)&&(result_filterOutAll.size()==1));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void getNeighborhood() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -292,7 +292,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result.size()==37)&&(result_filterOutLiterals.size()==34)&&(result_filterOutPredicates.size()==30)&&(result_filterOutAll.size()==27));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void getOutgoingNeighborhood() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -312,7 +312,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result.size()==12)&&(result_filterOutLiterals.size()==9)&&(result_filterOutPredicates.size()==7)&&(result_filterOutAll.size()==4));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void getOutgoingPredicates() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -332,7 +332,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result.size()==8)&&(result_filterOutLiterals.size()==4)&&(result_filterOutPredicates.size()==6)&&(result_filterOutAll.size()==3));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void getPredicatesBySubjectAndObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -352,7 +352,7 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result.size()==1)&&(result_filterOutLiterals.size()==1)&&(result_filterOutPredicates.size()==0)&&(result_filterOutAll.size()==0));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void isMemberof() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
