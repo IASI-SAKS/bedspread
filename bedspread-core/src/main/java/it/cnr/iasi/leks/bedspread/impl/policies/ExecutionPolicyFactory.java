@@ -18,9 +18,20 @@
  */
 package it.cnr.iasi.leks.bedspread.impl.policies;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.KBFactory;
 
+/**
+ * 
+ * @author gulyx
+ *
+ */
 public class ExecutionPolicyFactory {
 	
 	protected static ExecutionPolicyFactory FACTORY = null;
@@ -34,22 +45,43 @@ public class ExecutionPolicyFactory {
 		}
 		return FACTORY;
 	}			
-
-	public ExecutionPolicy getExecutionPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException{		
-		ExecutionPolicy policy = null;
+	
+	public ExecutionPolicy getExecutionPolicy() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+		KnowledgeBase kb = null;
 		
 		PropertyUtil prop = PropertyUtil.getInstance();
-		String policyClassName = prop.getProperty(PropertyUtil.EXECUTION_POLICY_LABEL);
+		kb = KBFactory.getInstance().getKnowledgeBase(prop);
 		
-		if ( policyClassName != null ){
+		ExecutionPolicy ep = this.getExecutionPolicy(kb);
+		
+		return ep;
+	}
+
+	public ExecutionPolicy getExecutionPolicy(KnowledgeBase kb) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+		
+		ExecutionPolicy ep = null;
+		
+		PropertyUtil prop = PropertyUtil.getInstance();
+		String epClassName = prop.getProperty(PropertyUtil.EXECUTION_POLICY_LABEL);
+		
+		if ( epClassName != null ){
 			ClassLoader loader = ClassLoader.getSystemClassLoader();
-			policy = (ExecutionPolicy) loader.loadClass(policyClassName).newInstance();			
+			Class<?> epClass = loader.loadClass(epClassName);
+			Constructor<?> constructor;
+			try {
+				constructor = epClass.getConstructor(new Class[]{KnowledgeBase.class});
+				ep = (ExecutionPolicy) constructor.newInstance(kb);			
+			} catch (NoSuchMethodException e) {
+				constructor = epClass.getConstructor();
+				ep = (ExecutionPolicy) constructor.newInstance();			
+			}
 		}else{
-			policy = new SimpleExecutionPolicy();
+			ep = new DefaultExecutionPolicy();
 		}
 		
-		return policy;
+		return ep;
 	}
+
 
 	public ExecutionPolicy getExecutionPolicy(int maxNumberOfIterations){		
 		ExecutionPolicy policy = new SimpleExecutionPolicy(maxNumberOfIterations);
