@@ -35,6 +35,7 @@ import it.cnr.iasi.leks.bedspread.impl.policies.SimpleExecutionPolicy;
 import it.cnr.iasi.leks.bedspread.impl.policies.SpreadingBound;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.KBFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
@@ -57,14 +58,15 @@ public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 	@Ignore
 	@Test
 	public void testHT13ConfSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		KnowledgeBase kb = DBpediaKB.getInstance();
 		Node resourceOrigin = this.extractTrivialOrigin();
 	
 		ExecutionPolicy policy = new SimpleExecutionPolicy(2);
 		
 		String testPropertyFile = "configTestSemanticWeighting_IC_onDBpedia.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
-		PropertyUtilNoSingleton.getInstance();
+		PropertyUtil prop = PropertyUtilNoSingleton.getInstance();
+		
+		KnowledgeBase kb = KBFactory.getInstance().getKnowledgeBase(prop);
 		
 		AbstractSemanticSpread ss = new HT13ConfSemanticSpread(resourceOrigin,kb,policy);
 		ss.run();
@@ -81,12 +83,13 @@ public class SemanticSpreadOnDBpediaTest extends AbstractTest{
 	@Ignore
 	@Test
 	public void testHT13GreedyConfSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		KnowledgeBase kb = DBpediaKB.getInstance();
 		Node resourceOrigin = this.extractTrivialOrigin();
 	
 		String testPropertyFile = "configTestSemanticWeighting_IC_onDBpedia.properties";
 		System.getProperties().put(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
-		PropertyUtilNoSingleton.getInstance();
+		PropertyUtil prop = PropertyUtilNoSingleton.getInstance();
+		
+		KnowledgeBase kb = KBFactory.getInstance().getKnowledgeBase(prop);
 		
 //		ExecutionPolicy policy = new SimpleExecutionPolicy(2);
 		ExecutionPolicy policy = new SpreadingBound(kb, 2);
