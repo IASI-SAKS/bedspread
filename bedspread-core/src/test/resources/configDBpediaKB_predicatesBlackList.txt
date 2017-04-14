@@ -1,2 +1,4 @@
-http://dbpedia.org/ontology/thumbnail
-http://dbpedia.org/ontology/wikiPageRedirects
+#http://dbpedia.org/ontology/thumbnail
+#http://dbpedia.org/ontology/wikiPageRedirects
+http://www.w3.org/2004/02/skos/core#broader
+http://www.w3.org/2004/02/skos/core#prefLabel
