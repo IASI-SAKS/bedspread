@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import com.opencsv.CSVWriter;
@@ -54,7 +55,10 @@ public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 	public Set<Node> mergeProcessingResults() throws InteractionProtocolViolationException{
 		HashMap<String, Node> nodeMap = new HashMap<String, Node>();
 		
-		for (AbstractSemanticSpread semSpread : this.getCompletedSemanticSpreadList()) {
+		List<AbstractSemanticSpread> completedList = this.getCompletedSemanticSpreadList();
+		int size = completedList.size();
+		for (AbstractSemanticSpread semSpread : completedList) {
+			this.logger.info("XXX AbstractSemanticSpread to be merged {}", size);
 			for (Node node : semSpread.getSemanticSpreadForNode()) {
 				String key = node.getResource().getResourceID();
 				Node n = nodeMap.get(key);
@@ -67,9 +71,12 @@ public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 					nodeMap.put(key, n);
 				}				
 			}
+			size --;
 		}
 		
+		size = nodeMap.size();
 		for (Node node : nodeMap.values()) {
+			this.logger.info("XXX Node to be Updating before end : {}", size);
 			int degree = this.kb.degree(node.getResource());
 // Note that the original implementation for this computation foresees "Math.log(degree)"
 // Here we added "+1" because we would like to avoid division by 0 ... even
@@ -78,6 +85,7 @@ public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 			double newScore = node.getScore() / Math.log(degree+2);
 			node.updateScore(newScore);
 			this.setOfNodes.add(node);
+			size --;
 		}
 		
 		return this.setOfNodes;
