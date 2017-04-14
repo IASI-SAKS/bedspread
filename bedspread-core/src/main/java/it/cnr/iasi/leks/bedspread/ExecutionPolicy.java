@@ -23,9 +23,8 @@ package it.cnr.iasi.leks.bedspread;
  * @author gulyx
  *
  */
-public abstract class ExecutionPolicy {
+public interface ExecutionPolicy {
 
-	public abstract boolean terminationPolicyMet();
-
-	public abstract boolean isSpreadingEnabled(Node n);
+	public boolean terminationPolicyMet();
+	public boolean isSpreadingEnabled(Node n);
 }
