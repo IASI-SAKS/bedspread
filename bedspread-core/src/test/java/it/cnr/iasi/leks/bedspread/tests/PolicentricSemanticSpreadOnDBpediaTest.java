@@ -52,7 +52,9 @@ public class PolicentricSemanticSpreadOnDBpediaTest extends AbstractTest{
 //													  BDPEDIA_PREFIX+"L'Aquila"};
 	
 	private static final String[] ORIGIN_LABEL_SET = {BDPEDIA_PREFIX+"Ignazio_Silone",
-													  BDPEDIA_PREFIX+"L'Aquila"};	
+			  										  BDPEDIA_PREFIX+"L'Aquila"};	
+
+//	private static final String[] ORIGIN_LABEL_SET = {BDPEDIA_PREFIX+"Gioia_dei_Marsi"};	
 	
 	private static final String OUT_FILENAME_PREFIX = "firstMinimalTestConf_PolicentricDBpedia";
 	
