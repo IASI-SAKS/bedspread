@@ -52,6 +52,9 @@ public class PropertyUtil {
 	public static final String SEMANTIC_SPREAD_LABEL =  "bedspread.semanticspread.class";
 //	public static final String TERMINATION_POLICY_LABEL =  "bedspread.terminationpolicy.class";
 	public static final String EXECUTION_POLICY_LABEL =  "bedspread.executionpolicy.class";
+	public static final String EXECUTION_POLICY_NQUERIES_LABEL =  "bedspread.executionpolicy.nqueries";
+	public static final String EXECUTION_POLICY_NODE_DEGREE_BOUND_LABEL =  "bedspread.executionpolicy.nodedegreebound";
+	public static final String EXECUTION_POLICY_SCORE_THRESHOLD_LABEL =  "bedspread.executionpolicy.scorethreshold";
 	public static final String WEIGHTING_FUNCTION_LABEL =  "bedspread.weightingfunction.class";
 	public static final String EDGE_WEIGHTING_IC_LABEL = "bedspread.edgeweightingic.class";
 	public static final String EDGE_WEIGHTING_IC_MAX_WEIGHT_LABEL = "bedspread.edgeweightingic.maxweight";
@@ -93,4 +96,21 @@ public class PropertyUtil {
 		  return this.properties.getProperty(key, defalutValue);
 	  }
  
+
+	  public int getProperty(String key, int defalutValue){
+		  String v = this.properties.getProperty(key);
+		  if (v == null){
+			  return defalutValue;
+		  }
+		  return Integer.parseInt(v);
+	  }
+
+	  public double getProperty(String key, double defalutValue){
+		  String v = this.properties.getProperty(key);
+		  if (v == null){
+			  return defalutValue;
+		  }
+		  return Double.parseDouble(v);
+	  }
+
 }
