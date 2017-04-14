@@ -46,12 +46,13 @@ public class DBpediaKB implements KnowledgeBase {
 	private String endpoint;
 	private String graph;
 	
-	DBpediaKBCache cache = new DBpediaKBCache();
+	private DBpediaKBCache cache = new DBpediaKBCache();
 
 	private Set<AnyURI> predicatesBlackList = new HashSet<AnyURI>();
 	
 	private static DBpediaKB instance = null;
-	 
+
+	private final boolean caching = true;
 	/**
 	 * 
 	 */
@@ -176,12 +177,16 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countAllTriples(Filters filter) {
 		int result = 0;
 		
-		if(this.cache.num_total_triple!=0)
-			result = this.cache.num_total_triple;
-		else {
-			result = SPARQLQueryCollector.countTotalTriples(this, filter);
-			this.cache.num_total_triple = result;
+		
+		if(caching) {
+			if(this.getCache().num_total_triple!=0)
+				result = this.getCache().num_total_triple;
+			else {
+				result = SPARQLQueryCollector.countTotalTriples(this, filter);
+				this.getCache().num_total_triple = result;
+			}
 		}
+		else result = SPARQLQueryCollector.countTotalTriples(this, filter);
 		
 		return result;
 	}
@@ -193,13 +198,16 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesByPredicate(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(this.cache.num_triples_by_predicate.containsKey(resource.getResourceID()))
-			result = this.cache.num_triples_by_predicate.get(resource.getResourceID());
-		else {
-			result = SPARQLQueryCollector.countTriplesByPredicate(this, resource, filter);
-			this.cache.num_triples_by_predicate.put(resource.getResourceID(), result);
+		if(caching) {
+			if(this.getCache().num_triples_by_predicate.containsKey(resource.getResourceID()))
+				result = this.getCache().num_triples_by_predicate.get(resource.getResourceID());
+			else {
+				result = SPARQLQueryCollector.countTriplesByPredicate(this, resource, filter);
+				this.getCache().num_triples_by_predicate.put(resource.getResourceID(), result);
+			}
 		}
-			
+		else result = SPARQLQueryCollector.countTriplesByPredicate(this, resource, filter);
+		
 		return result;
 	}
 
@@ -212,12 +220,15 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesBySubject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(this.cache.num_triples_by_subject.containsKey(resource.getResourceID()))
-			result = this.cache.num_triples_by_subject.get(resource.getResourceID());
-		else {
-			result = SPARQLQueryCollector.countTriplesBySubject(this, resource, filter);
-			this.cache.num_triples_by_subject.put(resource.getResourceID(), result);
+		if(caching) {
+			if(this.getCache().num_triples_by_subject.containsKey(resource.getResourceID()))
+				result = this.getCache().num_triples_by_subject.get(resource.getResourceID());
+			else {
+				result = SPARQLQueryCollector.countTriplesBySubject(this, resource, filter);
+				this.getCache().num_triples_by_subject.put(resource.getResourceID(), result);
+			}
 		}
+		else result = SPARQLQueryCollector.countTriplesBySubject(this, resource, filter);
 
 		return result;
 	}
@@ -229,12 +240,15 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesByObject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(this.cache.num_triples_by_object.containsKey(resource.getResourceID()))
-			result = this.cache.num_triples_by_object.get(resource.getResourceID());
-		else {
-			result = SPARQLQueryCollector.countTriplesByObject(this, resource, filter);
-			this.cache.num_triples_by_object.put(resource.getResourceID(), result);
+		if(caching) {
+			if(this.getCache().num_triples_by_object.containsKey(resource.getResourceID()))
+				result = this.getCache().num_triples_by_object.get(resource.getResourceID());
+			else {
+				result = SPARQLQueryCollector.countTriplesByObject(this, resource, filter);
+				this.getCache().num_triples_by_object.put(resource.getResourceID(), result);
+			}
 		}
+		else result = SPARQLQueryCollector.countTriplesByObject(this, resource, filter);
 		
 		return result;
 	}
@@ -246,12 +260,16 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesBySubjectOrObject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(this.cache.num_triples_by_subject_or_object.containsKey(resource.getResourceID()))
-			result = this.cache.num_triples_by_subject_or_object.get(resource.getResourceID());
-		else {
-			result = SPARQLQueryCollector.countTriplesBySubjectOrObject(this, resource, filter);
-			this.cache.num_triples_by_subject_or_object.put(resource.getResourceID(), result);
+		if(caching) {
+			if(this.getCache().num_triples_by_subject_or_object.containsKey(resource.getResourceID()))
+				result = this.getCache().num_triples_by_subject_or_object.get(resource.getResourceID());
+			else {
+				result = SPARQLQueryCollector.countTriplesBySubjectOrObject(this, resource, filter);
+				this.getCache().num_triples_by_subject_or_object.put(resource.getResourceID(), result);
+			}
 		}
+		else
+			result = SPARQLQueryCollector.countTriplesBySubjectOrObject(this, resource, filter);
 		
 		return result;
 	}
@@ -262,12 +280,16 @@ public class DBpediaKB implements KnowledgeBase {
 		Vector<String> pair = new Vector<String>();
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
-		if(this.cache.num_triples_by_predicate_and_object.containsKey(pair))
-			result = this.cache.num_triples_by_predicate_and_object.get(pair);
-		else {
-			result = SPARQLQueryCollector.countTriplesByPredicateAndObject(this, predicate, resource);
-			this.cache.num_triples_by_predicate_and_object.put(pair, result);
+		
+		if(caching) {
+			if(this.getCache().num_triples_by_predicate_and_object.containsKey(pair))
+				result = this.getCache().num_triples_by_predicate_and_object.get(pair);
+			else {
+				result = SPARQLQueryCollector.countTriplesByPredicateAndObject(this, predicate, resource);
+				this.getCache().num_triples_by_predicate_and_object.put(pair, result);
+			}
 		}
+		else result = SPARQLQueryCollector.countTriplesByPredicateAndObject(this, predicate, resource);
 		
 		return result;
 	}
@@ -282,12 +304,16 @@ public class DBpediaKB implements KnowledgeBase {
 		Vector<String> pair = new Vector<String>();
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
-		if(this.cache.num_triples_by_predicate_and_subject.containsKey(pair))
-			result = this.cache.num_triples_by_predicate_and_subject.get(pair);
-		else {
-			result = SPARQLQueryCollector.countTriplesByPredicateAndSubject(this, predicate, resource, filter);
-			this.cache.num_triples_by_predicate_and_subject.put(pair, result);
+		
+		if(caching) {
+			if(this.getCache().num_triples_by_predicate_and_subject.containsKey(pair))
+				result = this.getCache().num_triples_by_predicate_and_subject.get(pair);
+			else {
+				result = SPARQLQueryCollector.countTriplesByPredicateAndSubject(this, predicate, resource, filter);
+				this.getCache().num_triples_by_predicate_and_subject.put(pair, result);
+			}
 		}
+		else result = SPARQLQueryCollector.countTriplesByPredicateAndSubject(this, predicate, resource, filter);
 		
 		return result;
 	}
@@ -301,13 +327,16 @@ public class DBpediaKB implements KnowledgeBase {
 		Vector<String> pair = new Vector<String>();
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
-		if(this.cache.num_triples_by_predicate_and_subject_or_object.containsKey(pair))
-			result = this.cache.num_triples_by_predicate_and_subject_or_object.get(pair);
-		else {
-			result = SPARQLQueryCollector.countTriplesByPredicateAndSubjectOrObject(this, predicate, resource, filter);
-			this.cache.num_triples_by_predicate_and_subject_or_object.put(pair, result);
-		}
 		
+		if(caching) {
+			if(this.getCache().num_triples_by_predicate_and_subject_or_object.containsKey(pair))
+				result = this.getCache().num_triples_by_predicate_and_subject_or_object.get(pair);
+			else {
+				result = SPARQLQueryCollector.countTriplesByPredicateAndSubjectOrObject(this, predicate, resource, filter);
+				this.getCache().num_triples_by_predicate_and_subject_or_object.put(pair, result);
+			}
+		}
+		else result = SPARQLQueryCollector.countTriplesByPredicateAndSubjectOrObject(this, predicate, resource, filter);
 		return result;
 		
 	}
@@ -332,23 +361,23 @@ public class DBpediaKB implements KnowledgeBase {
 		return result;
 	}
 	
-	public Vector<AnyResource> getIncomingPredicates(AnyResource resource) {
+	public Set<AnyResource> getIncomingPredicates(AnyResource resource) {
 		return this.getIncomingPredicates(resource, Filters.FILTER_OUT_ALL);
 	}
 	
-	public Vector<AnyResource> getIncomingPredicates(AnyResource resource, Filters filter) {
+	public Set<AnyResource> getIncomingPredicates(AnyResource resource, Filters filter) {
 		return SPARQLQueryCollector.getIncomingPredicates(this, resource, filter);
 	} 
 
-	public Vector<AnyResource> getOutgoingPredicates(AnyResource resource) {
+	public Set<AnyResource> getOutgoingPredicates(AnyResource resource) {
 		return this.getOutgoingPredicates(resource, Filters.FILTER_OUT_ALL);
 
 	}
 	
-	public Vector<AnyResource> getOutgoingPredicates(AnyResource resource, Filters filter) {
-		Vector<AnyResource> result = new Vector<AnyResource>();
+	public Set<AnyResource> getOutgoingPredicates(AnyResource resource, Filters filter) {
+		Set<AnyResource> result = new HashSet<AnyResource>();
 		if(resource instanceof URIImpl)
-			SPARQLQueryCollector.getOutgoingPredicates(this, resource, filter);
+			result = SPARQLQueryCollector.getOutgoingPredicates(this, resource, filter);
 		return result;
 	} 	
 	
@@ -363,7 +392,8 @@ public class DBpediaKB implements KnowledgeBase {
 	    try {
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
-			    this.getPredicatesBlackList().add(new URIImpl(nextLine[0]));
+				if(!(nextLine[0].trim().startsWith("#")))
+					this.getPredicatesBlackList().add(new URIImpl(nextLine[0]));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -375,5 +405,8 @@ public class DBpediaKB implements KnowledgeBase {
 		return predicatesBlackList;
 	}
 
+	public DBpediaKBCache getCache() {
+		return cache;
+	}
 
 }
