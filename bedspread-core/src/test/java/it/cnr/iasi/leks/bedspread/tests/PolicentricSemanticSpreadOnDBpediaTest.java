@@ -37,8 +37,8 @@ import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.impl.HT13PolicentricSemanticSpread;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.KBFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
-import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
@@ -61,13 +61,14 @@ public class PolicentricSemanticSpreadOnDBpediaTest extends AbstractTest{
 	@Ignore
 	@Test
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
-		KnowledgeBase kb = DBpediaKB.getInstance();
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
 		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_onDBpedia.properties";
 		System.getProperties().setProperty(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
-		PropertyUtilNoSingleton.getInstance();
+		PropertyUtil prop = PropertyUtilNoSingleton.getInstance();
 		
+		KnowledgeBase kb = KBFactory.getInstance().getKnowledgeBase(prop);
+
 		PolicentricSemanticSpread pool = new HT13PolicentricSemanticSpread(resourceOriginSet, kb);
 		String fileNamePolicentric = this.getFlushFileName(OUT_FILENAME_PREFIX);
 		Writer outPolicentric = new FileWriter(fileNamePolicentric);
