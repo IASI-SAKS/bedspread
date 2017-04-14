@@ -50,7 +50,7 @@ public abstract class PolicentricSemanticSpread implements ComputationStatusCall
 	
 	private SecureRandom random;
 	
-	public PolicentricSemanticSpread (Set<Node> originSet, KnowledgeBase kb) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public PolicentricSemanticSpread (Set<Node> originSet, KnowledgeBase kb) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException{
 		this.random = new SecureRandom();
 
 		this.semanticSpreadMap = Collections.synchronizedMap(new HashMap<String, AbstractSemanticSpread>());

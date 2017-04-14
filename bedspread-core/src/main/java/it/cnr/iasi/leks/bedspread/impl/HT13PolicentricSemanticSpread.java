@@ -45,7 +45,7 @@ public class HT13PolicentricSemanticSpread extends PolicentricSemanticSpread{
 	private Set<Node> setOfNodes;
 	private PropertyUtil prop;
 	
-	public HT13PolicentricSemanticSpread (Set<Node> originSet, KnowledgeBase kb) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public HT13PolicentricSemanticSpread (Set<Node> originSet, KnowledgeBase kb) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException{
 		super(originSet, kb);
 		this.setOfNodes = SetOfNodesFactory.getInstance().getSetOfNodesInstance();
 		this.prop = PropertyUtil.getInstance();

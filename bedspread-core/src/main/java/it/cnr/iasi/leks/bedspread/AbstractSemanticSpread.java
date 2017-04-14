@@ -21,6 +21,7 @@ package it.cnr.iasi.leks.bedspread;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.Runnable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -62,8 +63,8 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	
 	private final double INITIAL_STIMULUS = 1;
 	
-	public AbstractSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
-		this(origin, kb, ExecutionPolicyFactory.getInstance().getExecutionPolicy());
+	public AbstractSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
+		this(origin, kb, ExecutionPolicyFactory.getInstance().getExecutionPolicy(kb));
 	}
 		
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy){
