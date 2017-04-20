@@ -199,6 +199,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 				filteredSetOfNodes.add(tmpNode);
 			} else {
 				this.activatedNodes.add(tmpNode);
+				this.explorationLeaves.add(tmpNode);
 			}	
 		}
 		this.currentlyActiveNodes = filteredSetOfNodes;
