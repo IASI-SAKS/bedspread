@@ -21,13 +21,21 @@ package it.cnr.iasi.leks.bedspread.tests;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.opencsv.CSVReader;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.PolicentricSemanticSpread;
@@ -36,13 +44,19 @@ import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.impl.HT13PolicentricSemanticSpread;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
+import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.URI;
+import it.cnr.iasi.leks.bedspread.rdf.impl.KBFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
 public class PolicentricSemanticSpreadTest extends AbstractTest{
+
+	protected final Logger logger = LoggerFactory.getLogger(PolicentricSemanticSpreadTest.class);
 	
 	private RDFGraph rdfGraph;
 	private static final String ORIGIN_PREFIX_LABEL = "origin";
@@ -54,6 +68,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 	private static final String INPUT_GRAPH_FILE = "src/test/resources/whiteboardTwoOriginsRDFGraph.csv";
 	private static final String INPUT_TREE_FILE = "src/test/resources/whiteboardTwoOriginsRDFTree.csv";
 	
+	private static final String EXPECTED_OUTPUT_FILE_ALFA = "src/test/resources/output_actualTestByComparingOverallActivationSpreadConfAndFilteredNodes_Policentric.csv";
 	
 	@Test
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
@@ -84,7 +99,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
 		Assert.assertTrue(condition);				
 	}
-	
+
 	@Test
 	public void actualTestByComparingOverallActivationSpreadConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
 		KnowledgeBase kb = this.loadMinimalKB(1);
@@ -95,7 +110,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 		PropertyUtilNoSingleton.getInstance();
 		
 		PolicentricSemanticSpread pool = new HT13PolicentricSemanticSpread(resourceOriginSet, kb);
-		String fileNamePolicentric = this.getFlushFileName("actualTestByComparingOverllActivationSpreadConf_Policentric");
+		String fileNamePolicentric = this.getFlushFileName("actualTestByComparingOverallActivationSpreadConf_Policentric");
 		Writer outPolicentric = new FileWriter(fileNamePolicentric);
 		pool.startProcessingAndFlushData(outPolicentric);
 		
@@ -104,17 +119,19 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 		boolean condition = ( semantiSpreadClassName != null );
 		for (AbstractSemanticSpread ss : list) {
 			String originID = ss.getOrigin().getResource().getResourceID();
-			String fileName = this.getFlushFileName("actualTestByComparingOverllActivationSpreadConf_"+originID);
+			String fileName = this.getFlushFileName("actualTestByComparingOverallActivationSpreadConf_"+originID);
 			Writer out = new FileWriter(fileName);
 			ss.flushData(out);			
 
 			condition = condition && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
 			
+			String loggerMsg = "Exploration Leaves from: " + ss.getOrigin().getResource().getResourceID() + " --> ";
 			double score=0;
 			for (Node n : ss.getExplorationLeaves()) {
 				score += n.getScore();
-				System.out.print(n.getResource().getResourceID()+", ");
+				loggerMsg = loggerMsg + n.getResource().getResourceID() + ", ";
 			}
+			logger.info(loggerMsg);
 			boolean equals = Math.abs(score - INITIAL_STIMULUS) <= STIMULUS_DELTA;
 			condition = condition && equals;
 //			System.out.println(score);
@@ -124,6 +141,87 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 		Assert.assertTrue(condition);				
 	}
 
+	@Test
+	public void actualTestByComparingOverallActivationSpreadConfAndFilteredNodes() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
+		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
+		
+		String testPropertyFile = "configTestPolicentricDefaultWeighConservativeAndFiltering.properties";
+		System.getProperties().setProperty(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
+		PropertyUtil prop = PropertyUtilNoSingleton.getInstance();
+		
+		KnowledgeBase kb = KBFactory.getInstance().getKnowledgeBase(prop);
+		
+		PolicentricSemanticSpread pool = new HT13PolicentricSemanticSpread(resourceOriginSet, kb);
+		String fileNamePolicentric = this.getFlushFileName("actualTestByComparingOverallActivationSpreadConfAndFilteredNodes_Policentric");
+		Writer outPolicentric = new FileWriter(fileNamePolicentric);
+		pool.startProcessingAndFlushData(outPolicentric);
+		
+		List<AbstractSemanticSpread> list = pool.getCompletedSemanticSpreadList();
+		String semantiSpreadClassName = PropertyUtil.getInstance().getProperty(PropertyUtil.SEMANTIC_SPREAD_LABEL);
+		boolean condition = ( semantiSpreadClassName != null );
+		for (AbstractSemanticSpread ss : list) {
+			String originID = ss.getOrigin().getResource().getResourceID();
+			String fileName = this.getFlushFileName("actualTestByComparingOverallActivationSpreadConfAndFilteredNodes_"+originID);
+			Writer out = new FileWriter(fileName);
+			ss.flushData(out);			
+
+			condition = condition && (ss.getClass().getName().equalsIgnoreCase(semantiSpreadClassName));
+			
+			String loggerMsg = "Exploration Leaves from: " + ss.getOrigin().getResource().getResourceID() + " --> ";
+			double score=0;
+			for (Node n : ss.getExplorationLeaves()) {
+				score += n.getScore();
+				loggerMsg = loggerMsg + n.getResource().getResourceID() + ", ";
+			}
+			logger.info(loggerMsg);
+			boolean equals = Math.abs(score - INITIAL_STIMULUS) <= STIMULUS_DELTA;
+			condition = condition && equals;
+//			System.out.println(score);
+		}
+		
+		
+		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
+		if (condition){
+			FileReader actualOutputReader = new FileReader(fileNamePolicentric);
+			FileReader expectedOutputReader = new FileReader(EXPECTED_OUTPUT_FILE_ALFA);
+			Assert.assertTrue(this.compareOutputFromLocalFile(actualOutputReader, expectedOutputReader));
+		}else{
+			Assert.assertTrue(false);
+		}	
+	}
+
+	private boolean compareOutputFromLocalFile(Reader actualOutputReader, Reader expectedOutputReader) throws IOException {
+		HashMap<String, Double> expectedValues = new HashMap<String, Double>();
+		
+		CSVReader reader = new CSVReader(expectedOutputReader);
+		List<String[]> myEntries = reader.readAll();
+
+		String resourceId;
+		double score;
+		
+		for (String[] line : myEntries) {
+			resourceId = line[0];
+			score = Double.parseDouble(line[1]);
+			
+			expectedValues.put(resourceId, new Double(score));
+		}
+		reader.close();
+
+		reader = new CSVReader(actualOutputReader);
+		myEntries = reader.readAll();
+		boolean valuesAreMatching = true;
+		for (Iterator iterator = myEntries.iterator(); (iterator.hasNext()) && (valuesAreMatching);) {
+			String[] line = (String[]) iterator.next();
+			
+			resourceId = line[0];
+			score = Double.parseDouble(line[1]);
+
+			valuesAreMatching = Math.abs(expectedValues.get(resourceId).doubleValue() - score) <= STIMULUS_DELTA;  
+		}
+		reader.close();
+		
+		return valuesAreMatching;
+	}
 	private Set<Node> extractTrivialOriginSet() {
 		Set<Node> s = SetOfNodesFactory.getInstance().getSetOfNodesInstance();
 		
