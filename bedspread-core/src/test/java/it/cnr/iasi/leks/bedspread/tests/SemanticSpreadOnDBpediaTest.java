@@ -37,7 +37,6 @@ import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 import it.cnr.iasi.leks.bedspread.rdf.impl.KBFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
-import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
 
 import org.junit.Assert;

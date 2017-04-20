@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +43,10 @@ import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.impl.HT13PolicentricSemanticSpread;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
-import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
-import it.cnr.iasi.leks.bedspread.rdf.URI;
 import it.cnr.iasi.leks.bedspread.rdf.impl.KBFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.RDFGraph;
-import it.cnr.iasi.leks.bedspread.rdf.impl.RDFTriple;
 import it.cnr.iasi.leks.bedspread.tests.util.PropertyUtilNoSingleton;
 import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
 
@@ -185,6 +181,8 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 			FileReader actualOutputReader = new FileReader(fileNamePolicentric);
 			FileReader expectedOutputReader = new FileReader(EXPECTED_OUTPUT_FILE_ALFA);
 			Assert.assertTrue(this.compareOutputFromLocalFile(actualOutputReader, expectedOutputReader));
+			actualOutputReader.close();
+			expectedOutputReader.close();
 		}else{
 			Assert.assertTrue(false);
 		}	
