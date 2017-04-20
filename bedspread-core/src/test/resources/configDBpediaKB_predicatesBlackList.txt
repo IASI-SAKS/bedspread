@@ -1,8 +1,8 @@
-http://dbpedia.org/ontology/thumbnail
-http://dbpedia.org/ontology/wikiPageRedirects
-http://xmlns.com/foaf/0.1/depiction
-http://xmlns.com/foaf/0.1/depicts
-http://xmlns.com/foaf/0.1/img
-http://xmlns.com/foaf/0.1/Image
-http://xmlns.com/foaf/0.1/logo
-http://xmlns.com/foaf/0.1/thumbnail
+#http://dbpedia.org/ontology/thumbnail
+#http://dbpedia.org/ontology/wikiPageRedirects
+#http://xmlns.com/foaf/0.1/depiction
+#http://xmlns.com/foaf/0.1/depicts
+#http://xmlns.com/foaf/0.1/img
+#http://xmlns.com/foaf/0.1/Image
+#http://xmlns.com/foaf/0.1/logo
+#http://xmlns.com/foaf/0.1/thumbnail
