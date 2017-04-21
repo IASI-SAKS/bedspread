@@ -29,8 +29,6 @@ import org.apache.jena.query.ResultSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
-
 /**
  * 
  * @author ftaglino
@@ -38,6 +36,8 @@ import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
  */
 public class SPARQLEndpointConnector {
 	private String endpointUrl = "";
+	
+	private static final long TIME_ELAPSED_THRESHOLD = 10000;
 	
 	protected final Logger logger = LoggerFactory.getLogger(SPARQLEndpointConnector.class);
 	
@@ -64,17 +64,26 @@ public class SPARQLEndpointConnector {
 		Vector<QuerySolution> qss = new Vector<QuerySolution>();
 		//queryString = queryString.replaceAll("\n", "\\u000D");
 		QueryExecution qexec = null;
+		
+		long ts1 = 0;
+		long ts2 = 0;
+		
 		try {	
-			Query query = QueryFactory.create(queryString);        
+			Query query = QueryFactory.create(queryString);
+			ts1 = System.currentTimeMillis();
 			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+			ts2 = System.currentTimeMillis();
 			ResultSet r = qexec.execSelect();
 			while(r.hasNext())
 				qss.add(r.next());
 		}
 		catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
 			this.logger.error("{}", queryString +"\n"+ex.getMessage());
 		}
 		finally {
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, queryString);
 			if(qexec!=null)
 				qexec.close();
 		}
@@ -82,6 +91,10 @@ public class SPARQLEndpointConnector {
 	}
 	
 	
-	
+	private void logQueriesWithLongTimeProcessing(long delta, String queryString){
+		if (delta >= TIME_ELAPSED_THRESHOLD){
+			this.logger.info("Time Elapsed for Query Exec: {} ms, {}", delta, queryString);
+		}
+	}
 
 }
