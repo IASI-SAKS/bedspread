@@ -35,6 +35,8 @@ public class SemanticWeighting_ICTest {
 
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA = "http://dbpedia.org/resource/Barack_Obama";
 	private static final String HTTP_DBPEDIA_ORG_RESOURCE_JOE_BIDEN = "http://dbpedia.org/resource/Joe_Biden";
+	private static final String HTTP_DBPEDIA_ORG_RESOURCE_PESCINA = "http://dbpedia.org/resource/Pescina";
+	private static final String HTTP_DBPEDIA_ORG_RESOURCE_MUNICIPALITY = "http://dbpedia.org/class/yago/Municipality108626283";
 	
 	@Ignore
 	@Test
@@ -43,6 +45,8 @@ public class SemanticWeighting_ICTest {
 		RDFFactory f = RDFFactory.getInstance();
 		URI r1 = f.createURI(HTTP_DBPEDIA_ORG_RESOURCE_BARACK_OBAMA);
 		URI r2 = f.createURI(HTTP_DBPEDIA_ORG_RESOURCE_JOE_BIDEN);
+//		URI r1 = f.createURI(HTTP_DBPEDIA_ORG_RESOURCE_PESCINA);
+//		URI r2 = f.createURI(HTTP_DBPEDIA_ORG_RESOURCE_MUNICIPALITY);
 		
 		Node n1 = new Node(r1);
 		Node n2 = new Node(r2);
