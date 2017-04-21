@@ -193,15 +193,16 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	}
 	
 	private void filterCurrentlyActiveNodes() {
-		Set<Node> filteredSetOfNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
+		Set<Node> unfilteredSetOfNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
 		for (Node tmpNode : this.currentlyActiveNodes) {
 			if (this.policy.isSpreadingEnabled(tmpNode)){
-				filteredSetOfNodes.add(tmpNode);
+				unfilteredSetOfNodes.add(tmpNode);
 			} else {
 				this.activatedNodes.add(tmpNode);
+				this.explorationLeaves.add(tmpNode);
 			}	
 		}
-		this.currentlyActiveNodes = filteredSetOfNodes;
+		this.currentlyActiveNodes = unfilteredSetOfNodes;
 	}
 
 	public Set<Node> getExplorationLeaves(){
