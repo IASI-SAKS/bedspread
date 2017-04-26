@@ -86,7 +86,6 @@ public class BorderTest extends AbstractTest{
 		}
 		
 		
-		
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
 
 		Set<Node> expected_results = new HashSet<Node>(); 
@@ -112,8 +111,12 @@ public class BorderTest extends AbstractTest{
 		
 		boolean check = true;
 		for(Node nx:expected_results)
-			if(!(ss.getExplorationLeaves().contains(nx))) check = false;
+			if(!(ss.getExplorationLeaves().contains(nx)))
+				check = false;
 		
+		if(!(ss.getExplorationLeaves().size() == expected_results.size()))
+			check = false;
+			
 		Assert.assertTrue(check);		
 	}
 		
