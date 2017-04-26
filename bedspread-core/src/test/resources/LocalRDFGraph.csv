@@ -1,0 +1,14 @@
+origin,p2,x1
+origin,p3,x2
+origin,p2,x3
+x1,p1,x11
+x1,p1,x12
+x2,p1,x21
+x2,p2,x22
+x2,p2,x23
+x3,p1,x31
+x3,p2,x12
+x12,p3,x121
+x12,p3,x122
+x31,p2,x311
+x21,p2,x311
