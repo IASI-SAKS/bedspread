@@ -98,6 +98,10 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 			}	
 		}
 		
+		if (neighborhoodScore == 0){
+			this.logger.warn("neighborhoodScore FOUND 0 FOR: {}", targetNode.getResource().getResourceID());			
+		}
+		
 		double weight;
 		double score; 
 		try {
