@@ -148,6 +148,9 @@ public abstract class AbstractSemanticSpread implements Runnable{
 				this.currentlyActiveNodes.add(tmpNode);
 			}
 		}
+		for (Node node : this.currentlyActiveNodes) {
+			this.explorationLeaves.add(node);
+		}
 		synchronized (this.status) {
 			this.status = ComputationStatus.Completed;
 			this.logger.info("--- EXECUTION COMPLETED ---");

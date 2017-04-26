@@ -23,6 +23,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
@@ -76,13 +81,40 @@ public class BorderTest extends AbstractTest{
 		ss.flushData(out);
 		
 		this.logger.info("{}", "LEAVES");
-		for(Node leaf:ss.getExplorationLeaves())
+		for(Node leaf:ss.getExplorationLeaves()) {
 			this.logger.info("{}", leaf.getResource().getResourceID());
+		}
 		
-				
+		
+		
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
 
-		Assert.assertTrue(true);		
+		Set<Node> expected_results = new HashSet<Node>(); 
+		Node n = new Node(RDFFactory.getInstance().createBlankNode("x1"));
+		//n.updateScore(0.44996553731885225);
+		expected_results.add(n);
+		
+		n = new Node(RDFFactory.getInstance().createBlankNode("x3"));
+		//n.updateScore(0.44996553731885225);
+		expected_results.add(n);
+	
+		n = new Node(RDFFactory.getInstance().createBlankNode("x21"));
+		//n.updateScore(0.8132474286295223);
+		expected_results.add(n);
+		
+		n = new Node(RDFFactory.getInstance().createBlankNode("x22"));
+		//n.updateScore(0.44996553731885225);
+		expected_results.add(n);
+		
+		n = new Node(RDFFactory.getInstance().createBlankNode("x23"));
+		//n.updateScore(0.44996553731885225);
+		expected_results.add(n);
+		
+		boolean check = true;
+		for(Node nx:expected_results)
+			if(!(ss.getExplorationLeaves().contains(nx))) check = false;
+		
+		Assert.assertTrue(check);		
 	}
 		
 	private Node extractTrivialOrigin() {
