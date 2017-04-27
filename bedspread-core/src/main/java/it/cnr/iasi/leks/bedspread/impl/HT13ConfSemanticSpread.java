@@ -101,6 +101,9 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		if (neighborhoodScore == 0){
 			this.logger.warn("neighborhoodScore FOUND 0 FOR: {}", targetNode.getResource().getResourceID());			
 		}
+		if (! neighborhood.contains(spreadingNode.getResource())){
+			this.logger.warn("SPREADING NODE ({}) NOT FOUND IN THE NEIGHBORHOOD OF TARGET NODE ({}), ", spreadingNode.getResource().getResourceID(), targetNode.getResource().getResourceID());						
+		}
 		
 		double weight;
 		double score; 
