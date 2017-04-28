@@ -133,7 +133,9 @@ public abstract class AbstractSemanticSpread implements Runnable{
 					j++;
 					Double newScore = this.computeScore(node, newNode);
 					newNode.updateScore(newScore);
-// Note that elements already present are not doubled in "tempActiveNodes" according to : java.util.Set				
+// Note that elements already present are not doubled in "justProcessedForthcomingActiveNodes" according to : java.util.Set	
+// However, the method AbstractSemanticSpread.extractForthcomingActiveNodes(Node node) would likely configure 
+// the forthcomingActiveNodes so that newNode is never processed twice. 
 					this.justProcessedForthcomingActiveNodes.add(newNode);
 
 					this.logger.info("{} --> {}, {}", "*** "+j+" "+node.getResource().getResourceID(),newNode.getResource().getResourceID(),newNode.getScore());
