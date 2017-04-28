@@ -88,8 +88,6 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		Set<AnyResource> neighborhood = this.kb.getNeighborhood(targetNode.getResource());
 		double neighborhoodScore = 0;
 		for (AnyResource neighborResource : neighborhood) {
-//			if ((neighborResource.getResourceID().endsWith("Donta_Jones"))||(neighborResource.getResourceID().matches(".*ioia.*arsi")))
-//				logger.info("foo");
 			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
 			if (neighborNode.getScore() != 0){
 				int degree = this.kb.degree(neighborResource);
@@ -98,12 +96,13 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 			}	
 		}
 		
-		if (neighborhoodScore == 0){
-			this.logger.warn("neighborhoodScore FOUND 0 FOR: {}", targetNode.getResource().getResourceID());			
-		}
 		if (! neighborhood.contains(spreadingNode.getResource())){
 			this.logger.warn("SPREADING NODE ({}) NOT FOUND IN THE NEIGHBORHOOD OF TARGET NODE ({}), ", spreadingNode.getResource().getResourceID(), targetNode.getResource().getResourceID());						
+			if (neighborhoodScore == 0){
+				this.logger.warn("neighborhoodScore FOUND 0 FOR: {}", targetNode.getResource().getResourceID());			
+			}
 		}
+
 		
 		double weight;
 		double score; 
