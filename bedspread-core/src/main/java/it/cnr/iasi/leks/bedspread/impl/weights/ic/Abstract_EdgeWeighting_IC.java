@@ -21,7 +21,6 @@ package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
