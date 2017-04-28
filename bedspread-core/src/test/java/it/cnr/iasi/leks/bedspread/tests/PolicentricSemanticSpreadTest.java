@@ -1,7 +1,7 @@
 /*
  * 	 This file is part of Bedspread, originally promoted and
  *	 developed at CNR-IASI. For more information visit:
- *	 https://github.com/IASI-LEKS/bedspread
+ *	 http://leks.iasi.cnr.it/tools/bedspread
  *	     
  *	 This is free software: you can redistribute it and/or modify
  *	 it under the terms of the GNU General Public License as 
@@ -101,7 +101,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 		KnowledgeBase kb = this.loadMinimalKB(1);
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
-		String testPropertyFile = "configTestPolicentricDefaultWeighConservative.properties";
+		String testPropertyFile = "configTestPolicentricDefaultWeightingConservative.properties";
 		System.getProperties().setProperty(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtilNoSingleton.getInstance();
 		
@@ -141,7 +141,7 @@ public class PolicentricSemanticSpreadTest extends AbstractTest{
 	public void actualTestByComparingOverallActivationSpreadConfAndFilteredNodes() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
-		String testPropertyFile = "configTestPolicentricDefaultWeighConservativeAndFiltering.properties";
+		String testPropertyFile = "configTestPolicentricDefaultWeightingConservativeAndFiltering.properties";
 		System.getProperties().setProperty(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtil prop = PropertyUtilNoSingleton.getInstance();
 		

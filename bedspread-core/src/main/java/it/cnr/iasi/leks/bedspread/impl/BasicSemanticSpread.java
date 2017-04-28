@@ -1,7 +1,7 @@
 /*
  * 	 This file is part of Bedspread, originally promoted and
  *	 developed at CNR-IASI. For more information visit:
- *	 https://github.com/IASI-LEKS/bedspread
+ *	 http://leks.iasi.cnr.it/tools/bedspread
  *	     
  *	 This is free software: you can redistribute it and/or modify
  *	 it under the terms of the GNU General Public License as 
@@ -21,7 +21,6 @@ package it.cnr.iasi.leks.bedspread.impl;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
 
 import com.opencsv.CSVWriter;
 

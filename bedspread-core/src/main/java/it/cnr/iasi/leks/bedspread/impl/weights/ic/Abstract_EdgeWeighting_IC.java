@@ -1,7 +1,7 @@
 /*
  * 	 This file is part of Bedspread, originally promoted and
  *	 developed at CNR-IASI. For more information visit:
- *	 https://github.com/IASI-LEKS/bedspread
+ *	 http://leks.iasi.cnr.it/tools/bedspread
  *	     
  *	 This is free software: you can redistribute it and/or modify
  *	 it under the terms of the GNU General Public License as 
@@ -21,7 +21,6 @@ package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
