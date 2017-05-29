@@ -73,6 +73,10 @@ public class SemanticSpreadJob implements Runnable{
 		return this.targetResource;
 	}
 	
+	public Node getOrigin(){
+		return this.origin;
+	}
+	
 	public Node getProcessedNode() throws InteractionProtocolViolationException{
 		synchronized (this.status){
 			if (this.status != ComputationStatus.Completed){
