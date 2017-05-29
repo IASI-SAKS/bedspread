@@ -122,7 +122,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 
 	@Override
 	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException {
-		if (this.getStatus() != ComputationStatus.Completed){
+		if (this.getComputationStatus() != ComputationStatus.Completed){
 			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
 			throw ex;
 		}
