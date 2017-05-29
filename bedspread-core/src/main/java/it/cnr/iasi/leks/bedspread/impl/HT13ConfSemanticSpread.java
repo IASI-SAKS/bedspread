@@ -26,6 +26,7 @@ import java.util.Set;
 import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpreadOrchestrator;
 import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
@@ -43,7 +44,8 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * @author gulyx
  *
  */
-public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
+//public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
+public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 
 	private WeightingFunction weightingModule; 
 	
