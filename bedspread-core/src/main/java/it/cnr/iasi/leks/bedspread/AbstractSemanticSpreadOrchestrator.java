@@ -81,6 +81,7 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 		this.currentlyActiveNodes.add(this.origin);
 	}
 	
+	@Override
 	public void run (){
 		synchronized (this.status) {
 			this.status = ComputationStatus.Running;
