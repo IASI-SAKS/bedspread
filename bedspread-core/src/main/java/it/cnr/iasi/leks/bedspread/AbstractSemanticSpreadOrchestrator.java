@@ -114,8 +114,6 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 						Thread t = new Thread(semSpreadJob);
 						t.start();
 					}	
-
-					this.logger.info("{} --> {}, {}", "*** "+j+" "+node.getResource().getResourceID(),newNode.getResource().getResourceID(),newNode.getScore());
 				}
 			}
 			
@@ -227,19 +225,22 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 		synchronized (JOBS_MUTEX) {		
 			SemanticSpreadJob semSpreadJob = this.semanticSpreadJobsMap.get(id);
 			if ((semSpreadJob != null) && (status.equals(ComputationStatus.Completed))){
+				Node nOrigin = semSpreadJob.getOrigin();
 				Node n = semSpreadJob.getProcessedNode();
 				// Note that elements already present are not doubled in "justProcessedForthcomingActiveNodes" according to : java.util.Set	
 				// However, the method AbstractSemanticSpread.extractForthcomingActiveNodes(Node node) would likely configure 
 				// the forthcomingActiveNodes so that newNode is never processed twice. 				
 				this.justProcessedForthcomingActiveNodes.add(n);
 				this.semanticSpreadJobsMap.remove(id);
+
+				this.logger.info("*** {} --> {}, {}", nOrigin.getResource().getResourceID(),n.getResource().getResourceID(),n.getScore());
 			}
 		}	
 	}
 		
 	@Override
 	public double computeJobScore(Node spreadingNode, Node targetNode){
-		return this.computeJobScore(spreadingNode, targetNode);
+		return this.computeScore(spreadingNode, targetNode);
 		
 	} 
 
