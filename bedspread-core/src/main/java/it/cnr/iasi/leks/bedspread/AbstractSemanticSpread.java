@@ -232,7 +232,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			if ((this.optionalID != null) && (this.callback != null)){
 					this.callback.notifyStatus(this.optionalID, notifiedStatus);
 			}else{
-				this.logger.error("An error occourred while trying to nofity the callback: JobID {}, Callback {}",this.optionalID, this.callback);
+				this.logger.warn("Something unexpected while trying to nofity the callback: JobID {}, Callback {}",this.optionalID, this.callback);
 			}
 		}	
 	}
