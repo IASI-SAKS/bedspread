@@ -40,8 +40,14 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
  *
  */
 public abstract class AbstractSemanticSpread implements Runnable{
-	private Node origin;
-	private ComputationStatus status;
+	
+	protected SetOfNodesFactory setOfNodesFactory;
+	
+	protected Node origin;
+	protected KnowledgeBase kb;
+	protected ExecutionPolicy policy;
+
+	protected ComputationStatus status;
 	
 	private Set<Node> activatedNodes;
 	private Set<Node> currentlyActiveNodes;
@@ -49,19 +55,14 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	private Set<Node> justProcessedForthcomingActiveNodes;
 	
 	private Set<Node> explorationLeaves; 
-	
-	protected SetOfNodesFactory setOfNodesFactory;
-	
+
 	private final Object callbackMutex = new Object();
 	private ComputationStatusCallback callback;
 	private String optionalID;
-	
-	protected KnowledgeBase kb;
-	protected ExecutionPolicy policy;
 
-	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpread.class);
-	
 	private final double INITIAL_STIMULUS = 1;
+	
+	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpread.class);
 	
 	public AbstractSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
 		this(origin, kb, ExecutionPolicyFactory.getInstance().getExecutionPolicy(kb));
@@ -73,6 +74,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		
 		this.kb = kb;
 		this.policy = policy;
+		
 		this.status = ComputationStatus.NotStarted;
 		
 		this.setOfNodesFactory = SetOfNodesFactory.getInstance();		
@@ -89,7 +91,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return this.origin;
 	}
 	
-	public ComputationStatus getComputationStatus() {
+	public ComputationStatus getComputationStatus(){
 		ComputationStatus s;
 		synchronized (this.status) {
 			s = this.status;
@@ -161,7 +163,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 	}
 	
 	public Set<Node> getSemanticSpreadForNode() throws InteractionProtocolViolationException{
-		if (this.getStatus() != ComputationStatus.Completed){
+		if (this.getComputationStatus() != ComputationStatus.Completed){
 			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
 			throw ex;
 		}
@@ -217,10 +219,6 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 
-	public synchronized ComputationStatus getStatus() {
-		return this.status;
-	}
-	
 	public void setCallback(String notifierID, ComputationStatusCallback callback){
 		synchronized (this.callbackMutex) {
 			this.optionalID = notifierID;
@@ -228,10 +226,13 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		}
 	}
 	
-	private void notifyCallback(){
+	protected void notifyCallback(){
+		ComputationStatus notifiedStatus = this.getComputationStatus();
 		synchronized (this.callbackMutex) {
 			if ((this.optionalID != null) && (this.callback != null)){
-					this.callback.notifyStatus(this.optionalID, this.getStatus());
+					this.callback.notifyStatus(this.optionalID, notifiedStatus);
+			}else{
+				this.logger.error("An error occourred while trying to nofity the callback: JobID {}, Callback {}",this.optionalID, this.callback);
 			}
 		}	
 	}

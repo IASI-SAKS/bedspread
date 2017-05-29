@@ -20,15 +20,11 @@ package it.cnr.iasi.leks.bedspread;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.Runnable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
@@ -43,31 +39,16 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
  * @author gulyx
  *
  */
-public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, ComputationCallback{
-	private Node origin;
-	private ComputationStatus status;
-	
+public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanticSpread implements ComputationCallback{
+
 	private Set<Node> activatedNodes;
 	private Set<Node> currentlyActiveNodes;
 	private Set<Node> forthcomingActiveNodes;	
 	private Set<Node> justProcessedForthcomingActiveNodes;
 	
 	private Set<Node> explorationLeaves; 
-	
-	protected SetOfNodesFactory setOfNodesFactory;
-	
-	private final Object callbackMutex = new Object();
-	private ComputationStatusCallback callback;
-	private String optionalID;
-	
+		
 	private static final Object JOBS_MUTEX = new Object();
-
-	protected KnowledgeBase kb;
-	protected ExecutionPolicy policy;
-
-	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpreadOrchestrator.class);
-	
-	private final double INITIAL_STIMULUS = 1;
 	
 	private volatile Map<String, SemanticSpreadJob> semanticSpreadJobsMap;
 	
@@ -76,12 +57,7 @@ public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, Co
 	}
 		
 	public AbstractSemanticSpreadOrchestrator(Node origin, KnowledgeBase kb, ExecutionPolicy policy){
-		this.origin = origin;
-		this.origin.updateScore(INITIAL_STIMULUS);
-		
-		this.kb = kb;
-		this.policy = policy;
-		this.status = ComputationStatus.NotStarted;
+		super(origin, kb, policy);
 		
 		this.setOfNodesFactory = SetOfNodesFactory.getInstance();		
 
@@ -95,18 +71,6 @@ public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, Co
 		this.semanticSpreadJobsMap = Collections.synchronizedMap(new HashMap<String, SemanticSpreadJob>());
 	}
 
-	public Node getOrigin(){
-		return this.origin;
-	}
-	
-	public ComputationStatus getComputationStatus() {
-		ComputationStatus s;
-		synchronized (this.status) {
-			s = this.status;
-		}
-		return s;
-	}
-	
 	private void refreshInternalState(){
 		this.currentlyActiveNodes.clear();		
 		this.activatedNodes.clear();
@@ -186,15 +150,6 @@ public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, Co
 		this.notifyCallback();
 	}
 	
-	public Set<Node> getSemanticSpreadForNode() throws InteractionProtocolViolationException{
-		if (this.getStatus() != ComputationStatus.Completed){
-			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
-			throw ex;
-		}
-		Set<Node> s = this.getAllActiveNodes();
-		return s;
-	}	
-	
 	private void extractForthcomingActiveNodes(Node node) {
 		this.forthcomingActiveNodes.clear();
 		for (AnyResource neighbor : this.kb.getNeighborhood(node.getResource())) {
@@ -208,10 +163,10 @@ public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, Co
 // Note that elements already present are not doubled in "forthcomingActiveNodes" according to : java.util.Set				
 				this.forthcomingActiveNodes.add(neighborNode);
 			}	
-		}
-		
+		}		
 	}
 
+	@Override
 	protected Set<Node> getActiveNodes(){
 		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
 		n.addAll(this.activatedNodes);
@@ -220,6 +175,7 @@ public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, Co
 		return n;
 	}
 
+	@Override
 	protected Set<Node> getAllActiveNodes(){
 		Set<Node> n = this.getActiveNodes();
 		
@@ -253,6 +209,7 @@ public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, Co
 		this.currentlyActiveNodes = unfilteredSetOfNodes;
 	}
 
+	@Override
 	public Set<Node> getExplorationLeaves(){
 		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
 		n.addAll(this.explorationLeaves);
@@ -260,10 +217,11 @@ public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, Co
 		return n;
 	}
 
-	public synchronized ComputationStatus getStatus() {
-		return this.status;
+	private String genetateKey(Node n){
+		return n.getResource().getResourceID();
 	}
 	
+	@Override
 	public void notifyJobStatus(String id, ComputationStatus status) throws AbstractBedspreadException{
 		synchronized (JOBS_MUTEX) {		
 			SemanticSpreadJob semSpreadJob = this.semanticSpreadJobsMap.get(id);
@@ -277,32 +235,13 @@ public abstract class AbstractSemanticSpreadOrchestrator implements Runnable, Co
 			}
 		}	
 	}
-	
-	public void setCallback(String notifierID, ComputationStatusCallback callback){
-		synchronized (this.callbackMutex) {
-			this.optionalID = notifierID;
-			this.callback = callback;			
-		}
-	}
-	
-	private void notifyCallback(){
-		synchronized (this.callbackMutex) {
-			if ((this.optionalID != null) && (this.callback != null)){
-					this.callback.notifyStatus(this.optionalID, this.getStatus());
-			}
-		}	
-	}
-	
-	private String genetateKey(Node n){
-		return n.getResource().getResourceID();
-	}
-	
+		
+	@Override
 	public double computeJobScore(Node spreadingNode, Node targetNode){
 		return this.computeJobScore(spreadingNode, targetNode);
 		
 	} 
 
-	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
-	
+	protected abstract double computeScore(Node spreadingNode, Node targetNode); 	
 	public abstract void flushData (Writer out) throws IOException, InteractionProtocolViolationException; 
 }
