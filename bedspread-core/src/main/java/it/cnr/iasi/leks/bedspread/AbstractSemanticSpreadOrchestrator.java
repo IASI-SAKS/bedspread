@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
@@ -104,6 +105,7 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 					this.explorationLeaves.add(node);
 				}
 				int j = 0;
+				Vector<Thread> threads = new Vector<Thread>();
 				for (Node newNode : this.forthcomingActiveNodes) {
 					j++;
 					
@@ -112,28 +114,21 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 						SemanticSpreadJob semSpreadJob = new SemanticSpreadJob(node, newNode.getResource(), key, this, this.kb);
 						this.semanticSpreadJobsMap.put(key, semSpreadJob);
 						Thread t = new Thread(semSpreadJob);
-						t.start();
+						threads.add(t);
 					}	
 				}
+				for (Thread t : threads) {
+					t.start();
+				}
 			}
+			
+			this.waitForCompletionOfSemanticSpreadJobs();
 			
 			for (Node node : this.currentlyActiveNodes) {
 				this.activatedNodes.add(node);
 			}						
 			this.currentlyActiveNodes.clear();
 			
-			while (! this.semanticSpreadJobsMap.isEmpty()){
-// WAITING FOR ALL THE ACTIVATED JOB (at a reached deepness of the graph exploration) COMPLETED THEIR COMPUTATIONS				
-				try {
-					long sleeptime = Long.parseLong(PropertyUtil.getInstance().getProperty(PropertyUtil.POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL, "5000"));
-					Thread.sleep(sleeptime);
-				} catch (InterruptedException e) {
-					this.logger.error("An eccor occourred while waiting for the completation of all the activated jobs:");
-					this.logger.error("Message: {}",e.getMessage());
-					this.logger.error("Cause: {}",e.getCause());
-				}
-			}
-
 			for (Node tmpNode : this.justProcessedForthcomingActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
 			}
@@ -147,6 +142,20 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 			this.logger.info("--- EXECUTION COMPLETED ---");
 		}
 		this.notifyCallback();
+	}
+
+	private void waitForCompletionOfSemanticSpreadJobs() {
+		while (! this.semanticSpreadJobsMap.isEmpty()){
+// WAITING FOR ALL THE ACTIVATED JOB (at a reached deepness of the graph exploration) COMPLETED THEIR COMPUTATIONS				
+			try {
+				long sleeptime = Long.parseLong(PropertyUtil.getInstance().getProperty(PropertyUtil.POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL, "5000"));
+				Thread.sleep(sleeptime);
+			} catch (InterruptedException e) {
+				this.logger.error("An eccor occourred while waiting for the completation of all the activated jobs:");
+				this.logger.error("Message: {}",e.getMessage());
+				this.logger.error("Cause: {}",e.getCause());
+			}
+		}
 	}
 	
 	private void extractForthcomingActiveNodes(Node node) {
@@ -178,19 +187,19 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 	protected Set<Node> getAllActiveNodes(){
 		Set<Node> n = this.getActiveNodes();
 		
-		synchronized (JOBS_MUTEX) {
-			for (SemanticSpreadJob job : this.semanticSpreadJobsMap.values()) {
-				Node node;
-				try {
-					node = job.getProcessedNode();
-				} catch (InteractionProtocolViolationException e) {
-					node = new Node(job.getTargetReource());
-				}
-				n.add(node);						
-			}
-			
-			n.addAll(this.justProcessedForthcomingActiveNodes);			
-		}
+//		synchronized (JOBS_MUTEX) {
+//			for (SemanticSpreadJob job : this.semanticSpreadJobsMap.values()) {
+//				Node node;
+//				try {
+//					node = job.getProcessedNode();
+//				} catch (InteractionProtocolViolationException e) {
+//					node = new Node(job.getTargetReource());
+//				}
+//				n.add(node);						
+//			}			
+//		}
+
+		n.addAll(this.justProcessedForthcomingActiveNodes);			
 		
 		return n;
 	}
