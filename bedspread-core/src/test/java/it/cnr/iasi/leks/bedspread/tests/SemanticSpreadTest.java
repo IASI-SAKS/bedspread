@@ -100,7 +100,6 @@ public class SemanticSpreadTest extends AbstractTest{
 		Assert.assertTrue(condition);		
 	}
 
-
 	@Test
 	public void testHT13ConfSemanticSpread() throws IOException, InteractionProtocolViolationException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		KnowledgeBase kb = this.loadMinimalKB();
