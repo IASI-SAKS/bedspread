@@ -187,7 +187,7 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 	protected Set<Node> getAllActiveNodes(){
 		Set<Node> n = this.getActiveNodes();
 		
-//		synchronized (JOBS_MUTEX) {
+		synchronized (JOBS_MUTEX) {
 //			for (SemanticSpreadJob job : this.semanticSpreadJobsMap.values()) {
 //				Node node;
 //				try {
@@ -197,9 +197,10 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 //				}
 //				n.add(node);						
 //			}			
-//		}
 
-		n.addAll(this.justProcessedForthcomingActiveNodes);			
+			n.addAll(this.justProcessedForthcomingActiveNodes);			
+		}
+
 		
 		return n;
 	}
