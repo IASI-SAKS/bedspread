@@ -151,7 +151,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 		
 		if (allActiveNodes.contains(node)){
 			/*
-			 * if an instantiation the node already exists we must return the value previoussly computed
+			 * if an instantiation the node already exists we must return the value previously computed
 			 */
 			for (Node n : this.getAllActiveNodes()) {
 				if (n.equals(node)){
