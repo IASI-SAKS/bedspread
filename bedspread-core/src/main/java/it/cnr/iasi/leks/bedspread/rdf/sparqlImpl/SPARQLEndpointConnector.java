@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.rdf.sparqlImpl;
 
+import java.security.SecureRandom;
 import java.util.Vector;
 
 import org.apache.jena.query.Query;
@@ -39,11 +40,18 @@ public class SPARQLEndpointConnector {
 	
 	private static final long TIME_ELAPSED_THRESHOLD = 10000;
 	
+	private static final long MAX_SLEEP_TIME = 500;
+	
 	protected final Logger logger = LoggerFactory.getLogger(SPARQLEndpointConnector.class);
 	
+	private SecureRandom random;
+	
+	private static final Object MUTEX = new Object();
+
 	public SPARQLEndpointConnector(String endpointUrl) {
 		super();
 		this.endpointUrl = endpointUrl;
+	    this.random = new SecureRandom();
 	}
 
 	public String getEndpointUrl() {
@@ -73,9 +81,11 @@ public class SPARQLEndpointConnector {
 			ts1 = System.currentTimeMillis();
 			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
 			ts2 = System.currentTimeMillis();
-			ResultSet r = qexec.execSelect();
-			while(r.hasNext())
+			
+			ResultSet r = this.executeQuery(qexec);
+			while(r.hasNext()){
 				qss.add(r.next());
+			}
 		}
 		catch(Exception ex) {
 			ts2 = System.currentTimeMillis();
@@ -90,7 +100,31 @@ public class SPARQLEndpointConnector {
 		return qss;
 	}
 	
-	
+	/*
+	 * This method has been introduce in order to mitigate 
+	 * the simultaneous invocation of the SPARQL endpoint
+	 * by that different concurrent threads 
+	 */
+	private ResultSet executeQuery(QueryExecution qexec) throws Exception{
+		ResultSet r = null;
+		synchronized (MUTEX) {
+			r = qexec.execSelect();	
+			
+//			this.waitABit();
+		}
+
+		return r; 
+	}
+
+	private void waitABit() {
+		long millis = Math.round(this.random.nextDouble() * MAX_SLEEP_TIME); 
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			this.logger.warn(e.getMessage());
+		}
+	}
+
 	private void logQueriesWithLongTimeProcessing(long delta, String queryString){
 		if (delta >= TIME_ELAPSED_THRESHOLD){
 			this.logger.info("Time Elapsed for Query Exec: {} ms, {}", delta, queryString);
