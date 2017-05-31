@@ -93,8 +93,13 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
 			if (neighborNode.getScore() != 0){
 				int degree = this.kb.degree(neighborResource);
-						
-				neighborhoodScore += (neighborNode.getScore()/degree);
+				if (degree == 0){
+					this.logger.warn("DEGREE FOUND AS 0 FOR A NODE ({}) IN THE NEIGHBORHOOD OF TARGET NODE ({})", neighborResource.getResourceID(), targetNode.getResource().getResourceID());						
+				}else{		
+					neighborhoodScore += (neighborNode.getScore()/degree);
+					if (Double.isNaN(neighborhoodScore) || Double.isInfinite(neighborhoodScore))
+						logger.warn("args");
+				}	
 			}	
 		}
 		
@@ -116,6 +121,11 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 			score = 0;
 		}catch (AbstractBedspreadException e) {
 			this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
+			score = 0;
+		}
+
+		if (Double.isNaN(score) || Double.isInfinite(score)){
+			this.logger.warn("SCORE FOUND AS \"{}\", THUS FORCED TO 0", score);
 			score = 0;
 		}
 		
