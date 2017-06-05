@@ -60,6 +60,7 @@ public class PropertyUtil {
 	public static final String EDGE_WEIGHTING_IC_MAX_WEIGHT_LABEL = "bedspread.edgeweightingic.maxweight";
 	public static final String POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL = "bedspread.policentricsemanticspread.sleeptime";
 		
+	public static final String MAX_CONCURRENT_SPARQL_THREAD_LABEL = "bedspread.sparqlthread.max";
 
 	private Properties properties;
 	
