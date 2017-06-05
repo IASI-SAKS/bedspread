@@ -98,7 +98,7 @@ public class SemanticSpreadJob implements Runnable{
 	public void run (){
 		synchronized (this.status) {
 			this.status = ComputationStatus.Running;
-			this.logger.info("--- NEW EXECUTION FOR {} ---", this.jobID);
+			this.logger.info("-+- NEW EXECUTION FOR {} -+-", this.jobID);
 		}
 		
 		this.targetNode = new Node(this.targetResource);
@@ -107,7 +107,7 @@ public class SemanticSpreadJob implements Runnable{
 
 		synchronized (this.status) {
 			this.status = ComputationStatus.Completed;
-			this.logger.info("--- EXECUTION COMPLETED FOR {} ---", this.jobID);
+			this.logger.info("-+- EXECUTION COMPLETED FOR {} -+-", this.jobID);
 		}
 		this.notifyCallback();
 	}
