@@ -99,7 +99,7 @@ public class SPARQLEndpointConnector {
 		}
 		catch(Exception ex) {
 			ts2 = System.currentTimeMillis();
-			this.logger.error("Query: {} \n Message: {} \n Cause:", queryString, ex.getMessage(), ex.getCause());
+			this.logger.error("#Query: {}; #Message: {}; #Cause: {}", queryString, ex.getMessage(), ex.getCause());
 		}
 		finally {
 			long delta = ts2 - ts1;
