@@ -89,7 +89,10 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 			this.logger.info("--- NEW EXECUTION ---");
 		}
 		this.refreshInternalState();
+		int depth = 0;
 		while (!this.policy.terminationPolicyMet()){
+			this.logger.info("[ITERATION INFO] DEPTH # {}",depth);
+			
 			this.justProcessedForthcomingActiveNodes.clear();
 			
 			this.filterCurrentlyActiveNodes();
@@ -132,7 +135,8 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 			for (Node tmpNode : this.justProcessedForthcomingActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
 			}
-
+			
+			depth++;
 		}
 		for (Node node : this.currentlyActiveNodes) {
 			this.explorationLeaves.add(node);
