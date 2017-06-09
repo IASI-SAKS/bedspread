@@ -56,6 +56,7 @@ public class PolicentricSemanticSpreadOnDBpediaKOREDatasetTest extends AbstractT
 	private static final char KORE_FILE_SEPARATOR = ';';
 	private static final int KORE_DATASET_MAX_ITEMS = 1;
 	private static final int KORE_DATASET_MAX_ORIGINS = 4;
+	private static final int KORE_DATASET_FIRST_ORIGIN_INDEX = 4;
 
 	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/0_KORE_modified _Apple.txt";
 //	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/1_KORE_modified _ITCompanies.txt";
@@ -99,7 +100,7 @@ public class PolicentricSemanticSpreadOnDBpediaKOREDatasetTest extends AbstractT
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
 		boolean condition = false;
 		
-		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_onDBpedia.properties";
+		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_onDBpediaKORE.properties";
 		System.getProperties().setProperty(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtil prop = PropertyUtilNoSingleton.getInstance();
 
@@ -143,13 +144,14 @@ public class PolicentricSemanticSpreadOnDBpediaKOREDatasetTest extends AbstractT
 		
 		List<String> lst = KORE_DATASET_MAP.get(key);
 		if (lst != null){
-			int nItemsAsOrigin = 0;
-			for (Iterator<String> originsIterator = lst.iterator(); ((originsIterator.hasNext()) && (nItemsAsOrigin < KORE_DATASET_MAX_ORIGINS)); nItemsAsOrigin++) {
-				String itemAsOrigin = (String) originsIterator.next();
+
+			
+			for (int nItemsAsOrigin = KORE_DATASET_FIRST_ORIGIN_INDEX, finalIndex = KORE_DATASET_FIRST_ORIGIN_INDEX+KORE_DATASET_MAX_ORIGINS; ((nItemsAsOrigin < lst.size()) && (nItemsAsOrigin < finalIndex)); nItemsAsOrigin++) {
+				String itemAsOrigin = lst.get(nItemsAsOrigin);
 				AnyResource resource = RDFFactory.getInstance().createURI(itemAsOrigin);
 				Node n = new Node(resource);
-				s.add(n);
-			}
+				s.add(n);				
+			}			
 		}
 		
 		return s;
