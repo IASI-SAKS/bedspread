@@ -5,9 +5,9 @@
 	Foundation, either version 3 of the License, or (at your option) any later 
 	version. This software is distributed in the hope that it will be useful, 
 	but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
-	for more details. You should have received a copy of the GNU General 
-	Public License along with this source. If not, see <http://www.gnu.org/licenses/>. -->
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
+	more details. You should have received a copy of the GNU General Public License 
+	along with this source. If not, see <http://www.gnu.org/licenses/>. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -25,6 +25,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.jar.version>3.0.0</maven.jar.version>
+		<maven.exec.version>1.6.0</maven.exec.version>
 		<slf4j.version>1.7.12</slf4j.version>
 		<jena_arq.version>3.1.1</jena_arq.version>
 	</properties>
@@ -59,11 +60,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-     		<groupId>com.opencsv</groupId>
-     		<artifactId>opencsv</artifactId>
-     		<version>3.9</version>
-  		</dependency>
- 		<!-- https://mvnrepository.com/artifact/org.apache.jena/jena-arq -->
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.jena/jena-arq -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-arq</artifactId>
@@ -109,7 +110,15 @@
 					</archive>
 				</configuration>
 			</plugin>
-		</plugins>
-	</build>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>${maven.exec.version}</version>
+				<configuration>
+					<mainClass>it.cnr.iasi.leks.bedspread.main.Main</mainClass>
+				</configuration>
+			</plugin>
+</plugins>
+</build>
 
 </project>

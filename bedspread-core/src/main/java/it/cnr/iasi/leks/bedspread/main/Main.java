@@ -18,8 +18,11 @@
  */
 package it.cnr.iasi.leks.bedspread.main;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 
@@ -28,6 +31,20 @@ public class Main {
 	public static void main (String args[]) throws IllegalArgumentException, IllegalAccessException{
 		System.err.println("This Entry Point has not been defined yet!!!");
 
+		//Get the jvm heap size.
+		long heapSize = Runtime.getRuntime().totalMemory();
+		long maxSize = Runtime.getRuntime().maxMemory();
+		//Print the jvm heap size.
+		System.out.println("Heap Size = " + heapSize);
+		System.out.println("Max Size = " + maxSize);
+		
+		
+		RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+		List<String> jvmArgs = runtimeMXBean.getInputArguments();
+		for (String arg : jvmArgs) {
+		    System.out.println(arg);
+		}
+		
 		PropertyUtil prop = PropertyUtil.getInstance();
 		for (Field f : PropertyUtil.class.getFields()) {
 			int fieldModifiers = f.getModifiers();
