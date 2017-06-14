@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpreadOrchestrator;
 import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
@@ -38,7 +39,8 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * @author gulyx
  *
  */
-public class SimpleSemanticSpread extends AbstractSemanticSpread {
+//public class SimpleSemanticSpread extends AbstractSemanticSpread {
+public class SimpleSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 
 	public SimpleSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
 		super(origin, kb);
@@ -61,7 +63,7 @@ public class SimpleSemanticSpread extends AbstractSemanticSpread {
 
 	@Override
 	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException{		
-		if (this.getStatus() != ComputationStatus.Completed){
+		if (this.getComputationStatus() != ComputationStatus.Completed){
 			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
 			throw ex;
 		}

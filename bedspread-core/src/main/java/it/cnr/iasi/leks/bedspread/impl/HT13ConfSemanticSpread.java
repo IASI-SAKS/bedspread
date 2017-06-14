@@ -26,6 +26,7 @@ import java.util.Set;
 import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpreadOrchestrator;
 import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
@@ -43,7 +44,8 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * @author gulyx
  *
  */
-public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
+//public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
+public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 
 	private WeightingFunction weightingModule; 
 	
@@ -91,8 +93,12 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 			Node neighborNode = this.backtrackToNode(neighborResource, targetNode.getResource());
 			if (neighborNode.getScore() != 0){
 				int degree = this.kb.degree(neighborResource);
-						
-				neighborhoodScore += (neighborNode.getScore()/degree);
+				
+				if (degree == 0){
+					this.logger.warn("DEGREE FOUND AS 0 FOR A NODE ({}) IN THE NEIGHBORHOOD OF TARGET NODE ({})", neighborResource.getResourceID(), targetNode.getResource().getResourceID());						
+				}else{		
+					neighborhoodScore += (neighborNode.getScore()/degree);
+				}	
 			}	
 		}
 		
@@ -116,13 +122,18 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 			this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
 			score = 0;
 		}
+
+		if (Double.isNaN(score) || Double.isInfinite(score)){
+			this.logger.warn("SCORE FOUND AS \"{}\", THUS FORCED TO 0", score);
+			score = 0;
+		}
 		
 		return score;
 	}
 
 	@Override
 	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException {
-		if (this.getStatus() != ComputationStatus.Completed){
+		if (this.getComputationStatus() != ComputationStatus.Completed){
 			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
 			throw ex;
 		}
@@ -149,7 +160,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpread {
 		
 		if (allActiveNodes.contains(node)){
 			/*
-			 * if an instantiation the node already exists we must return the value previoussly computed
+			 * if an instantiation the node already exists we must return the value previously computed
 			 */
 			for (Node n : this.getAllActiveNodes()) {
 				if (n.equals(node)){

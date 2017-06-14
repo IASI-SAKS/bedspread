@@ -20,14 +20,15 @@ package it.cnr.iasi.leks.bedspread;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.Runnable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Vector;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
+import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.policies.ExecutionPolicyFactory;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
@@ -39,43 +40,25 @@ import it.cnr.iasi.leks.bedspread.util.SetOfNodesFactory;
  * @author gulyx
  *
  */
-public abstract class AbstractSemanticSpread implements Runnable{
-	
-	protected SetOfNodesFactory setOfNodesFactory;
-	
-	protected Node origin;
-	protected KnowledgeBase kb;
-	protected ExecutionPolicy policy;
+public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanticSpread implements ComputationCallback{
 
-	protected ComputationStatus status;
-	
 	private Set<Node> activatedNodes;
 	private Set<Node> currentlyActiveNodes;
 	private Set<Node> forthcomingActiveNodes;	
 	private Set<Node> justProcessedForthcomingActiveNodes;
 	
 	private Set<Node> explorationLeaves; 
-
-	private final Object callbackMutex = new Object();
-	private ComputationStatusCallback callback;
-	private String optionalID;
-
-	private final double INITIAL_STIMULUS = 1;
+		
+	private static final Object JOBS_MUTEX = new Object();
 	
-	protected final Logger logger = LoggerFactory.getLogger(AbstractSemanticSpread.class);
+	private volatile Map<String, SemanticSpreadJob> semanticSpreadJobsMap;
 	
-	public AbstractSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
+	public AbstractSemanticSpreadOrchestrator(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
 		this(origin, kb, ExecutionPolicyFactory.getInstance().getExecutionPolicy(kb));
 	}
 		
-	public AbstractSemanticSpread(Node origin, KnowledgeBase kb, ExecutionPolicy policy){
-		this.origin = origin;
-		this.origin.updateScore(INITIAL_STIMULUS);
-		
-		this.kb = kb;
-		this.policy = policy;
-		
-		this.status = ComputationStatus.NotStarted;
+	public AbstractSemanticSpreadOrchestrator(Node origin, KnowledgeBase kb, ExecutionPolicy policy){
+		super(origin, kb, policy);
 		
 		this.setOfNodesFactory = SetOfNodesFactory.getInstance();		
 
@@ -84,21 +67,11 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.forthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();
 		this.justProcessedForthcomingActiveNodes = this.setOfNodesFactory.getSetOfNodesInstance();		
 
-		this.explorationLeaves = this.setOfNodesFactory.getSetOfNodesInstance();		
+		this.explorationLeaves = this.setOfNodesFactory.getSetOfNodesInstance();
+		
+		this.semanticSpreadJobsMap = Collections.synchronizedMap(new HashMap<String, SemanticSpreadJob>());
 	}
 
-	public Node getOrigin(){
-		return this.origin;
-	}
-	
-	public ComputationStatus getComputationStatus(){
-		ComputationStatus s;
-		synchronized (this.status) {
-			s = this.status;
-		}
-		return s;
-	}
-	
 	private void refreshInternalState(){
 		this.currentlyActiveNodes.clear();		
 		this.activatedNodes.clear();
@@ -109,6 +82,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.currentlyActiveNodes.add(this.origin);
 	}
 	
+	@Override
 	public void run (){
 		synchronized (this.status) {
 			this.status = ComputationStatus.Running;
@@ -122,7 +96,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 			this.justProcessedForthcomingActiveNodes.clear();
 			
 			this.filterCurrentlyActiveNodes();
-
+			
 			int i = 0;
 			for (Node node : this.currentlyActiveNodes) {
 				i++;
@@ -134,28 +108,35 @@ public abstract class AbstractSemanticSpread implements Runnable{
 					this.explorationLeaves.add(node);
 				}
 				int j = 0;
+				Vector<Thread> threads = new Vector<Thread>();
 				for (Node newNode : this.forthcomingActiveNodes) {
 					j++;
-					Double newScore = this.computeScore(node, newNode);
-					newNode.updateScore(newScore);
-// Note that elements already present are not doubled in "justProcessedForthcomingActiveNodes" according to : java.util.Set	
-// However, the method AbstractSemanticSpread.extractForthcomingActiveNodes(Node node) would likely configure 
-// the forthcomingActiveNodes so that newNode is never processed twice. 
-					this.justProcessedForthcomingActiveNodes.add(newNode);
-
-					this.logger.info("{} --> {}, {}", "*** "+j+" "+node.getResource().getResourceID(),newNode.getResource().getResourceID(),newNode.getScore());
+					
+					String key = this.genetateKey(newNode);
+					if (! this.semanticSpreadJobsMap.containsKey(key)){
+						SemanticSpreadJob semSpreadJob = new SemanticSpreadJob(node, newNode.getResource(), key, this, this.kb);
+						this.semanticSpreadJobsMap.put(key, semSpreadJob);
+						Thread t = new Thread(semSpreadJob);
+						threads.add(t);
+					}	
+				}
+				for (Thread t : threads) {
+					t.start();
 				}
 			}
+			
+			this.waitForCompletionOfSemanticSpreadJobs();
 			
 			for (Node node : this.currentlyActiveNodes) {
 				this.activatedNodes.add(node);
 			}						
-			this.currentlyActiveNodes.clear();			
+			this.currentlyActiveNodes.clear();
+			
 			for (Node tmpNode : this.justProcessedForthcomingActiveNodes) {
 				this.currentlyActiveNodes.add(tmpNode);
 			}
-
-			depth++;			
+			
+			depth++;
 		}
 		for (Node node : this.currentlyActiveNodes) {
 			this.explorationLeaves.add(node);
@@ -166,28 +147,38 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		}
 		this.notifyCallback();
 	}
-	
-	public Set<Node> getSemanticSpreadForNode() throws InteractionProtocolViolationException{
-		if (this.getComputationStatus() != ComputationStatus.Completed){
-			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
-			throw ex;
+
+	private void waitForCompletionOfSemanticSpreadJobs() {
+		while (! this.semanticSpreadJobsMap.isEmpty()){
+// WAITING FOR ALL THE ACTIVATED JOB (at a reached deepness of the graph exploration) COMPLETED THEIR COMPUTATIONS				
+			try {
+				long sleeptime = Long.parseLong(PropertyUtil.getInstance().getProperty(PropertyUtil.POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL, "5000"));
+				Thread.sleep(sleeptime);
+			} catch (InterruptedException e) {
+				this.logger.error("An eccor occourred while waiting for the completation of all the activated jobs:");
+				this.logger.error("Message: {}",e.getMessage());
+				this.logger.error("Cause: {}",e.getCause());
+			}
 		}
-		Set<Node> s = this.getAllActiveNodes();
-		return s;
-	}	
+	}
 	
 	private void extractForthcomingActiveNodes(Node node) {
 		this.forthcomingActiveNodes.clear();
 		for (AnyResource neighbor : this.kb.getNeighborhood(node.getResource())) {
 			Node neighborNode = new Node(neighbor);
-			if ((! this.activatedNodes.contains(neighborNode)) && (! this.currentlyActiveNodes.contains(neighborNode)) && (! this.justProcessedForthcomingActiveNodes.contains(neighborNode))){
+			String key = this.genetateKey(neighborNode);
+			boolean alreadyProcessedNode = false;
+			synchronized (JOBS_MUTEX) {
+				alreadyProcessedNode = (this.activatedNodes.contains(neighborNode)) || (this.currentlyActiveNodes.contains(neighborNode)) || (this.justProcessedForthcomingActiveNodes.contains(neighborNode)) || (this.semanticSpreadJobsMap.containsKey(key)); 				
+			}
+			if (! alreadyProcessedNode){
 // Note that elements already present are not doubled in "forthcomingActiveNodes" according to : java.util.Set				
 				this.forthcomingActiveNodes.add(neighborNode);
 			}	
-		}
-		
+		}		
 	}
 
+	@Override
 	protected Set<Node> getActiveNodes(){
 		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
 		n.addAll(this.activatedNodes);
@@ -196,10 +187,24 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 
+	@Override
 	protected Set<Node> getAllActiveNodes(){
 		Set<Node> n = this.getActiveNodes();
 		
-		n.addAll(this.justProcessedForthcomingActiveNodes);
+		synchronized (JOBS_MUTEX) {
+//			for (SemanticSpreadJob job : this.semanticSpreadJobsMap.values()) {
+//				Node node;
+//				try {
+//					node = job.getProcessedNode();
+//				} catch (InteractionProtocolViolationException e) {
+//					node = new Node(job.getTargetReource());
+//				}
+//				n.add(node);						
+//			}			
+
+			n.addAll(this.justProcessedForthcomingActiveNodes);			
+		}
+
 		
 		return n;
 	}
@@ -217,6 +222,7 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		this.currentlyActiveNodes = unfilteredSetOfNodes;
 	}
 
+	@Override
 	public Set<Node> getExplorationLeaves(){
 		Set<Node> n = this.setOfNodesFactory.getSetOfNodesInstance();
 		n.addAll(this.explorationLeaves);
@@ -224,25 +230,34 @@ public abstract class AbstractSemanticSpread implements Runnable{
 		return n;
 	}
 
-	public void setCallback(String notifierID, ComputationStatusCallback callback){
-		synchronized (this.callbackMutex) {
-			this.optionalID = notifierID;
-			this.callback = callback;			
-		}
+	private String genetateKey(Node n){
+		return n.getResource().getResourceID();
 	}
 	
-	protected void notifyCallback(){
-		ComputationStatus notifiedStatus = this.getComputationStatus();
-		synchronized (this.callbackMutex) {
-			if ((this.optionalID != null) && (this.callback != null)){
-					this.callback.notifyStatus(this.optionalID, notifiedStatus);
-			}else{
-				this.logger.warn("Something unexpected while trying to nofity the callback: JobID {}, Callback {}",this.optionalID, this.callback);
+	@Override
+	public void notifyJobStatus(String id, ComputationStatus status) throws AbstractBedspreadException{
+		synchronized (JOBS_MUTEX) {		
+			SemanticSpreadJob semSpreadJob = this.semanticSpreadJobsMap.get(id);
+			if ((semSpreadJob != null) && (status.equals(ComputationStatus.Completed))){
+				Node nOrigin = semSpreadJob.getOrigin();
+				Node n = semSpreadJob.getProcessedNode();
+				// Note that elements already present are not doubled in "justProcessedForthcomingActiveNodes" according to : java.util.Set	
+				// However, the method AbstractSemanticSpread.extractForthcomingActiveNodes(Node node) would likely configure 
+				// the forthcomingActiveNodes so that newNode is never processed twice. 				
+				this.justProcessedForthcomingActiveNodes.add(n);
+				this.semanticSpreadJobsMap.remove(id);
+
+				this.logger.info("*** {} --> {}, {}", nOrigin.getResource().getResourceID(),n.getResource().getResourceID(),n.getScore());
 			}
 		}	
 	}
-	
-	protected abstract double computeScore(Node spreadingNode, Node targetNode); 
-	
+		
+	@Override
+	public double computeJobScore(Node spreadingNode, Node targetNode){
+		return this.computeScore(spreadingNode, targetNode);
+		
+	} 
+
+	protected abstract double computeScore(Node spreadingNode, Node targetNode); 	
 	public abstract void flushData (Writer out) throws IOException, InteractionProtocolViolationException; 
 }

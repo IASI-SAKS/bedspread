@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import com.opencsv.CSVWriter;
 
 import it.cnr.iasi.leks.bedspread.AbstractSemanticSpread;
+import it.cnr.iasi.leks.bedspread.AbstractSemanticSpreadOrchestrator;
 import it.cnr.iasi.leks.bedspread.ComputationStatus;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.ExecutionPolicy;
@@ -48,7 +49,8 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * The rest of the strategy is implemented by the AbstractSemanticSpread class.
  *
  */
-public class BasicSemanticSpread extends AbstractSemanticSpread {
+//public class BasicSemanticSpread extends AbstractSemanticSpread {
+public class BasicSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 
 	private WeightingFunction weightingModule; 
 	
@@ -80,7 +82,7 @@ public class BasicSemanticSpread extends AbstractSemanticSpread {
 
 	@Override
 	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException {
-		if (this.getStatus() != ComputationStatus.Completed){
+		if (this.getComputationStatus() != ComputationStatus.Completed){
 			InteractionProtocolViolationException ex = new InteractionProtocolViolationException(PropertyUtil.INTERACTION_PROTOCOL_ERROR_MESSAGE);
 			throw ex;
 		}

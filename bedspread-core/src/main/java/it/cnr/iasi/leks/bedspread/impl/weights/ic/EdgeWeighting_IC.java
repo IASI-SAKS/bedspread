@@ -42,6 +42,7 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 
 	public EdgeWeighting_IC(KnowledgeBase kb) {
 		super(kb);
+		this.computeMaxWeight();
 	}
 	
 	/**
