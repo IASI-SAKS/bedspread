@@ -34,6 +34,7 @@ import it.cnr.iasi.leks.bedspread.PolicentricSemanticSpread;
 import it.cnr.iasi.leks.bedspread.Node;
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
+import it.cnr.iasi.leks.bedspread.exceptions.impl.InteractionProtocolViolationException;
 import it.cnr.iasi.leks.bedspread.impl.HT13PolicentricSemanticSpread;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
@@ -65,9 +66,24 @@ public class PolicentricSemanticSpreadOnDBpediaTest extends AbstractTest{
 	@Ignore
 	@Test
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
+		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_onDBpedia.properties";
+		boolean condition = executeMinimalTest(testPropertyFile);
+
+		Assert.assertTrue(condition);				
+	}
+
+	@Ignore
+	@Test
+	public void power2TestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
+		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_Power2_onDBpedia.properties";
+		boolean condition = executeMinimalTest(testPropertyFile);
+
+		Assert.assertTrue(condition);				
+	}
+
+	private boolean executeMinimalTest(String testPropertyFile) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException, NoSuchMethodException, InvocationTargetException, InteractionProtocolViolationException, AbstractBedspreadException {
 		Set<Node> resourceOriginSet = this.extractTrivialOriginSet();
 		
-		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_onDBpedia.properties";
 		System.getProperties().setProperty(PropertyUtil.CONFIG_FILE_LOCATION_LABEL, testPropertyFile);
 		PropertyUtil prop = PropertyUtilNoSingleton.getInstance();
 		
@@ -91,7 +107,8 @@ public class PolicentricSemanticSpreadOnDBpediaTest extends AbstractTest{
 		}
 
 		System.getProperties().remove(PropertyUtil.CONFIG_FILE_LOCATION_LABEL);
-		Assert.assertTrue(condition);				
+
+		return condition;
 	}
 
 	private Set<Node> extractTrivialOriginSet() {
