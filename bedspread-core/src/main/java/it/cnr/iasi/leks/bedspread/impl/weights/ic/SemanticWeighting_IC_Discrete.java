@@ -31,17 +31,13 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
  * @author gulyx
  *
  */
-public class SemanticWeighting_IC_Power extends SemanticWeighting_IC {
+public class SemanticWeighting_IC_Discrete extends SemanticWeighting_IC {
 	
-	private int power;
-	
-	public SemanticWeighting_IC_Power(KnowledgeBase kb) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, UndefinedPropertyException {
+	public SemanticWeighting_IC_Discrete(KnowledgeBase kb) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, UndefinedPropertyException {
 		super(kb);
-		PropertyUtil p = PropertyUtil.getInstance();
-		this.power = p.getProperty(PropertyUtil.WEIGHTING_FUNCTOIN_POWER_LABEL, 1);
 	}
 
-	public SemanticWeighting_IC_Power(KnowledgeBase kb, Abstract_EdgeWeighting_IC ew) {
+	public SemanticWeighting_IC_Discrete(KnowledgeBase kb, Abstract_EdgeWeighting_IC ew) {
 		super(kb, ew);
 	}
 	
@@ -51,7 +47,11 @@ public class SemanticWeighting_IC_Power extends SemanticWeighting_IC {
 	 * The method first finds the predicates from n1 to n2. For each predicate p of such predicates, builds the triple (or edge) <n1, p, n2> and computes the weight of the edge as its IC.
 	 * Then the same is performed exchanging n1 and n2.
 	 * The result is the maximum computed weight over all the built edges.
-	 * The max is then powered by 2 in order to enlarge differences in the computation.
+	 * The max is then classified as follow:
+	 *  + [0-0.25] --> 0.25
+	 *  + (0.25-0.50] --> 0.50
+	 *  + (0.50-0.75] --> 0.75
+	 *  + (0.75-1] --> 1
 	 * The values range is [0, 1] 
 	 * param n1
 	 * param n2
@@ -59,19 +59,25 @@ public class SemanticWeighting_IC_Power extends SemanticWeighting_IC {
 	 * @throws UnexpectedValueException 
 	 */
 	@Override
-	public double weight(Node n1, Node n2) throws UnexpectedValueException {
-		if (this.power <= 0 ){
-			String message = PropertyUtil.WEIGHTING_FUNCTOIN_POWER_LABEL + "found as: " + this.power + ", but it cannot be less-equal than 1";
-			throw new UnexpectedValueException(message);
-		}		
-		
+	public double weight(Node n1, Node n2) throws UnexpectedValueException {		
 		double result = super.weight(n1, n2);
-		double powerResult = this.power;
-		for (int i = 0; i < this.power; i++) {
-			powerResult = powerResult * result;
+		double discreteResult = 0;
+		
+		if ((result >= 0) && (result <= 0.25)){
+			discreteResult = 0.25;
+		}else{
+			if (result <= 0.5){
+				discreteResult = 0.50;
+			}else{
+				if (result <= 0.75){
+					discreteResult = 0.75;
+				}else{
+					discreteResult = 1.0;					
+				}					
+			}	
 		}
 		
-		return powerResult;
+		return discreteResult;
 	}
-
+	
 }
