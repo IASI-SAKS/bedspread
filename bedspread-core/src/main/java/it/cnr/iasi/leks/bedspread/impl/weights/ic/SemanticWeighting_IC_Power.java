@@ -74,12 +74,4 @@ public class SemanticWeighting_IC_Power extends SemanticWeighting_IC {
 		return powerResult;
 	}
 
-	public KnowledgeBase getKb() {
-		return kb;
-	}
-
-	public void setKb(KnowledgeBase kb) {
-		this.kb = kb;
-	}
-	
 }
