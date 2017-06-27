@@ -48,14 +48,7 @@ import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
 public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 
 	private WeightingFunction weightingModule; 
-	
-// Note that these two attributes (and related operations) are only conceived to better
-// structuring the implementation of this class and its potential sub-classes. Actually
-// they do not bring any contribution to the concept. So it is recommended to limit
-// the dependencies on them.
-	private Node weightNodeFirstArg;
-	private Node weightNodeSecongArg;
-	
+		
 	public HT13ConfSemanticSpread(Node origin, KnowledgeBase kb) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException, IOException {
 		super(origin, kb);
 
@@ -72,21 +65,6 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 	protected double computeScore(Node spreadingNode, Node targetNode) {
 //		Note that in this implementation the parameter {@code Node spreadingNode} is not used!!!
 
-		this.configureWeightNodes(targetNode, this.getOrigin());
-		double score = this.calculateScore(spreadingNode, targetNode);
-		
-		return score;
-	}
-
-	protected void configureWeightNodes(Node firstArg, Node secondArg){
-		this.weightNodeFirstArg = firstArg;
-		this.weightNodeSecongArg = secondArg;
-	}
-	
-	protected double calculateScore(Node spreadingNode, Node targetNode) {
-		
-//	Note that in this implementation the parameter {@code Node spreadingNode} is not used!!!
-		
 		Set<AnyResource> neighborhood = this.kb.getNeighborhood(targetNode.getResource());
 		double neighborhoodScore = 0;
 		for (AnyResource neighborResource : neighborhood) {
@@ -113,7 +91,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 		double weight;
 		double score; 
 		try {
-			weight = this.weightingModule.weight(this.weightNodeFirstArg, this.weightNodeSecongArg);
+			weight = this.weightingModule.weight(targetNode, this.getOrigin());
 			score = this.stimulus(targetNode) + (weight * neighborhoodScore);
 		} catch (UnexpectedValueException e) {
 			this.logger.warn("SCORE FORCED TO 0 : {}", e.getMessage());
@@ -130,7 +108,7 @@ public class HT13ConfSemanticSpread extends AbstractSemanticSpreadOrchestrator {
 		
 		return score;
 	}
-
+	
 	@Override
 	public void flushData(Writer out) throws IOException, InteractionProtocolViolationException {
 		if (this.getComputationStatus() != ComputationStatus.Completed){
