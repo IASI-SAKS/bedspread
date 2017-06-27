@@ -74,6 +74,15 @@ public class PolicentricSemanticSpreadOnDBpediaTest extends AbstractTest{
 
 	@Ignore
 	@Test
+	public void discreteTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
+		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_Discrete_onDBpedia.properties";
+		boolean condition = executeMinimalTest(testPropertyFile);
+
+		Assert.assertTrue(condition);				
+	}
+
+	@Ignore
+	@Test
 	public void power2TestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
 		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_Power2_onDBpedia.properties";
 		boolean condition = executeMinimalTest(testPropertyFile);
