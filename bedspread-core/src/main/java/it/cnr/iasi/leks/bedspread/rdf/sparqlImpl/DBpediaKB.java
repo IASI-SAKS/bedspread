@@ -99,7 +99,7 @@ public class DBpediaKB implements KnowledgeBase {
 	 */
 	@Override
 	public int degree(AnyResource resource) {
-		return this.degree(resource, Filters.FILTER_OUT_ALL);  
+		return this.degree(resource, Filters.FILTER_ALL);  
 	}
 	
 	public int degree(AnyResource resource, Filters filter) {
@@ -122,7 +122,7 @@ public class DBpediaKB implements KnowledgeBase {
 	 */
 	@Override
 	public boolean isMemberof(AnyResource resource) {
-		return  this.isMemberof(resource, Filters.FILTER_OUT_ALL);
+		return  this.isMemberof(resource, Filters.FILTER_ALL);
 	}
 
 	public boolean isMemberof(AnyResource resource, Filters filter) {
@@ -141,7 +141,7 @@ public class DBpediaKB implements KnowledgeBase {
 	 */
 	@Override
 	public Set<AnyResource> getNeighborhood(AnyResource resource) {
-		return this.getNeighborhood(resource, Filters.FILTER_OUT_ALL);
+		return this.getNeighborhood(resource, Filters.FILTER_ALL);
 	}
 	
 	public Set<AnyResource> getNeighborhood(AnyResource resource, Filters filter) {
@@ -161,7 +161,7 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public Set<AnyResource> getOutgoingNeighborhood(AnyResource resource) {
-		return  this.getOutgoingNeighborhood(resource, Filters.FILTER_OUT_ALL);
+		return  this.getOutgoingNeighborhood(resource, Filters.FILTER_ALL);
 	}
 	
 	public Set<AnyResource> getOutgoingNeighborhood(AnyResource resource, Filters filter) {
@@ -171,7 +171,7 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public int countAllTriples() {
-		return this.countAllTriples(Filters.FILTER_OUT_ALL);
+		return this.countAllTriples(Filters.FILTER_ALL);
 	}
 	
 	public int countAllTriples(Filters filter) {
@@ -213,7 +213,7 @@ public class DBpediaKB implements KnowledgeBase {
 
 
 	public int countTriplesBySubject(AnyResource resource) {
-		return this.countTriplesBySubject(resource, Filters.FILTER_OUT_ALL);
+		return this.countTriplesBySubject(resource, Filters.FILTER_ALL);
 	}
 
 	
@@ -254,7 +254,7 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public int countTriplesBySubjectOrObject(AnyResource resource) {
-		return this.countTriplesBySubjectOrObject(resource, Filters.FILTER_OUT_ALL);
+		return this.countTriplesBySubjectOrObject(resource, Filters.FILTER_ALL);
 	}
 	
 	public int countTriplesBySubjectOrObject(AnyResource resource, Filters filter) {
@@ -352,7 +352,7 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 
 	public Set<AnyResource> getAllPredicates() {
-		return this.getAllPredicates(Filters.FILTER_OUT_ALL);
+		return this.getAllPredicates(Filters.FILTER_ALL);
 	}
 	
 	public Set<AnyResource> getAllPredicates(Filters filter) {
@@ -362,7 +362,7 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public Set<AnyResource> getIncomingPredicates(AnyResource resource) {
-		return this.getIncomingPredicates(resource, Filters.FILTER_OUT_ALL);
+		return this.getIncomingPredicates(resource, Filters.FILTER_ALL);
 	}
 	
 	public Set<AnyResource> getIncomingPredicates(AnyResource resource, Filters filter) {
@@ -370,7 +370,7 @@ public class DBpediaKB implements KnowledgeBase {
 	} 
 
 	public Set<AnyResource> getOutgoingPredicates(AnyResource resource) {
-		return this.getOutgoingPredicates(resource, Filters.FILTER_OUT_ALL);
+		return this.getOutgoingPredicates(resource, Filters.FILTER_ALL);
 
 	}
 	
