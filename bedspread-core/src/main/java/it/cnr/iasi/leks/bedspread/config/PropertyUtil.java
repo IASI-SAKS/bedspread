@@ -41,9 +41,6 @@ public class PropertyUtil {
 	public static final String DEFAULT_KB_PREDICATES_BLACKLIST_FILE = "configDBpediaKB_predicatesBlackList.txt";
 	public static final String KB_PREDICATES_BLACKLIST_FILE = "dbpedia.predicates.blackList";
 	
-	public static final String DEFAULT_KB_PREDICATES_IN_FILE = "configDBpediaKB_predicatesIn.txt";
-	public static final String KB_PREDICATES_IN_FILE = "dbpedia.predicates.in";
-	
 	public static final String INTERACTION_PROTOCOL_ERROR_MESSAGE = "Error : Processing was not completed yet!!";
 	
 	public static final String CONFIG_FILE_LOCATION_LABEL = "bedspread.config.file.location";
