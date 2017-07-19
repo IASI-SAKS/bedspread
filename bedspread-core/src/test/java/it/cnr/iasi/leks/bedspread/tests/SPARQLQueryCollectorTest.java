@@ -53,7 +53,7 @@ public class SPARQLQueryCollectorTest {
 	//@Test
 	public void getBow() {
 		Set<AnyResource> result = new HashSet<AnyResource>();
-		result = SPARQLQueryCollector.getBow(kb, Filters.FILTER_ALL);
+		result = SPARQLQueryCollector.getBow(kb, Filters.FILTER_OUT_ALL);
 		
 		for(AnyResource n:result)
 			System.out.println("node="+n.getResourceID());

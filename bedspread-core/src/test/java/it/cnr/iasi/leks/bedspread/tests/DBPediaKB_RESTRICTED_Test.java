@@ -32,6 +32,11 @@ import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.Filters;
 
+/**
+ * 
+ * @author ftaglino
+ *
+ */
 public class DBPediaKB_RESTRICTED_Test {
 
 
@@ -43,7 +48,7 @@ public class DBPediaKB_RESTRICTED_Test {
 	
 	protected final Logger logger = LoggerFactory.getLogger(DBPediaKB_RESTRICTED_Test.class);
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void degree() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -57,13 +62,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		int result_filterOutPredicates = kb.degree(new URIImpl(RESOURCE), Filters.FILTER_OUT_BLACKLIST_PREDICATES);
 		logger.info("{}", "degree("+RESOURCE+", FILTER_OUT_PREDICATES)="+result_filterOutPredicates);
 		
-		int result_filterOutAll = kb.degree(new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		int result_filterOutAll = kb.degree(new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "degree("+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll);
 		
 		Assert.assertTrue(true);
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void countAllTriples() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -71,13 +76,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		int result = kb.countAllTriples(Filters.FILTER_NO);
 		logger.info("{}", "countAllTriples(FILTER_NO)="+result);
 				
-		int result_filterOutAll = kb.countAllTriples(Filters.FILTER_ALL);
+		int result_filterOutAll = kb.countAllTriples(Filters.FILTER_OUT_ALL);
 		logger.info("{}", "countAllTriples(FILTER_OUT_ALL)="+result_filterOutAll);
 		
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void countTriplesByObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -85,13 +90,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		int result = kb.countTriplesByObject(new URIImpl(RESOURCE), Filters.FILTER_NO);
 		logger.info("{}", "countTriplesByObject("+RESOURCE+", FILTER_NO)="+result);
 				
-		int result_filterOutAll = kb.countTriplesByObject(new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		int result_filterOutAll = kb.countTriplesByObject(new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "countTriplesByObject("+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll);
 		
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void countTriplesByPredicate() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -99,13 +104,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		int result = kb.countTriplesByPredicate(new URIImpl(PREDICATE), Filters.FILTER_NO);
 		logger.info("{}", "countTriplesByPredicate("+PREDICATE+", FILTER_NO)="+result);
 				
-		int result_filterOutAll = kb.countTriplesByPredicate(new URIImpl(PREDICATE), Filters.FILTER_ALL);
+		int result_filterOutAll = kb.countTriplesByPredicate(new URIImpl(PREDICATE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "countTriplesByPredicate("+PREDICATE+", FILTER_OUT_ALL)="+result_filterOutAll);
 		
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void countTriplesByPredicateAndObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -116,7 +121,7 @@ public class DBPediaKB_RESTRICTED_Test {
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void countTriplesByPredicateAndSubject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -124,13 +129,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		int result = kb.countTriplesByPredicateAndSubject(new URIImpl(PREDICATE_2), new URIImpl(RESOURCE), Filters.FILTER_NO);
 		logger.info("{}", "countTriplesByPredicateAndSubject("+PREDICATE_2+", "+RESOURCE+", FILTER_NO)="+result);
 		
-		int result_filterOutAll = kb.countTriplesByPredicateAndSubject(new URIImpl(PREDICATE_2), new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		int result_filterOutAll = kb.countTriplesByPredicateAndSubject(new URIImpl(PREDICATE_2), new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "countTriplesByPredicateAndSubject("+PREDICATE_2+", "+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll);
 
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void countTriplesByPredicateAndSubjectOrObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -138,13 +143,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		int result = kb.countTriplesByPredicateAndSubjectOrObject(new URIImpl(PREDICATE_2), new URIImpl(RESOURCE), Filters.FILTER_NO);
 		logger.info("{}", "countTriplesByPredicateAndSubjectOrObject("+PREDICATE_2+", "+RESOURCE+", FILTER_NO)="+result);
 		
-		int result_filterOutAll = kb.countTriplesByPredicateAndSubjectOrObject(new URIImpl(PREDICATE_2), new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		int result_filterOutAll = kb.countTriplesByPredicateAndSubjectOrObject(new URIImpl(PREDICATE_2), new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "countTriplesByPredicateAndSubjectOrObject("+PREDICATE_2+", "+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll);
 
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void countTriplesBySubject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -152,13 +157,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		int result = kb.countTriplesBySubject(new URIImpl(RESOURCE), Filters.FILTER_NO);
 		logger.info("{}", "countTriplesBySubject("+RESOURCE+", FILTER_NO)="+result);
 				
-		int result_filterOutAll = kb.countTriplesBySubject(new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		int result_filterOutAll = kb.countTriplesBySubject(new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "countTriplesBySubject("+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll);
 
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void countTriplesBySubjectOrObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -166,24 +171,24 @@ public class DBPediaKB_RESTRICTED_Test {
 		int result = kb.countTriplesBySubjectOrObject(new URIImpl(RESOURCE), Filters.FILTER_NO);
 		logger.info("{}", "countTriplesBySubjectOrObject("+RESOURCE+", FILTER_NO)="+result);
 		
-		int result_filterOutAll = kb.countTriplesBySubjectOrObject(new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		int result_filterOutAll = kb.countTriplesBySubjectOrObject(new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "countTriplesBySubjectOrObject("+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll);
 		
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void getAllPredicates() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
 		
-		Set<AnyResource> result_filterOutAll = kb.getAllPredicates(Filters.FILTER_ALL);
+		Set<AnyResource> result_filterOutAll = kb.getAllPredicates(Filters.FILTER_OUT_ALL);
 		logger.info("{}", "getAllPredicates(FILTER_OUT_ALL)="+result_filterOutAll.size());
 
 		Assert.assertTrue(true);	
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void getIncomingNeighborhood() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -191,14 +196,14 @@ public class DBPediaKB_RESTRICTED_Test {
 		Set<AnyResource> result = kb.getIncomingNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_NO);
 		logger.info("{}", "getIncomingNeighborhood(FILTER_NO)="+result.size());
 		
-		Set<AnyResource> result_filterOutAll = kb.getIncomingNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		Set<AnyResource> result_filterOutAll = kb.getIncomingNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "getIncomingNeighborhood(FILTER_OUT_ALL)="+result_filterOutAll.size());
 
 		Assert.assertTrue(true);
 	}
 
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void getNeighborhood() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -206,13 +211,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		Set<AnyResource> result = kb.getNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_NO);
 		logger.info("{}", "getNeighborhood("+RESOURCE+", FILTER_NO)="+result.size());
 
-		Set<AnyResource> result_filterOutAll = kb.getNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		Set<AnyResource> result_filterOutAll = kb.getNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "getNeighborhood("+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll.size());
 
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void getOutgoingNeighborhood() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -220,13 +225,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		Set<AnyResource> result = kb.getOutgoingNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_NO);
 		logger.info("{}", "getOutgoingNeighborhood("+RESOURCE+", FILTER_NO)="+result.size());
 				
-		Set<AnyResource> result_filterOutAll = kb.getOutgoingNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_ALL);
+		Set<AnyResource> result_filterOutAll = kb.getOutgoingNeighborhood(new URIImpl(RESOURCE), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "getOutgoingNeighborhood("+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll.size());
 
 		Assert.assertTrue(true);
 	}
 		
-	@Ignore
+	//@Ignore
 	@Test
 	public void getPredicatesBySubjectAndObject() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -234,13 +239,13 @@ public class DBPediaKB_RESTRICTED_Test {
 		Set<AnyResource> result = kb.getPredicatesBySubjectAndObject(new URIImpl(RESOURCE), new URIImpl(RESOURCE_2), Filters.FILTER_NO);
 		logger.info("{}", "getPredicatesBySubjectAndObject("+RESOURCE+", "+RESOURCE_2+" FILTER_NO)="+result.size());
 		
-		Set<AnyResource> result_filterOutAll = kb.getPredicatesBySubjectAndObject(new URIImpl(RESOURCE), new URIImpl(RESOURCE_2), Filters.FILTER_ALL);
-		logger.info("{}", "getPredicatesBySubjectAndObject("+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll.size());
+		Set<AnyResource> result_filterOutAll = kb.getPredicatesBySubjectAndObject(new URIImpl(RESOURCE), new URIImpl(RESOURCE_2), Filters.FILTER_OUT_ALL);
+		logger.info("{}", "getPredicatesBySubjectAndObject("+RESOURCE+", "+RESOURCE_2+" FILTER_OUT_ALL)="+result_filterOutAll.size());
 
 		Assert.assertTrue(true);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void isMemberof() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
@@ -248,7 +253,7 @@ public class DBPediaKB_RESTRICTED_Test {
 		boolean result = kb.isMemberof(new URIImpl(RESOURCE_2), Filters.FILTER_NO);
 		logger.info("{}", "isMemberof("+RESOURCE_2+", FILTER_NO)="+result);
 		
-		boolean result_filterOutAll = kb.isMemberof(new URIImpl(RESOURCE_2), Filters.FILTER_ALL);
+		boolean result_filterOutAll = kb.isMemberof(new URIImpl(RESOURCE_2), Filters.FILTER_OUT_ALL);
 		logger.info("{}", "isMemberof("+RESOURCE_2+", FILTER_OUT_ALL)="+result_filterOutAll);
 
 		Assert.assertTrue(true);

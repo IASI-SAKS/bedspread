@@ -546,7 +546,7 @@ public class SPARQLQueryCollector_RESTRICTED {
 		
 	public static String generateFilterOut_Predicates(Filters filter, String var, Set<AnyURI> blackList) {
 		String result = "";
-		if((filter == Filters.FILTER_ALL) || filter == Filters.FILTER_OUT_BLACKLIST_PREDICATES)
+		if(filter == Filters.FILTER_OUT_ALL)
 			for(AnyURI uri:blackList)
 				result = result + " . FILTER (?"+var+" != <"+uri.getResourceID()+">) ";
 		return result;
