@@ -18,6 +18,7 @@
  */
 package it.cnr.iasi.leks.bedspread.tests;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -34,7 +35,8 @@ import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.Filters;
 public class DBPediaKBTest {
 
 
-	private static final String RESOURCE = "http://dbpedia.org/resource/Category:Legal_education_in_the_United_States";
+	//private static final String RESOURCE = "http://dbpedia.org/resource/Category:Legal_education_in_the_United_States";
+	private static final String RESOURCE = "http://dbpedia.org/resource/Barack_Obama";
 	private static final String RESOURCE_2 = "http://dbpedia.org/resource/Category:United_States_law";
 	private static final String PREDICATE = "http://www.w3.org/2004/02/skos/core#prefLabel";
 	private static final String PREDICATE_2 = "http://www.w3.org/2004/02/skos/core#broader";
@@ -211,12 +213,13 @@ public class DBPediaKBTest {
 		
 		Assert.assertTrue((result==38)&&(result_filterOutLiterals==34)&&(result_filterOutPredicates==30)&&(result_filterOutAll==27));
 	}
-	
+/*	
 	@Ignore
 	@Test
 	public void getAllPredicates() {	
 		DBpediaKB kb = DBpediaKB.getInstance();
 		
+		Set<AnyResource> result =  new HashSet<AnyResource>(); 
 		Set<AnyResource> result = kb.getAllPredicates(Filters.FILTER_NO);
 		logger.info("{}", "getAllPredicates(FILTER_NO)="+result.size());
 		
@@ -230,6 +233,29 @@ public class DBPediaKBTest {
 		logger.info("{}", "getAllPredicates(FILTER_OUT_ALL)="+result_filterOutAll.size());
 
 		Assert.assertTrue((result.size()==3555)&&(result_filterOutLiterals.size()==1943)&&(result_filterOutPredicates.size()==3553)&&(result_filterOutAll.size()==1942));
+	}
+*/	
+	
+	@Ignore
+	@Test
+	public void getAllPredicates() {	
+		DBpediaKB kb = DBpediaKB.getInstance();
+		
+		Set<AnyResource> result =  new HashSet<AnyResource>(); 
+/*		Set<AnyResource> result = kb.getAllPredicates(Filters.FILTER_NO);
+		logger.info("{}", "getAllPredicates(FILTER_NO)="+result.size());
+		
+		Set<AnyResource> result_filterOutLiterals = kb.getAllPredicates(Filters.FILTER_OUT_LITERALS);
+		logger.info("{}", "getAllPredicates(FILTER_OUT_LITERALS)="+result_filterOutLiterals.size());
+		
+		Set<AnyResource> result_filterOutPredicates = kb.getAllPredicates(Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+		logger.info("{}", "getAllPredicates(FILTER_OUT_PREDICATES)="+result_filterOutPredicates.size());
+*/		
+		Set<AnyResource> result_filterOutAll = kb.getAllPredicates(Filters.FILTER_ALL);
+		logger.info("{}", "getAllPredicates(FILTER_OUT_ALL)="+result_filterOutAll.size());
+
+		Assert.assertTrue((result.size()==3555));	
+//		Assert.assertTrue((result.size()==3555)&&(result_filterOutLiterals.size()==1943)&&(result_filterOutPredicates.size()==3553)&&(result_filterOutAll.size()==1942));
 	}
 	
 	@Ignore
@@ -252,25 +278,6 @@ public class DBPediaKBTest {
 		Assert.assertTrue((result.size()==25)&&(result_filterOutLiterals.size()==25)&&(result_filterOutPredicates.size()==23)&&(result_filterOutAll.size()==23));
 	}
 
-	@Ignore
-	@Test
-	public void getIncomingPredicates() {	
-		DBpediaKB kb = DBpediaKB.getInstance();
-		
-		Set<AnyResource> result = kb.getIncomingPredicates(new URIImpl(RESOURCE), Filters.FILTER_NO);
-		logger.info("{}", "getIncomingPredicates(FILTER_NO)="+result.size());
-		
-		Set<AnyResource> result_filterOutLiterals = kb.getIncomingPredicates(new URIImpl(RESOURCE), Filters.FILTER_OUT_LITERALS);
-		logger.info("{}", "getIncomingPredicates(FILTER_OUT_LITERALS)="+result_filterOutLiterals.size());
-		
-		Set<AnyResource> result_filterOutPredicates = kb.getIncomingPredicates(new URIImpl(RESOURCE), Filters.FILTER_OUT_BLACKLIST_PREDICATES);
-		logger.info("{}", "getIncomingPredicates(FILTER_OUT_PREDICATES)="+result_filterOutPredicates.size());
-		
-		Set<AnyResource> result_filterOutAll = kb.getIncomingPredicates(new URIImpl(RESOURCE), Filters.FILTER_ALL);
-		logger.info("{}", "getIncomingPredicates(FILTER_OUT_ALL)="+result_filterOutAll.size());
-
-		Assert.assertTrue((result.size()==2)&&(result_filterOutLiterals.size()==2)&&(result_filterOutPredicates.size()==1)&&(result_filterOutAll.size()==1));
-	}
 	
 	@Ignore
 	@Test
@@ -311,27 +318,7 @@ public class DBPediaKBTest {
 
 		Assert.assertTrue((result.size()==12)&&(result_filterOutLiterals.size()==9)&&(result_filterOutPredicates.size()==7)&&(result_filterOutAll.size()==4));
 	}
-	
-	@Ignore
-	@Test
-	public void getOutgoingPredicates() {	
-		DBpediaKB kb = DBpediaKB.getInstance();
 		
-		Set<AnyResource> result = kb.getOutgoingPredicates(new URIImpl(RESOURCE), Filters.FILTER_NO);
-		logger.info("{}", "getOutgoingPredicates("+RESOURCE+", FILTER_NO)="+result.size());
-		
-		Set<AnyResource> result_filterOutLiterals = kb.getOutgoingPredicates(new URIImpl(RESOURCE), Filters.FILTER_OUT_LITERALS);
-		logger.info("{}", "getOutgoingPredicates("+RESOURCE+", FILTER_OUT_LITERALS)="+result_filterOutLiterals.size());
-		
-		Set<AnyResource> result_filterOutPredicates = kb.getOutgoingPredicates(new URIImpl(RESOURCE), Filters.FILTER_OUT_BLACKLIST_PREDICATES);
-		logger.info("{}", "getOutgoingPredicates("+RESOURCE+", FILTER_OUT_PREDICATES)="+result_filterOutPredicates.size());
-		
-		Set<AnyResource> result_filterOutAll = kb.getOutgoingPredicates(new URIImpl(RESOURCE), Filters.FILTER_ALL);
-		logger.info("{}", "getOutgoingPredicates("+RESOURCE+", FILTER_OUT_ALL)="+result_filterOutAll.size());
-
-		Assert.assertTrue((result.size()==8)&&(result_filterOutLiterals.size()==4)&&(result_filterOutPredicates.size()==6)&&(result_filterOutAll.size()==3));
-	}
-	
 	@Ignore
 	@Test
 	public void getPredicatesBySubjectAndObject() {	

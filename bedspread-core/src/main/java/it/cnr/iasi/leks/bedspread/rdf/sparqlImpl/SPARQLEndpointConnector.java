@@ -144,6 +144,76 @@ public class SPARQLEndpointConnector {
 		return r; 
 	}
 
+	
+	/**
+	 * Execute a query on the configured Sparql endpoint
+	 * @param url The address of the SPARQL endpoint
+	 * @param queryString The SPARQL query
+	 * @return Vector<QuerySolution> 
+	 */	
+	public boolean execAsk(String queryString) {	
+		boolean result = false;
+		//queryString = queryString.replaceAll("\n", "\\u000D");
+		QueryExecution qexec = null;
+		
+		long ts1 = 0;
+		long ts2 = 0;
+		
+		try {	
+			Query query = QueryFactory.create(queryString);
+			ts1 = System.currentTimeMillis();
+			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+			ts2 = System.currentTimeMillis();
+			
+			result = this.executeAskWithSemaphore(qexec);			
+		}
+		catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			this.logger.error("#Query: {}; #Message: {}; #Cause: {}", queryString, ex.getMessage(), ex.getCause());
+		}
+		finally {
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, queryString);
+			if(qexec!=null)
+				qexec.close();
+		}
+		return result;
+	}
+	
+	/*
+	 * This method has been introduce in order to mitigate 
+	 * the simultaneous invocation of the SPARQL endpoint
+	 * by that different concurrent threads 
+	 */
+	private boolean executeAsk(QueryExecution qexec) throws Exception {
+		boolean result = false;
+		synchronized (MUTEX) {
+			result = qexec.execAsk();	
+			
+//			this.waitABit();
+		}
+
+		return result; 
+	}
+
+	/*
+	 * This method has been introduce in order to mitigate 
+	 * the simultaneous invocation of the SPARQL endpoint
+	 * by that different concurrent threads 
+	 */
+	private boolean executeAskWithSemaphore(QueryExecution qexec) throws Exception{
+		boolean result = false;
+		
+		try{
+			QUERY_INVOKATION_SEMAPHORE.acquire();
+			result = qexec.execAsk();
+		}finally {
+			QUERY_INVOKATION_SEMAPHORE.release();			
+		}
+		
+		return result; 
+	}
+	
 	private void waitABit() {
 		long millis = Math.round(this.random.nextDouble() * MAX_SLEEP_TIME); 
 		try {
