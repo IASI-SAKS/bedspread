@@ -21,7 +21,6 @@ package it.cnr.iasi.leks.bedspread.impl.weights.ic;
 import java.lang.reflect.InvocationTargetException;
 
 import it.cnr.iasi.leks.bedspread.Node;
-import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.UndefinedPropertyException;
 import it.cnr.iasi.leks.bedspread.exceptions.impl.UnexpectedValueException;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
