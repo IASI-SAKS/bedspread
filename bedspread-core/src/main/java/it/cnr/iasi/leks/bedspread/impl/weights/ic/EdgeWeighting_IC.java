@@ -69,8 +69,9 @@ public class EdgeWeighting_IC extends Abstract_EdgeWeighting_IC{
 			this.reportSomeInfoOnTheLog(size);
 			size --;
 			double w = this.predicate_IC(p);
-			if(w>result)
-				result = w;
+			if(w != Double.POSITIVE_INFINITY)
+				if(w>result)
+					result = w;
 		}
 		return result;			
 	}
