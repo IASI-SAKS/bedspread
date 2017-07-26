@@ -123,9 +123,20 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 				for (Thread t : threads) {
 					t.start();
 				}
+
+				this.waitForCompletionOfSemanticSpreadJobs();
 			}
 			
-			this.waitForCompletionOfSemanticSpreadJobs();
+//			The invocation of this method has been moved earlier
+//			just at the end of the previous loop. This way we aim to 
+//			reduce a bit the number of concurrent thread each AbstractSemanticSpreadOrchestrator
+//			generates. In fact in any cases most of all these thread will be later paused
+//			while competing to query the KB. In some practical cases (i.e. executions in
+//			the policentric setting with DBpedia as KB) will produce too many pending threads
+//			generating a mem leak in the JVM.
+//			*************************************************************			
+//			this.waitForCompletionOfSemanticSpreadJobs();
+//			*************************************************************			
 			
 			for (Node node : this.currentlyActiveNodes) {
 				this.activatedNodes.add(node);
