@@ -105,8 +105,13 @@ public class DBpediaKB implements KnowledgeBase {
 	}
 	
 	public int degree(AnyResource resource, Filters filter) {
-		int result = 0; 
-		result =  SPARQLQueryCollector_RESTRICTED.getDegree(this, resource, filter);
+		Integer result = this.getCache().resourceDegreeMap.get(resource); 
+		
+		if ((result == null) || (!caching)) {
+			result =  SPARQLQueryCollector_RESTRICTED.getDegree(this, resource, filter);
+			this.getCache().resourceDegreeMap.put(resource, result);
+		};
+		
 		return result;
 	}
 	

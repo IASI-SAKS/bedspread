@@ -18,9 +18,12 @@
  */
 package it.cnr.iasi.leks.bedspread.rdf.sparqlImpl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+
+import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 
 /**
  * 
@@ -31,16 +34,17 @@ public class DBpediaKBCache {
 	
 	int num_total_triple = 0;
 	
-	Map<String, Integer> num_triples_by_predicate = new HashMap<String, Integer>();
-	Map<String, Integer> num_triples_by_subject = new HashMap<String, Integer>();
-	Map<String, Integer> num_triples_by_object = new HashMap<String, Integer>();
-	Map<String, Integer> num_triples_by_subject_or_object = new HashMap<String, Integer>();
+	Map<String, Integer> num_triples_by_predicate = Collections.synchronizedMap( new HashMap<String, Integer>());
+	Map<String, Integer> num_triples_by_subject = Collections.synchronizedMap( new HashMap<String, Integer>());
+	Map<String, Integer> num_triples_by_object = Collections.synchronizedMap( new HashMap<String, Integer>());
+	Map<String, Integer> num_triples_by_subject_or_object = Collections.synchronizedMap( new HashMap<String, Integer>());
 	
-	Map<Vector<String>, Integer> num_triples_by_predicate_and_subject = new HashMap<Vector<String>, Integer>();
-	Map<Vector<String>, Integer> num_triples_by_predicate_and_object = new HashMap<Vector<String>, Integer>();
-	Map<Vector<String>, Integer> num_triples_by_subject_and_object = new HashMap<Vector<String>, Integer>();
-	Map<Vector<String>, Integer> num_triples_by_predicate_and_subject_or_object = new HashMap<Vector<String>, Integer>();
+	Map<Vector<String>, Integer> num_triples_by_predicate_and_subject = Collections.synchronizedMap( new HashMap<Vector<String>, Integer>());
+	Map<Vector<String>, Integer> num_triples_by_predicate_and_object = Collections.synchronizedMap( new HashMap<Vector<String>, Integer>());
+	Map<Vector<String>, Integer> num_triples_by_subject_and_object = Collections.synchronizedMap( new HashMap<Vector<String>, Integer>());
+	Map<Vector<String>, Integer> num_triples_by_predicate_and_subject_or_object = Collections.synchronizedMap( new HashMap<Vector<String>, Integer>());
 	
+	Map<AnyResource, Integer> resourceDegreeMap = Collections.synchronizedMap(new HashMap<AnyResource, Integer>());
 	
 	public DBpediaKBCache() {
 	

@@ -52,9 +52,12 @@ public class PolicentricSemanticSpreadOnDBpediaTest extends AbstractTest{
 //													  BDPEDIA_PREFIX+"Gioia_dei_Marsi",
 //													  BDPEDIA_PREFIX+"L'Aquila"};
 	
-	private static final String[] ORIGIN_LABEL_SET = {BDPEDIA_PREFIX+"Ignazio_Silone",
-			  										  BDPEDIA_PREFIX+"L'Aquila"};	
+//	private static final String[] ORIGIN_LABEL_SET = {BDPEDIA_PREFIX+"Ignazio_Silone",
+//			  										  BDPEDIA_PREFIX+"L'Aquila"};	
 
+//	private static final String[] ORIGIN_LABEL_SET = {BDPEDIA_PREFIX+"Barack_Obama"};	
+	private static final String[] ORIGIN_LABEL_SET = {BDPEDIA_PREFIX+"Diego_Maradona"};	
+	
 //	private static final String[] ORIGIN_LABEL_SET = {BDPEDIA_PREFIX+"Gioia_dei_Marsi"};	
 	
 //	private static final String[] ORIGIN_LABEL_SET = {BDPEDIA_PREFIX+"Diego_Maradona",
@@ -67,6 +70,15 @@ public class PolicentricSemanticSpreadOnDBpediaTest extends AbstractTest{
 	@Test
 	public void firstMinimalTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
 		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_onDBpedia.properties";
+		boolean condition = executeMinimalTest(testPropertyFile);
+
+		Assert.assertTrue(condition);				
+	}
+
+	@Ignore
+	@Test
+	public void deepExplorationTestConf() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException, AbstractBedspreadException {
+		String testPropertyFile = "configTestPolicentricSemanticWeighting_IC_onDBpedia_DeepConf.properties";
 		boolean condition = executeMinimalTest(testPropertyFile);
 
 		Assert.assertTrue(condition);				
