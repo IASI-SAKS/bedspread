@@ -67,7 +67,7 @@ public class SPARQLQueryCollector_RESTRICTED {
 				+ 	"}"
 				+ "}";
 		
-		System.out.println(queryString);
+//		System.out.println(queryString);
 		
 		Vector<QuerySolution> query_results = sec.execQuery(queryString);
 		if(query_results.size()>0)
