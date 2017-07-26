@@ -89,7 +89,7 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 			this.logger.info("--- NEW EXECUTION ---");
 		}
 		this.refreshInternalState();
-		int depth = 0;
+		int depth = 1;
 		while (!this.policy.terminationPolicyMet()){
 			this.logger.info("[ITERATION INFO {}] DEPTH # {}",this.getOrigin().getResource().getResourceID(), depth);
 			
