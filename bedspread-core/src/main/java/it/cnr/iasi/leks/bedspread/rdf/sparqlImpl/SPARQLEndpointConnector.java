@@ -76,37 +76,21 @@ public class SPARQLEndpointConnector {
 	 * @return Vector<QuerySolution> 
 	 */	
 	public Vector<QuerySolution> execQuery(String queryString) {	
-		Vector<QuerySolution> qss = new Vector<QuerySolution>();
+		Vector<QuerySolution> qss = null;
 		//queryString = queryString.replaceAll("\n", "\\u000D");
-		QueryExecution qexec = null;
 		
-		long ts1 = 0;
-		long ts2 = 0;
-		
-		try {	
+		try{
 			Query query = QueryFactory.create(queryString);
-			ts1 = System.currentTimeMillis();
-			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
-			ts2 = System.currentTimeMillis();
 			
-//			ResultSet r = this.executeQuery(qexec);
-//			ResultSet r = qexec.execSelect();	
-			ResultSet r = this.executeQueryWithSemaphore(qexec);
+//			qss = this.executeQuery(query);
+//			qss = qexec.execSelect();	
+			qss = this.executeQueryWithSemaphore(query);
 			
-			while(r.hasNext()){
-				qss.add(r.next());
-			}
-		}
-		catch(Exception ex) {
-			ts2 = System.currentTimeMillis();
+		}catch(Exception ex) {
 			this.logger.error("#Query: {}; #Message: {}; #Cause: {}", queryString, ex.getMessage(), ex.getCause());
+			qss = new Vector<QuerySolution>();
 		}
-		finally {
-			long delta = ts2 - ts1;
-			this.logQueriesWithLongTimeProcessing(delta, queryString);
-			if(qexec!=null)
-				qexec.close();
-		}
+		
 		return qss;
 	}
 	
@@ -115,15 +99,38 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private ResultSet executeQuery(QueryExecution qexec) throws Exception{
-		ResultSet r = null;
-		synchronized (MUTEX) {
-			r = qexec.execSelect();	
-			
-//			this.waitABit();
-		}
+	private Vector<QuerySolution> executeQuery(Query query) throws Exception{
+		long ts1 = 0;
+		long ts2 = 0;
+		
+		Vector<QuerySolution> qss = new Vector<QuerySolution>();
+		QueryExecution qexec = null;
 
-		return r; 
+		try{
+			synchronized (MUTEX) {
+				qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+
+				ts1 = System.currentTimeMillis();
+				ResultSet r = qexec.execSelect();
+				ts2 = System.currentTimeMillis();
+				
+				while(r.hasNext()){
+					qss.add(r.next());
+				}
+//				this.waitABit();
+			}
+		}catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			throw ex;
+		}finally {
+			if(qexec!=null){
+				qexec.close();
+			}	
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, query.toString());
+		}
+		
+		return qss; 
 	}
 
 	/*
@@ -131,17 +138,39 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private ResultSet executeQueryWithSemaphore(QueryExecution qexec) throws Exception{
-		ResultSet r = null;
+	private Vector<QuerySolution> executeQueryWithSemaphore (Query query) throws Exception {
+		long ts1 = 0;
+		long ts2 = 0;
 		
+		Vector<QuerySolution> qss = new Vector<QuerySolution>();
+		QueryExecution qexec = null;
+
 		try{
 			QUERY_INVOKATION_SEMAPHORE.acquire();
-			r = qexec.execSelect();
+			
+			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+			
+			ts1 = System.currentTimeMillis();
+			ResultSet r = qexec.execSelect();
+			ts2 = System.currentTimeMillis();
+			
+			while(r.hasNext()){
+				qss.add(r.next());
+			}
+
+		}catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			throw ex;
 		}finally {
+			if(qexec!=null){
+				qexec.close();
+			}	
 			QUERY_INVOKATION_SEMAPHORE.release();			
-		}
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, query.toString());
+		}		
 		
-		return r; 
+		return qss; 
 	}
 
 	
@@ -154,28 +183,15 @@ public class SPARQLEndpointConnector {
 	public boolean execAsk(String queryString) {	
 		boolean result = false;
 		//queryString = queryString.replaceAll("\n", "\\u000D");
-		QueryExecution qexec = null;
-		
-		long ts1 = 0;
-		long ts2 = 0;
-		
+				
 		try {	
 			Query query = QueryFactory.create(queryString);
-			ts1 = System.currentTimeMillis();
-			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
-			ts2 = System.currentTimeMillis();
 			
-			result = this.executeAskWithSemaphore(qexec);			
+//			result = this.executeAsk(query);			
+			result = this.executeAskWithSemaphore(query);			
 		}
 		catch(Exception ex) {
-			ts2 = System.currentTimeMillis();
 			this.logger.error("#Query: {}; #Message: {}; #Cause: {}", queryString, ex.getMessage(), ex.getCause());
-		}
-		finally {
-			long delta = ts2 - ts1;
-			this.logQueriesWithLongTimeProcessing(delta, queryString);
-			if(qexec!=null)
-				qexec.close();
 		}
 		return result;
 	}
@@ -185,13 +201,34 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private boolean executeAsk(QueryExecution qexec) throws Exception {
+	private boolean executeAsk(Query query) throws Exception {
 		boolean result = false;
-		synchronized (MUTEX) {
-			result = qexec.execAsk();	
+
+		QueryExecution qexec = null;
+
+		long ts1 = 0;
+		long ts2 = 0;
+		
+		try{
+			synchronized (MUTEX) {
+				qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+
+				ts1 = System.currentTimeMillis();
+				result = qexec.execAsk();	
+				ts2 = System.currentTimeMillis();
 			
-//			this.waitABit();
+//				this.waitABit();
+			}
+		} catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			throw ex;
+		} finally {
+			if(qexec!=null)
+				qexec.close();
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, query.toString());
 		}
+	
 
 		return result; 
 	}
@@ -201,14 +238,32 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private boolean executeAskWithSemaphore(QueryExecution qexec) throws Exception{
+	private boolean executeAskWithSemaphore(Query query) throws Exception{
 		boolean result = false;
+
+		long ts1 = 0;
+		long ts2 = 0;
+		
+		QueryExecution qexec = null;
 		
 		try{
 			QUERY_INVOKATION_SEMAPHORE.acquire();
+
+			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+			
+			ts1 = System.currentTimeMillis();
 			result = qexec.execAsk();
+			ts2 = System.currentTimeMillis();
+		}catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			throw ex;
 		}finally {
+			if(qexec!=null){
+				qexec.close();
+			}	
 			QUERY_INVOKATION_SEMAPHORE.release();			
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, query.toString());
 		}
 		
 		return result; 
