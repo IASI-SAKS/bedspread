@@ -78,35 +78,21 @@ public class SPARQLEndpointConnector {
 	public Vector<QuerySolution> execQuery(String queryString) {	
 		Vector<QuerySolution> qss = new Vector<QuerySolution>();
 		//queryString = queryString.replaceAll("\n", "\\u000D");
-		QueryExecution qexec = null;
 		
-		long ts1 = 0;
-		long ts2 = 0;
-		
-		try {	
+		try{
 			Query query = QueryFactory.create(queryString);
-			ts1 = System.currentTimeMillis();
-			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
-			ts2 = System.currentTimeMillis();
 			
-//			ResultSet r = this.executeQuery(qexec);
+//			ResultSet r = this.executeQuery(query);
 //			ResultSet r = qexec.execSelect();	
-			ResultSet r = this.executeQueryWithSemaphore(qexec);
+			ResultSet r = this.executeQueryWithSemaphore(query);
 			
 			while(r.hasNext()){
 				qss.add(r.next());
 			}
-		}
-		catch(Exception ex) {
-			ts2 = System.currentTimeMillis();
+		}catch(Exception ex) {
 			this.logger.error("#Query: {}; #Message: {}; #Cause: {}", queryString, ex.getMessage(), ex.getCause());
 		}
-		finally {
-			long delta = ts2 - ts1;
-			this.logQueriesWithLongTimeProcessing(delta, queryString);
-			if(qexec!=null)
-				qexec.close();
-		}
+		
 		return qss;
 	}
 	
@@ -115,14 +101,35 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private ResultSet executeQuery(QueryExecution qexec) throws Exception{
+	private ResultSet executeQuery(Query query) throws Exception{
 		ResultSet r = null;
-		synchronized (MUTEX) {
-			r = qexec.execSelect();	
-			
-//			this.waitABit();
-		}
 
+		long ts1 = 0;
+		long ts2 = 0;
+		
+		QueryExecution qexec = null;
+
+		try{
+			synchronized (MUTEX) {
+				qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+
+				ts1 = System.currentTimeMillis();
+				r = qexec.execSelect();
+				ts2 = System.currentTimeMillis();
+				
+//				this.waitABit();
+			}
+		}catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			throw ex;
+		}finally {
+			if(qexec!=null){
+				qexec.close();
+			}	
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, query.toString());
+		}
+		
 		return r; 
 	}
 
@@ -131,15 +138,33 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private ResultSet executeQueryWithSemaphore(QueryExecution qexec) throws Exception{
+	private ResultSet executeQueryWithSemaphore (Query query) throws Exception {
 		ResultSet r = null;
+
+		long ts1 = 0;
+		long ts2 = 0;
 		
+		QueryExecution qexec = null;
+
 		try{
 			QUERY_INVOKATION_SEMAPHORE.acquire();
+			
+			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+			
+			ts1 = System.currentTimeMillis();
 			r = qexec.execSelect();
+			ts2 = System.currentTimeMillis();
+		}catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			throw ex;
 		}finally {
+			if(qexec!=null){
+				qexec.close();
+			}	
 			QUERY_INVOKATION_SEMAPHORE.release();			
-		}
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, query.toString());
+		}		
 		
 		return r; 
 	}
@@ -154,28 +179,15 @@ public class SPARQLEndpointConnector {
 	public boolean execAsk(String queryString) {	
 		boolean result = false;
 		//queryString = queryString.replaceAll("\n", "\\u000D");
-		QueryExecution qexec = null;
-		
-		long ts1 = 0;
-		long ts2 = 0;
-		
+				
 		try {	
 			Query query = QueryFactory.create(queryString);
-			ts1 = System.currentTimeMillis();
-			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
-			ts2 = System.currentTimeMillis();
 			
-			result = this.executeAskWithSemaphore(qexec);			
+//			result = this.executeAsk(query);			
+			result = this.executeAskWithSemaphore(query);			
 		}
 		catch(Exception ex) {
-			ts2 = System.currentTimeMillis();
 			this.logger.error("#Query: {}; #Message: {}; #Cause: {}", queryString, ex.getMessage(), ex.getCause());
-		}
-		finally {
-			long delta = ts2 - ts1;
-			this.logQueriesWithLongTimeProcessing(delta, queryString);
-			if(qexec!=null)
-				qexec.close();
 		}
 		return result;
 	}
@@ -185,13 +197,34 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private boolean executeAsk(QueryExecution qexec) throws Exception {
+	private boolean executeAsk(Query query) throws Exception {
 		boolean result = false;
-		synchronized (MUTEX) {
-			result = qexec.execAsk();	
+
+		QueryExecution qexec = null;
+
+		long ts1 = 0;
+		long ts2 = 0;
+		
+		try{
+			synchronized (MUTEX) {
+				qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+
+				ts1 = System.currentTimeMillis();
+				result = qexec.execAsk();	
+				ts2 = System.currentTimeMillis();
 			
-//			this.waitABit();
+//				this.waitABit();
+			}
+		} catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			throw ex;
+		} finally {
+			if(qexec!=null)
+				qexec.close();
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, query.toString());
 		}
+	
 
 		return result; 
 	}
@@ -201,14 +234,32 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private boolean executeAskWithSemaphore(QueryExecution qexec) throws Exception{
+	private boolean executeAskWithSemaphore(Query query) throws Exception{
 		boolean result = false;
+
+		long ts1 = 0;
+		long ts2 = 0;
+		
+		QueryExecution qexec = null;
 		
 		try{
 			QUERY_INVOKATION_SEMAPHORE.acquire();
+
+			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
+			
+			ts1 = System.currentTimeMillis();
 			result = qexec.execAsk();
+			ts2 = System.currentTimeMillis();
+		}catch(Exception ex) {
+			ts2 = System.currentTimeMillis();
+			throw ex;
 		}finally {
+			if(qexec!=null){
+				qexec.close();
+			}	
 			QUERY_INVOKATION_SEMAPHORE.release();			
+			long delta = ts2 - ts1;
+			this.logQueriesWithLongTimeProcessing(delta, query.toString());
 		}
 		
 		return result; 
