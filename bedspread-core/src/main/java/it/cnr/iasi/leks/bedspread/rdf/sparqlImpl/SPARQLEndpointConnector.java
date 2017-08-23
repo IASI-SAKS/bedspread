@@ -76,21 +76,19 @@ public class SPARQLEndpointConnector {
 	 * @return Vector<QuerySolution> 
 	 */	
 	public Vector<QuerySolution> execQuery(String queryString) {	
-		Vector<QuerySolution> qss = new Vector<QuerySolution>();
+		Vector<QuerySolution> qss = null;
 		//queryString = queryString.replaceAll("\n", "\\u000D");
 		
 		try{
 			Query query = QueryFactory.create(queryString);
 			
-//			ResultSet r = this.executeQuery(query);
-//			ResultSet r = qexec.execSelect();	
-			ResultSet r = this.executeQueryWithSemaphore(query);
+//			qss = this.executeQuery(query);
+//			qss = qexec.execSelect();	
+			qss = this.executeQueryWithSemaphore(query);
 			
-			while(r.hasNext()){
-				qss.add(r.next());
-			}
 		}catch(Exception ex) {
 			this.logger.error("#Query: {}; #Message: {}; #Cause: {}", queryString, ex.getMessage(), ex.getCause());
+			qss = new Vector<QuerySolution>();
 		}
 		
 		return qss;
@@ -101,12 +99,11 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private ResultSet executeQuery(Query query) throws Exception{
-		ResultSet r = null;
-
+	private Vector<QuerySolution> executeQuery(Query query) throws Exception{
 		long ts1 = 0;
 		long ts2 = 0;
 		
+		Vector<QuerySolution> qss = new Vector<QuerySolution>();
 		QueryExecution qexec = null;
 
 		try{
@@ -114,9 +111,12 @@ public class SPARQLEndpointConnector {
 				qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
 
 				ts1 = System.currentTimeMillis();
-				r = qexec.execSelect();
+				ResultSet r = qexec.execSelect();
 				ts2 = System.currentTimeMillis();
 				
+				while(r.hasNext()){
+					qss.add(r.next());
+				}
 //				this.waitABit();
 			}
 		}catch(Exception ex) {
@@ -130,7 +130,7 @@ public class SPARQLEndpointConnector {
 			this.logQueriesWithLongTimeProcessing(delta, query.toString());
 		}
 		
-		return r; 
+		return qss; 
 	}
 
 	/*
@@ -138,12 +138,11 @@ public class SPARQLEndpointConnector {
 	 * the simultaneous invocation of the SPARQL endpoint
 	 * by that different concurrent threads 
 	 */
-	private ResultSet executeQueryWithSemaphore (Query query) throws Exception {
-		ResultSet r = null;
-
+	private Vector<QuerySolution> executeQueryWithSemaphore (Query query) throws Exception {
 		long ts1 = 0;
 		long ts2 = 0;
 		
+		Vector<QuerySolution> qss = new Vector<QuerySolution>();
 		QueryExecution qexec = null;
 
 		try{
@@ -152,8 +151,13 @@ public class SPARQLEndpointConnector {
 			qexec = QueryExecutionFactory.sparqlService(endpointUrl, query);
 			
 			ts1 = System.currentTimeMillis();
-			r = qexec.execSelect();
+			ResultSet r = qexec.execSelect();
 			ts2 = System.currentTimeMillis();
+			
+			while(r.hasNext()){
+				qss.add(r.next());
+			}
+
 		}catch(Exception ex) {
 			ts2 = System.currentTimeMillis();
 			throw ex;
@@ -166,7 +170,7 @@ public class SPARQLEndpointConnector {
 			this.logQueriesWithLongTimeProcessing(delta, query.toString());
 		}		
 		
-		return r; 
+		return qss; 
 	}
 
 	
