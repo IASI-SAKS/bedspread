@@ -115,7 +115,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int degree(AnyResource resource, Filters filter) {
 		Integer result = this.getCache().resourceDegreeMap.get(resource); 
 		
-		if ((result == null) || (!caching)) {
+		if ((result == null) || (!this.caching)) {
 			result =  SPARQLQueryCollector_RESTRICTED.getDegree(this, resource, filter);
 			this.getCache().resourceDegreeMap.put(resource, result);
 		};
@@ -199,16 +199,20 @@ public class DBpediaKB implements KnowledgeBase {
 		int result = 0;
 		
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_total_triple!=0)
 				result = this.getCache().num_total_triple;
 			else {
+				this.logger.info("Cache is currently empty, this activity may cost time");				
 //				result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
 				result = this.countTotalTripleSplittedQuery(filter);
 				this.getCache().num_total_triple = result;
 			}
 		}
-		else result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
+		else {
+			this.logger.info("Caching in disabled, this method invocation may cost time");
+			result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
+		}
 		
 		return result;
 	}
@@ -220,7 +224,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesByPredicate(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_predicate.containsKey(resource.getResourceID()))
 				result = this.getCache().num_triples_by_predicate.get(resource.getResourceID());
 			else {
@@ -242,7 +246,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesBySubject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_subject.containsKey(resource.getResourceID()))
 				result = this.getCache().num_triples_by_subject.get(resource.getResourceID());
 			else {
@@ -262,7 +266,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesByObject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_object.containsKey(resource.getResourceID()))
 				result = this.getCache().num_triples_by_object.get(resource.getResourceID());
 			else {
@@ -282,7 +286,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesBySubjectOrObject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_subject_or_object.containsKey(resource.getResourceID()))
 				result = this.getCache().num_triples_by_subject_or_object.get(resource.getResourceID());
 			else {
@@ -303,7 +307,7 @@ public class DBpediaKB implements KnowledgeBase {
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_predicate_and_object.containsKey(pair))
 				result = this.getCache().num_triples_by_predicate_and_object.get(pair);
 			else {
@@ -327,7 +331,7 @@ public class DBpediaKB implements KnowledgeBase {
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_predicate_and_subject.containsKey(pair))
 				result = this.getCache().num_triples_by_predicate_and_subject.get(pair);
 			else {
@@ -350,7 +354,7 @@ public class DBpediaKB implements KnowledgeBase {
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_predicate_and_subject_or_object.containsKey(pair))
 				result = this.getCache().num_triples_by_predicate_and_subject_or_object.get(pair);
 			else {
