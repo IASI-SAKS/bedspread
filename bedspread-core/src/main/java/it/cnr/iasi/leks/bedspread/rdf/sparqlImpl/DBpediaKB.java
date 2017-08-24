@@ -28,12 +28,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.opencsv.CSVReader;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 
 /**
@@ -54,7 +58,11 @@ public class DBpediaKB implements KnowledgeBase {
 	
 	private static DBpediaKB instance = null;
 
-	private final boolean caching = false;
+//	private final boolean caching = false;
+	private final boolean caching = true;
+
+	protected final Logger logger = LoggerFactory.getLogger(DBpediaKB.class);
+	
 	/**
 	 * 
 	 */
@@ -107,7 +115,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int degree(AnyResource resource, Filters filter) {
 		Integer result = this.getCache().resourceDegreeMap.get(resource); 
 		
-		if ((result == null) || (!caching)) {
+		if ((result == null) || (!this.caching)) {
 			result =  SPARQLQueryCollector_RESTRICTED.getDegree(this, resource, filter);
 			this.getCache().resourceDegreeMap.put(resource, result);
 		};
@@ -180,20 +188,31 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countAllTriples() {
 		return this.countAllTriples(Filters.FILTER_OUT_ALL);
 	}
-	
+/*	
+	 * the method SPARQLQueryCollector_RESTRICTED.countTotalTriples induces heavy computations 
+	 * on the DBpedia server. So the method has been revisited by using a different 
+	 * implementation that is local to this class. Such a modification may have strong
+	 * performances issues if the local caching will be disabled.
+	 * 
+*/	
 	public int countAllTriples(Filters filter) {
 		int result = 0;
 		
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_total_triple!=0)
 				result = this.getCache().num_total_triple;
 			else {
-				result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
+				this.logger.info("Cache is currently empty, this activity may cost time");				
+//				result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
+				result = this.countTotalTripleSplittedQuery(filter);
 				this.getCache().num_total_triple = result;
 			}
 		}
-		else result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
+		else {
+			this.logger.info("Caching in disabled, this method invocation may cost time");
+			result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
+		}
 		
 		return result;
 	}
@@ -205,7 +224,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesByPredicate(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_predicate.containsKey(resource.getResourceID()))
 				result = this.getCache().num_triples_by_predicate.get(resource.getResourceID());
 			else {
@@ -227,7 +246,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesBySubject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_subject.containsKey(resource.getResourceID()))
 				result = this.getCache().num_triples_by_subject.get(resource.getResourceID());
 			else {
@@ -247,7 +266,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesByObject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_object.containsKey(resource.getResourceID()))
 				result = this.getCache().num_triples_by_object.get(resource.getResourceID());
 			else {
@@ -267,7 +286,7 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countTriplesBySubjectOrObject(AnyResource resource, Filters filter) {
 		int result = 0;
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_subject_or_object.containsKey(resource.getResourceID()))
 				result = this.getCache().num_triples_by_subject_or_object.get(resource.getResourceID());
 			else {
@@ -288,7 +307,7 @@ public class DBpediaKB implements KnowledgeBase {
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_predicate_and_object.containsKey(pair))
 				result = this.getCache().num_triples_by_predicate_and_object.get(pair);
 			else {
@@ -312,7 +331,7 @@ public class DBpediaKB implements KnowledgeBase {
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_predicate_and_subject.containsKey(pair))
 				result = this.getCache().num_triples_by_predicate_and_subject.get(pair);
 			else {
@@ -335,7 +354,7 @@ public class DBpediaKB implements KnowledgeBase {
 		pair.add(predicate.getResourceID());
 		pair.add(resource.getResourceID());
 		
-		if(caching) {
+		if(this.caching) {
 			if(this.getCache().num_triples_by_predicate_and_subject_or_object.containsKey(pair))
 				result = this.getCache().num_triples_by_predicate_and_subject_or_object.get(pair);
 			else {
@@ -428,5 +447,31 @@ public class DBpediaKB implements KnowledgeBase {
 		}
 		return result;
 	}
+	
+	private int countTotalTripleSplittedQuery(Filters filter){
+		int totalTripleCounter = 0;
+		
+		Set<AnyResource> allPredicates = this.getAllPredicates(filter);
+		int size = allPredicates.size();
+		for(AnyResource p:allPredicates) {
+			this.reportSomeInfoOnTheLog(size);
+			size --;
+			totalTripleCounter += this.countTriplesByPredicate(p, filter);
+		}
+
+		AnyResource dctSubjectPredicate = RDFFactory.getInstance().createURI(Constants.DCT_SUBJECT); 
+		totalTripleCounter += this.countTriplesByPredicate(dctSubjectPredicate, filter);
+		
+		return totalTripleCounter;			
+	}
+	
+	private void reportSomeInfoOnTheLog(int missingIterations){
+		if (missingIterations % 100 == 0){
+			String message = "Missing Entries to Process: " + missingIterations; 
+			this.logger.info(message);
+		}	
+	}
+
+
 	
 }
