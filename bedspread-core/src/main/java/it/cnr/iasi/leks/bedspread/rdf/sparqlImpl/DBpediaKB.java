@@ -28,12 +28,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.opencsv.CSVReader;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
 import it.cnr.iasi.leks.bedspread.rdf.AnyURI;
 import it.cnr.iasi.leks.bedspread.rdf.KnowledgeBase;
+import it.cnr.iasi.leks.bedspread.rdf.impl.RDFFactory;
 import it.cnr.iasi.leks.bedspread.rdf.impl.URIImpl;
 
 /**
@@ -55,6 +59,9 @@ public class DBpediaKB implements KnowledgeBase {
 	private static DBpediaKB instance = null;
 
 	private final boolean caching = false;
+
+	protected final Logger logger = LoggerFactory.getLogger(DBpediaKB.class);
+	
 	/**
 	 * 
 	 */
@@ -180,7 +187,13 @@ public class DBpediaKB implements KnowledgeBase {
 	public int countAllTriples() {
 		return this.countAllTriples(Filters.FILTER_OUT_ALL);
 	}
-	
+/*	
+	 * the method SPARQLQueryCollector_RESTRICTED.countTotalTriples induce heavy computations 
+	 * on the DBpedia server. So the method has been revisited by using a different 
+	 * implementation that is local to this class. Such a modification may have strong
+	 * performances issues if the local caching will be disabled.
+	 * 
+*/	
 	public int countAllTriples(Filters filter) {
 		int result = 0;
 		
@@ -189,7 +202,8 @@ public class DBpediaKB implements KnowledgeBase {
 			if(this.getCache().num_total_triple!=0)
 				result = this.getCache().num_total_triple;
 			else {
-				result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
+//				result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(this, filter);
+				result = this.countTotalTripleSplittedQuery(filter);
 				this.getCache().num_total_triple = result;
 			}
 		}
@@ -428,5 +442,31 @@ public class DBpediaKB implements KnowledgeBase {
 		}
 		return result;
 	}
+	
+	private int countTotalTripleSplittedQuery(Filters filter){
+		int totalTripleCounter = 0;
+		
+		Set<AnyResource> allPredicates = this.getAllPredicates(filter);
+		int size = allPredicates.size();
+		for(AnyResource p:allPredicates) {
+			this.reportSomeInfoOnTheLog(size);
+			size --;
+			totalTripleCounter += this.countTriplesByPredicate(p, filter);
+		}
+
+		AnyResource dctSubjectPredicate = RDFFactory.getInstance().createURI(Constants.DCT_SUBJECT); 
+		totalTripleCounter += this.countTriplesByPredicate(dctSubjectPredicate, filter);
+		
+		return totalTripleCounter;			
+	}
+	
+	private void reportSomeInfoOnTheLog(int missingIterations){
+		if (missingIterations % 100 == 0){
+			String message = "Missing Entries to Process: " + missingIterations; 
+			this.logger.info(message);
+		}	
+	}
+
+
 	
 }
