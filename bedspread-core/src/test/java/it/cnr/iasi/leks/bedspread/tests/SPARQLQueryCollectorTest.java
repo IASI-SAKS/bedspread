@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import it.cnr.iasi.leks.bedspread.rdf.AnyResource;
@@ -30,6 +31,7 @@ import it.cnr.iasi.leks.bedspread.rdf.URI;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.Filters;
 import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.SPARQLQueryCollector;
+import it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.SPARQLQueryCollector_RESTRICTED;
 
 public class SPARQLQueryCollectorTest {
 
@@ -49,6 +51,43 @@ public class SPARQLQueryCollectorTest {
 		
 		Assert.assertTrue(result.size()>0);
 	}
+	
+	@Test
+	public void getPredicatesBySubjectAndObjectRestricted() {
+		Set<AnyResource> result = new HashSet<AnyResource>();
+		
+		result = SPARQLQueryCollector_RESTRICTED.getPredicatesBySubjectAndObject(kb, r1, r2, Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+		
+		for(AnyResource p:result)
+			System.out.println("pred="+p.getResourceID());
+		
+		Assert.assertTrue(result.size()>0);
+	}
+
+	@Test
+	public void countTotalTriples() {		
+		int result = SPARQLQueryCollector.countTotalTriples(kb, Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+		
+		System.out.println("count="+result);
+		
+		Assert.assertTrue(result>0);
+	}
+	
+	/*
+	 * this test will likely fail due to the heavy computation required by SPARQLQueryCollector_RESTRICTED.countTotalTriples
+	 * on the DBpedia server. This is the only reason why it was disabled. As side effect, the implementation of 
+	 * it.cnr.iasi.leks.bedspread.rdf.sparqlImpl.DBpediaKB::countAllTriples has been revisited.
+	 */
+	@Ignore
+	@Test
+	public void countTotalTriplesRestricted() {
+		int result = SPARQLQueryCollector_RESTRICTED.countTotalTriples(kb, Filters.FILTER_OUT_BLACKLIST_PREDICATES);
+		
+		System.out.println("count="+result);
+		
+		Assert.assertTrue(result>0);
+	}
+
 	
 	//@Test
 	public void getBow() {
