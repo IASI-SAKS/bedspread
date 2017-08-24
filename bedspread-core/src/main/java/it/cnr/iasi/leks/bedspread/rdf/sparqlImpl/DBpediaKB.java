@@ -58,7 +58,8 @@ public class DBpediaKB implements KnowledgeBase {
 	
 	private static DBpediaKB instance = null;
 
-	private final boolean caching = false;
+//	private final boolean caching = false;
+	private final boolean caching = true;
 
 	protected final Logger logger = LoggerFactory.getLogger(DBpediaKB.class);
 	
@@ -188,7 +189,7 @@ public class DBpediaKB implements KnowledgeBase {
 		return this.countAllTriples(Filters.FILTER_OUT_ALL);
 	}
 /*	
-	 * the method SPARQLQueryCollector_RESTRICTED.countTotalTriples induce heavy computations 
+	 * the method SPARQLQueryCollector_RESTRICTED.countTotalTriples induces heavy computations 
 	 * on the DBpedia server. So the method has been revisited by using a different 
 	 * implementation that is local to this class. Such a modification may have strong
 	 * performances issues if the local caching will be disabled.
