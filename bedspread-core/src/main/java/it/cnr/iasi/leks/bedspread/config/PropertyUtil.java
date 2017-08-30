@@ -61,6 +61,7 @@ public class PropertyUtil {
 	
 	public static final String POLICENTRIC_SEMANTIC_SPREAD_SLEEP_LABEL = "bedspread.policentricsemanticspread.sleeptime";
 		
+	public static final String MAX_CONCURRENT_SEMANTIC_SPREAD_THREAD_LABEL = "bedspread.semanticspreadthread.max";
 	public static final String MAX_CONCURRENT_SPARQL_THREAD_LABEL = "bedspread.sparqlthread.max";
 
 	private Properties properties;
