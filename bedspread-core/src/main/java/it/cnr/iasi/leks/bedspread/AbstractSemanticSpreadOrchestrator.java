@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.Semaphore;
 
 import it.cnr.iasi.leks.bedspread.config.PropertyUtil;
 import it.cnr.iasi.leks.bedspread.exceptions.AbstractBedspreadException;
@@ -50,6 +51,9 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 	private Set<Node> explorationLeaves; 
 		
 	private static final Object JOBS_MUTEX = new Object();
+	
+	private static final int DEFAULT_MAX_CONCURRENT_SEMANTIC_SPREAD_JOBS = 150;
+    private static volatile Semaphore SEMANTIC_SPREAD_JOBS_SEMAPHORE = new Semaphore(PropertyUtil.getInstance().getProperty(PropertyUtil.MAX_CONCURRENT_SEMANTIC_SPREAD_THREAD_LABEL, DEFAULT_MAX_CONCURRENT_SEMANTIC_SPREAD_JOBS));
 	
 	private volatile Map<String, SemanticSpreadJob> semanticSpreadJobsMap;
 	
@@ -121,7 +125,16 @@ public abstract class AbstractSemanticSpreadOrchestrator extends AbstractSemanti
 					}	
 				}
 				for (Thread t : threads) {
-					t.start();
+					try{
+						SEMANTIC_SPREAD_JOBS_SEMAPHORE.acquire();
+						t.start();
+					} catch (InterruptedException e) {
+						this.logger.error("An eccor occourred while processing an activated job");
+						this.logger.error("Message: {}",e.getMessage());
+						this.logger.error("Cause: {}",e.getCause());
+					}finally{
+						SEMANTIC_SPREAD_JOBS_SEMAPHORE.release();
+					}	
 				}
 
 				this.waitForCompletionOfSemanticSpreadJobs();
