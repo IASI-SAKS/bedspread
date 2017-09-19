@@ -62,6 +62,10 @@ public class PolicentricSemanticSpreadOnDBpediaKOREDatasetTest extends AbstractT
 
 //	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/0_KORE_modified_Apple.txt";
 	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/0_KORE_modified_AppleGoogle.txt";
+//	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/0_KORE_modified_Google.txt";
+//	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/0_KORE_modified_Facebook.txt";                                                                                                       
+//	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/0_KORE_modified_Microsoft.txt"; 
+//	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/0_KORE_modified_IBM.txt";                                                                                                            
 //	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/1_KORE_modified_ITCompanies.txt";
 //	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/2_KORE_modified_Hollywood.txt";
 //	private static final String INPUT_KORE_DATASET_FILE = "src/test/resources/datasets-KORE/3_KORE_modified_VideoGames.txt";
