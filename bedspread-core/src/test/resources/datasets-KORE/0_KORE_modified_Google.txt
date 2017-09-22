@@ -4,7 +4,7 @@ Google;Google_Maps
 Google;Android_(operating_system)
 Google;Andy_Bechtolsheim
 Google;Mountain_View,_California
-Google;Bing_(search_engine)
+Google;Bing
 Google;Stanford_University
 Google;Yahoo!
 Google;Vint_Cerf
