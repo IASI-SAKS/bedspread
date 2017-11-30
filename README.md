@@ -5,7 +5,7 @@ Bedspread - Spreading Activation Algorithm supporting Semantic Similarity
 This project currently aims to provide a free implementation for 
 a spreading activation algorithm supporting Semantic Similarity
 among entities/concepts. The design and the development of the
-implementation are lead by the [LEKS at CNR-IASI](http://leks.iasi.cnr.it).
+implementation are lead by the [SAKS at CNR-IASI](http://saks.iasi.cnr.it).
 
 The project is using DB-Pedia as reference linked open data cloud.
 
